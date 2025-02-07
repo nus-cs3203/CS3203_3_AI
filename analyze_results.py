@@ -34,4 +34,4 @@ def analyze_complaints(file_path):
         print(f"{domain}: {count} posts ({(count/num_complaints)*100:.2f}% of complaints)")
 
 # Analyze the most recent output file
-analyze_complaints("output500.csv_20250207_122446.csv") 
+analyze_complaints("bart_5000_output.csv_20250207_135817.csv") 

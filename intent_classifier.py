@@ -6,6 +6,7 @@ import html
 import re
 from datetime import datetime
 import csv
+import psutil
 
 # Configure device
 device = 0  # Using GPU 0
@@ -162,78 +163,94 @@ def process_reddit_post(title, selftext):
     result['original_selftext'] = selftext
     return result
 
-def process_csv_batch(input_file, output_file, batch_size=50):
-    """Process the CSV file in batches"""
-    print(f"Reading from {input_file}")
+def process_csv_batch(input_file, output_file, batch_size=1000, start_row=0, end_row=None):
+    """Process a specific range of rows from the CSV file"""
+    print(f"Processing rows {start_row} to {end_row}")
     
-    # Read CSV in chunks
-    df_chunks = pd.read_csv(input_file, chunksize=batch_size)
+    df_chunks = pd.read_csv(
+        input_file,
+        chunksize=batch_size,
+        usecols=['title', 'selftext'],
+        skiprows=range(1, start_row + 1),  # Skip to start_row
+        nrows=(end_row - start_row) if end_row else None  # Process until end_row
+    )
     
     # Create output file with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_filename = f"{output_file}_{timestamp}.csv"
     
-    # Modify headers to include analysis
+    # Write header only once
     headers = ['original_title', 'original_selftext', 'is_complaint', 
               'complaint_confidence', 'primary_domain', 
               'primary_domain_confidence', 'related_domains']
     
-    # Create a list to store all results for analysis
-    all_results = []
-    domain_counts = {}
-    total_processed = 0
-    total_complaints = 0
-    
     with open(output_filename, 'w', newline='', encoding='utf-8') as f:
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
+    
+    # Initialize counters
+    total_processed = 0
+    total_complaints = 0
+    domain_counts = {}
+    
+    # Process chunks and append to CSV
+    for chunk_num, chunk in enumerate(tqdm(df_chunks, desc="Processing chunks")):
+        # Drop rows where both title and selftext are empty
+        chunk = chunk.dropna(subset=['title', 'selftext'], how='all')
         
-        # Process each chunk
-        for chunk in tqdm(df_chunks, desc="Processing posts"):
-            for _, row in chunk.iterrows():
-                try:
-                    result = process_reddit_post(
-                        str(row['title']) if pd.notna(row['title']) else "",
-                        str(row['selftext']) if pd.notna(row['selftext']) else ""
-                    )
-                    
-                    if result is None:
-                        continue
-                        
-                    # Prepare row for writing
-                    output_row = {
-                        'original_title': row['title'],
-                        'original_selftext': row['selftext'],
-                        'is_complaint': result['is_complaint'],
-                        'complaint_confidence': result.get('complaint_confidence', None),
-                        'primary_domain': result.get('primary_domain', None),
-                        'primary_domain_confidence': result.get('primary_domain_confidence', None),
-                        'related_domains': ','.join(result.get('related_domains', []))
-                    }
-                    
-                    writer.writerow(output_row)
-                    total_processed += 1
-                    
-                    if result['is_complaint']:
-                        total_complaints += 1
-                        # Track domain statistics
-                        if 'primary_domain' in result:
-                            domain = result['primary_domain']
-                            domain_counts[domain] = domain_counts.get(domain, 0) + 1
-                        if 'related_domains' in result:
-                            for domain in result.get('related_domains', []):
-                                domain_counts[domain] = domain_counts.get(domain, 0) + 1
-                    
-                    # Print progress every 50 posts
-                    if total_processed % 50 == 0:
-                        print(f"\nProcessed {total_processed} posts, "
-                              f"Found {total_complaints} complaints")
-                    
-                except Exception as e:
-                    print(f"\nError processing row: {e}")
+        results = []
+        for row_idx, row in chunk.iterrows():
+            try:
+                # Calculate and display current row number
+                current_row = start_row + total_processed + 1
+                print(f"\nProcessing row {current_row}", end='\r')
+                
+                result = process_reddit_post(
+                    str(row['title']) if pd.notna(row['title']) else "",
+                    str(row['selftext']) if pd.notna(row['selftext']) else ""
+                )
+                
+                if result is None:
                     continue
+                    
+                # Prepare row for writing
+                output_row = {
+                    'original_title': row['title'],
+                    'original_selftext': row['selftext'],
+                    'is_complaint': result['is_complaint'],
+                    'complaint_confidence': result.get('complaint_confidence', None),
+                    'primary_domain': result.get('primary_domain', None),
+                    'primary_domain_confidence': result.get('primary_domain_confidence', None),
+                    'related_domains': ','.join(result.get('related_domains', []))
+                }
+                
+                results.append(output_row)
+                total_processed += 1
+                
+                if result['is_complaint']:
+                    total_complaints += 1
+                    if 'primary_domain' in result:
+                        domain = result['primary_domain']
+                        domain_counts[domain] = domain_counts.get(domain, 0) + 1
+                
+            except Exception as e:
+                print(f"\nError processing row {current_row}: {e}")
+                continue
         
-        # After processing all posts, add analysis summary rows
+        # Batch write results to CSV
+        with open(output_filename, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=headers)
+            writer.writerows(results)
+        
+        # Print progress
+        if (chunk_num + 1) % 5 == 0:
+            print(f"\nProcessed {total_processed} posts, "
+                  f"Found {total_complaints} complaints")
+            print(f"Memory usage: {psutil.Process().memory_info().rss / 1024 / 1024:.2f} MB")
+    
+    # Write summary at the end
+    with open(output_filename, 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
         writer.writerow({'original_title': '=== ANALYSIS SUMMARY ==='})
         writer.writerow({
             'original_title': 'Total Posts',
@@ -245,6 +262,7 @@ def process_csv_batch(input_file, output_file, batch_size=50):
             'complaint_confidence': f"{(total_complaints/total_processed)*100:.2f}%"
         })
         
+        # Add domain distribution summary
         writer.writerow({'original_title': '=== DOMAIN DISTRIBUTION ==='})
         for domain, count in sorted(domain_counts.items(), key=lambda x: x[1], reverse=True):
             writer.writerow({
@@ -253,10 +271,22 @@ def process_csv_batch(input_file, output_file, batch_size=50):
                 'complaint_confidence': f"{(count/total_complaints)*100:.2f}% of complaints"
             })
 
+def process_batch(texts):
+    """Process multiple texts at once through the model"""
+    results = complaint_classifier(
+        texts,
+        candidate_labels=complaint_categories,
+        hypothesis_template="This post expresses {}",
+        multi_label=False,
+        batch_size=32  # Adjust based on GPU memory
+    )
+    return results
+
 if __name__ == "__main__":
-    input_file = "200rows.csv"  # Changed to your test file
-    output_file = "bart_output200.csv"
+    input_file = "filtered_singapore_submissions_with_comments.csv"
+    output_file = "bart_5000_output.csv"
     
     print("Starting classification process...")
-    process_csv_batch(input_file, output_file)
+    # Process first 5000 rows
+    process_csv_batch(input_file, output_file, batch_size=1000, start_row=0, end_row=5000)
     print("Classification complete!")

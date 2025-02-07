@@ -3,4 +3,5 @@ torch
 pandas
 tqdm
 sentencepiece
-protobuf 
+protobuf
+psutil>=5.8.0 
