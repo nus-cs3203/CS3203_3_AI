@@ -290,9 +290,16 @@ print_gpu_utilization()
 
 if __name__ == "__main__":
     input_file = "filtered_singapore_submissions_with_comments.csv"
-    output_file = "bart_5000_output.csv"
+    output_file = "bart_100k_output.csv"
     
     print("Starting classification process...")
-    # Process first 5000 rows
-    process_csv_batch(input_file, output_file, batch_size=1000, start_row=0, end_row=5000)
+    
+    # Get total number of rows first
+    df = pd.read_csv(input_file)
+    total_rows = len(df)
+    start_row = max(0, total_rows - 100000)  # Get last 100k rows
+    
+    # Process last 100k rows
+    process_csv_batch(input_file, output_file, batch_size=1000, 
+                     start_row=start_row, end_row=total_rows)
     print("Classification complete!")

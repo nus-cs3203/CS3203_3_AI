@@ -24,8 +24,6 @@ def analyze_complaints(csv_file, output_format='text', save_to_file=None):
     complaints_df['complaint_confidence'] = pd.to_numeric(complaints_df['complaint_confidence'], errors='coerce')
     complaints_df['primary_domain_confidence'] = pd.to_numeric(complaints_df['primary_domain_confidence'], errors='coerce')
     
-    # Sort by complaint confidence
-    complaints_df = complaints_df.sort_values('complaint_confidence', ascending=False)
     
     # Create a more readable format
     complaints_summary = complaints_df.apply(lambda row: {
