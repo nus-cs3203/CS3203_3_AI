@@ -9,27 +9,25 @@ import csv
 import psutil
 
 # Configure device
-device = 0  # Using GPU 0
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+if torch.cuda.is_available():
+    print(f"Current GPU: {torch.cuda.get_device_name()}")
+    print(f"GPU Memory: {torch.cuda.get_device_properties(0).total_memory / 1024**3:.2f} GB")
 
+# Modify the model initialization
 try:
-    # Use the specified classifier
-    # model_name = "cross-encoder/nli-deberta-v3-large"
-    # complaint_classifier = pipeline("zero-shot-classification",
-    #                              model=model_name,
-    #                              device=device)
-    
-    # domain_classifier = pipeline("zero-shot-classification",
-    #                            model=model_name,
-    #                            device=device)
-    
     model_name = "facebook/bart-large-mnli"
-    complaint_classifier = pipeline("zero-shot-classification", model=model_name)
-    domain_classifier = pipeline("zero-shot-classification", model=model_name)
-
-    
+    complaint_classifier = pipeline("zero-shot-classification", 
+                                 model=model_name, 
+                                 device=0 if torch.cuda.is_available() else -1)
+    domain_classifier = pipeline("zero-shot-classification", 
+                               model=model_name, 
+                               device=0 if torch.cuda.is_available() else -1)
+    print("Models loaded on GPU successfully")
 except Exception as e:
-    print(f"Warning: Could not load DeBERTa model, falling back to BART: {str(e)}")
-    model_name = "facebook/bart-large-mnli"
+    print(f"Warning: Could not load model with GPU, falling back to CPU: {str(e)}")
     complaint_classifier = pipeline("zero-shot-classification", model=model_name)
     domain_classifier = pipeline("zero-shot-classification", model=model_name)
 
@@ -163,7 +161,7 @@ def process_reddit_post(title, selftext):
     result['original_selftext'] = selftext
     return result
 
-def process_csv_batch(input_file, output_file, batch_size=1000, start_row=0, end_row=None):
+def process_csv_batch(input_file, output_file, batch_size=2000, start_row=0, end_row=None):
     """Process a specific range of rows from the CSV file"""
     print(f"Processing rows {start_row} to {end_row}")
     
@@ -278,9 +276,17 @@ def process_batch(texts):
         candidate_labels=complaint_categories,
         hypothesis_template="This post expresses {}",
         multi_label=False,
-        batch_size=32  # Adjust based on GPU memory
+        batch_size=64  # Increased from 32 to better utilize GPU
     )
     return results
+
+def print_gpu_utilization():
+    if torch.cuda.is_available():
+        print(f"GPU Memory allocated: {torch.cuda.memory_allocated(0)/1024**2:.2f} MB")
+        print(f"GPU Memory cached: {torch.cuda.memory_reserved(0)/1024**2:.2f} MB")
+
+# Add this before starting processing
+print_gpu_utilization()
 
 if __name__ == "__main__":
     input_file = "filtered_singapore_submissions_with_comments.csv"
