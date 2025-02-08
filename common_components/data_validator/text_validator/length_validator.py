@@ -1,35 +1,27 @@
 from typing import Dict, Any
-
 from common_components.validation_handler import ValidationHandler
+from validator_logger import ValidatorLogger
 
 class LengthValidator(ValidationHandler):
     """
-    Concrete Handler that ensures a string field's length is within the allowed range.
+    Validates that a given string field has a length within the specified range.
     """
 
-    def __init__(self, field_name: str, min_length: int = 0, max_length: int = float('inf')) -> None:
-        """
-        :param field_name: The field in the request dictionary to validate.
-        :param min_length: Minimum allowed length (default 0).
-        :param max_length: Maximum allowed length (default infinity).
-        """
+    def __init__(self, field_name: str, min_length: int, max_length: int, logger: ValidatorLogger) -> None:
         super().__init__()
         self.field_name = field_name
         self.min_length = min_length
         self.max_length = max_length
+        self.logger = logger
 
     def validate(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Checks if the specified field's length is within the allowed range.
-        If valid, passes the request to the next handler.
-        """
+        self.logger.log_request(request)
         value = request.get(self.field_name)
 
-        if not (self.min_length <= len(value) <= self.max_length):
-            return {"error": f"Validation failed: '{self.field_name}' must be between {self.min_length} and {self.max_length} characters long"}
+        if not isinstance(value, str) or not (self.min_length <= len(value) <= self.max_length):
+            error_message = f"Validation failed: '{self.field_name}' length must be between {self.min_length} and {self.max_length} characters."
+            self.logger.log_failure(self.field_name, error_message)
+            return {"error": error_message}
 
-        # Pass request to the next handler if exists
-        if self._next_handler:
-            return self._next_handler.validate(request)
-
-        return {"success": True}  # Final success if no further validation is required
+        self.logger.log_success(self.field_name)
+        return self._validate_next(request)

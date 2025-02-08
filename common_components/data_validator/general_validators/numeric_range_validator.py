@@ -1,38 +1,27 @@
 from typing import Dict, Any
-
 from common_components.validation_handler import ValidationHandler
+from validator_logger import ValidatorLogger
 
-class RangeValidator(ValidationHandler):
+class NumericRangeValidator(ValidationHandler):
     """
-    Concrete Handler that ensures a numeric field is within a specified range.
+    Validates that a number is within a specified range.
     """
 
-    def __init__(self, field_name: str, min_value: float = float('-inf'), max_value: float = float('inf')) -> None:
-        """
-        :param field_name: The field in the request dictionary to validate.
-        :param min_value: The minimum acceptable value (inclusive).
-        :param max_value: The maximum acceptable value (inclusive).
-        """
+    def __init__(self, field_name: str, min_value: float, max_value: float, logger: ValidatorLogger) -> None:
         super().__init__()
         self.field_name = field_name
         self.min_value = min_value
         self.max_value = max_value
+        self.logger = logger
 
     def validate(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Validates that the specified field is a number within the range.
-        """
+        self.logger.log_request(request)
         value = request.get(self.field_name)
 
-        try:
-            num = float(value)  # Convert to float to handle both int and float
-        except (ValueError, TypeError):
-            return {"error": f"Validation failed: '{self.field_name}' must be a number"}
+        if not isinstance(value, (int, float)) or not (self.min_value <= value <= self.max_value):
+            error_message = f"Validation failed: '{self.field_name}' must be between {self.min_value} and {self.max_value}."
+            self.logger.log_failure(self.field_name, error_message)
+            return {"error": error_message}
 
-        if not (self.min_value <= num <= self.max_value):
-            return {"error": f"Validation failed: '{self.field_name}' must be between {self.min_value} and {self.max_value}"}
-
-        if self._next_handler:
-            return self._next_handler.validate(request)
-
-        return {"success": True}
+        self.logger.log_success(self.field_name)
+        return self._validate_next(request)

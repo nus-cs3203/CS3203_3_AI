@@ -1,9 +1,11 @@
 import pandas as pd
 import numpy as np
 import json
-from typing import Dict, Any, Callable
+from typing import Dict, Any
 
 from common_components.validation_handler import ValidationHandler
+from validator_logger import ValidatorLogger
+
 
 class FormatValidator(ValidationHandler):
     """
@@ -18,26 +20,32 @@ class FormatValidator(ValidationHandler):
         "txt": lambda value: isinstance(value, str) and value.lower().endswith('.txt')
     }
 
-    def __init__(self, field_name: str, allowed_formats: list) -> None:
+    def __init__(self, field_name: str, allowed_formats: list, logger: ValidatorLogger) -> None:
         """
         :param field_name: The field in the request dictionary to validate.
         :param allowed_formats: List of allowed formats (e.g., ['pandas', 'json', 'numpy', 'txt']).
+        :param logger: Logger instance for logging validation results.
         """
         super().__init__()
         self.field_name = field_name
         self.allowed_formats = set(allowed_formats)
+        self.logger = logger
 
     def validate(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validates that the specified field matches one of the allowed formats.
         """
+        self.logger.log_request(request)
         value = request.get(self.field_name)
 
         # Check if the value matches any allowed format
         if any(check(value) for fmt, check in self.FORMAT_CHECKS.items() if fmt in self.allowed_formats):
+            self.logger.log_success(self.field_name)
             return self._validate_next(request)
 
-        return {"error": f"Validation failed: '{self.field_name}' must be one of {self.allowed_formats}"}
+        error_message = f"Validation failed: '{self.field_name}' must be one of {self.allowed_formats}"
+        self.logger.log_failure(self.field_name, error_message)
+        return {"error": error_message}
 
     def _validate_next(self, request):
         """ Pass the request to the next handler if exists, else return success """
