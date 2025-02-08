@@ -1,7 +1,7 @@
 import re
 from typing import Dict, Any
-from common_components.validation_handler import ValidationHandler
-from validator_logger import ValidatorLogger
+from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.validator_logger import ValidatorLogger
 
 class RegexValidator(ValidationHandler):
     """
