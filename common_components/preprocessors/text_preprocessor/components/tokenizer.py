@@ -4,5 +4,5 @@ from nltk.tokenize import word_tokenize
 nltk.download('punkt')
 
 class Tokenizer:
-    def tokenize(self, text):
+    def process(self, text):
         return word_tokenize(text)
