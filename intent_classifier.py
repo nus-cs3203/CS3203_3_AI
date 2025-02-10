@@ -9,8 +9,15 @@ import csv
 import psutil
 
 # Configure device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.backends.mps.is_available():
+    device = torch.device("mps")
+elif torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+
 print(f"Using device: {device}")
+print(f"MPS available: {torch.backends.mps.is_available()}")
 print(f"CUDA available: {torch.cuda.is_available()}")
 if torch.cuda.is_available():
     print(f"Current GPU: {torch.cuda.get_device_name()}")
@@ -21,10 +28,10 @@ try:
     model_name = "facebook/bart-large-mnli"
     complaint_classifier = pipeline("zero-shot-classification", 
                                  model=model_name, 
-                                 device=0 if torch.cuda.is_available() else -1)
+                                 device=device)
     domain_classifier = pipeline("zero-shot-classification", 
                                model=model_name, 
-                               device=0 if torch.cuda.is_available() else -1)
+                               device=device)
     print("Models loaded on GPU successfully")
 except Exception as e:
     print(f"Warning: Could not load model with GPU, falling back to CPU: {str(e)}")
@@ -34,9 +41,9 @@ except Exception as e:
 # First level: More specific categories
 complaint_categories = [
     "Direct Complaint",          # Explicit complaints/criticisms
-    "General negative feelings/observations, but not complaint",        # General negative feelings/observations
+    "General negative feelings/observations but not complaint",        # General negative feelings/observations
     "Positive Feedback",         # Direct praise/appreciation
-    "General positive feelings/observations, but not positive feedback",        # General positive feelings/observations
+    "General positive feelings/observations but not positive feedback",        # General positive feelings/observations
     "Neutral Discussion"         # Questions/discussions without strong sentiment
 ]
 
@@ -57,6 +64,8 @@ domain_categories = [
     "Technology",        # Internet, devices, digital services
     "Financial",         # Banking, costs, fees
     "Noise",             # Noise pollution, disturbances
+    "Others",             # Other complaints
+    "Politics",          # Politics, government, policies
 ]
 
 def classify_post(text):
