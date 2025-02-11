@@ -9,4 +9,4 @@ psutil>=5.8.0
 scikit-learn
 accelerate==0.25.0
 numpy<2.0.0
-
+tiktoken

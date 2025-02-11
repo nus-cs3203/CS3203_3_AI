@@ -44,7 +44,9 @@ complaint_categories = [
     "General negative feelings/observations but not complaint",        # General negative feelings/observations
     "Positive Feedback",         # Direct praise/appreciation
     "General positive feelings/observations but not positive feedback",        # General positive feelings/observations
-    "Neutral Discussion"         # Questions/discussions without strong sentiment
+    "Neutral Discussion",         # Questions/discussions without strong sentiment
+    "Other",
+    "Looking for Suggestions"
 ]
 
 # Second level: Domain categories for complaints
