@@ -10,3 +10,4 @@ scikit-learn
 accelerate==0.25.0
 numpy<2.0.0
 tiktoken
+openai
