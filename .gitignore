@@ -3,78 +3,85 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
-
-# Installer logs
+# Virtual environment
+venv/
+.env/
+.venv/
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# Logs and debugging
+logs/
+*.log
+*.out
+*.err
+*.swp
+*.swo
+*.swn
+*.bak
+
 
 # Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
 .coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
+
 *.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+coverage.xml
+*.pytest_cache/
 
-# Translations
-*.mo
-*.pot
+# MyPy type checking
+.mypy_cache/
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+# Profiling data
+*.prof
 
-# Flask stuff:
-instance/
-.webassets-cache
+# Database & Data Files
+*.sqlite3
+*.db
+*.dat
+*.csv
+*.tsv
+*.pkl
+*.json
 
-# Scrapy stuff:
-.scrapy
+# Docker & Deployment
+Dockerfile
+*.dockerfile
+*.tar
+*.img
+*.container
 
-# Sphinx documentation
-docs/_build/
+# IDE / Editor-specific files
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
 
-# PyBuilder
-target/
+# Jupyter Notebook export files
+*.nbconvert/
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# MacOS-specific files
+.DS_Store
 
-# IPython
-profile_default
+# Windows-specific files
+Thumbs.db
+desktop.ini
+
+# Python packaging
+dist/
+build/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# Environment variables & Secrets (security best practice)
+.env
+*.env
+config/settings.json
+secrets.json
