@@ -1,41 +1,85 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-*.so
+*$py.class
 
 # Virtual environment
 venv/
-env/
+.env/
 .venv/
-
-# Jupyter Notebook checkpoints
-.ipynb_checkpoints/
-
-# macOS specific
-.DS_Store
-
-# Logs and databases
-*.log
-*.sqlite3
-
-# VSCode settings
-.vscode/
-
-# Ignore Python dependencies
 pip-log.txt
 pip-delete-this-directory.txt
 
-# Ignore Python egg files
-*.egg-info/
-*.egg/
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
 
-# Ignore build and distribution directories
-build/
-dist/
-*.spec
+# Logs and debugging
+logs/
+*.log
+*.out
+*.err
+*.swp
+*.swo
+*.swn
+*.bak
 
-# Ignore coverage reports
+# Unit test / coverage reports
 htmlcov/
+.tox/
+.nox/
 .coverage
 *.cover
-*.pycover
+coverage.xml
+*.pytest_cache/
+
+# MyPy type checking
+.mypy_cache/
+
+# Profiling data
+*.prof
+
+# Database & Data Files
+*.sqlite3
+*.db
+*.dat
+*.csv
+*.tsv
+*.pkl
+*.json
+
+# Docker & Deployment
+Dockerfile
+*.dockerfile
+*.tar
+*.img
+*.container
+
+# IDE / Editor-specific files
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+
+# Jupyter Notebook export files
+*.nbconvert/
+
+# MacOS-specific files
+.DS_Store
+
+# Windows-specific files
+Thumbs.db
+desktop.ini
+
+# Python packaging
+dist/
+build/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# Environment variables & Secrets (security best practice)
+.env
+*.env
+config/settings.json
+secrets.json
