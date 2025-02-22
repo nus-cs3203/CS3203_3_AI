@@ -130,6 +130,5 @@ def categorize_complaints(input_csv, output_csv):
     end_time = time.time()
     total_time = end_time - start_time
     print(f"Total time taken: {total_time:.2f} seconds")
-
 # Example usage
 categorize_complaints('data/2023_filtered_data.csv', 'data/2023_categorized_chunked2.csv')

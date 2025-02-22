@@ -2,7 +2,7 @@ import pandas as pd
 
 def post_process_data(input_csv, output_csv):
     # Read the CSV file
-    df = pd.read_csv(input_csv)W
+    df = pd.read_csv(input_csv)
     
     # Define the list of valid domain categories
     valid_categories = [
