@@ -3,13 +3,6 @@ import pandas as pd
 import time
 from concurrent.futures import ThreadPoolExecutor
 
-# import os
-# from volcenginesdkarkruntime import Ark
-# client = Ark(
-#     api_key=os.environ.get("af598933-afc1-4095-853b-c00879ec86d0"),
-#     base_url="https://ark.cn-beijing.volces.com/api/v3"
-# )
-
 client = OpenAI(
     api_key="af598933-afc1-4095-853b-c00879ec86d0",
     base_url="https://ark.cn-beijing.volces.com/api/v3"
