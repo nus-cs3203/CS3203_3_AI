@@ -45,3 +45,105 @@ created_utc
 2023-10                  8          25              3         72             24          26       11               6      8            168           2      20                8          32              31
 2023-11                  9          20              2         42             25          16       20               3      3            129           2      26               16          37              40
 2023-12                  2          13              1         49             23          25       27               2      4            137           1      32               11          31              41
+
+
+
+
+
+
+Total number of posts: 30464
+Number of useful posts for the government: 6869
+Total number of unique domain categories: 589
+
+Housing                737
+Healthcare             544
+Transportation         520
+Public Safety          377
+Transport              361
+Education              347
+Environment            263
+Employment             247
+Public Health          157
+Legal                  155
+Finance                137
+Economy                122
+Cybersecurity          106
+Social Issues          104
+Law Enforcement         99
+Governance              98
+Telecommunications      95
+Consumer Protection     73
+Politics                63
+Technology              63
+Consumer Rights         56
+Infrastructure          55
+Urban Planning          54
+Cost of Living          52
+Immigration             51
+Social Welfare          49
+Food Safety             47
+Workplace Safety        45
+Animal Welfare          41
+Social Services         37
+
+
+Total number of posts: 30464
+Number of useful posts for the government: 8413
+Total number of unique domain categories: 32
+
+Top 30 Domain Category Counts for Useful Posts:
+Domain Category
+Public Safety          1590
+Transport               885
+Housing                 865
+Economy                 843
+Legal                   766
+Employment              629
+Politics                505
+Environment             494
+Public Health           446
+Technology              319
+Healthcare              306
+Education               280
+Infrastructure          237
+Transportation          200
+Social Issues            10
+Sports                    8
+Others                    5
+Consumer Protection       3
+Immigration               3
+Population                3
+Tourism                   3
+Social Welfare            2
+Culture                   2
+Retail                    1
+Mental Health             1
+Sports/Recreation         1
+Society                   1
+Logistics                 1
+Social Services           1
+Community                 1
+
+
+Total number of posts: 30464
+Number of useful posts for the government: 8413
+Total number of unique domain categories: 15
+
+Top 30 Domain Category Counts for Useful Posts:
+Domain Category
+Public Safety     1590
+Transport          885
+Housing            865
+Economy            843
+Legal              766
+Employment         629
+Politics           505
+Environment        494
+Public Health      446
+Technology         319
+Healthcare         306
+Education          280
+Infrastructure     237
+Transportation     200
+Unknown             48
+Name: count, dtype: int64
