@@ -1,0 +1,484 @@
+singlish,english,meaning,sentiment_description,sentiment_score
+4D,Local 4 digit lottery game run by Singapore Pools,Local lottery game,"Neutral",0
+5Cs,Refers to the 5 Cs of Singapore (cash, car, credit card, condominium, country club membership),Materialistic success,"Neutral",0
+11B,Official Singapore Army vernacular meaning '11 basic information',SAF identity card,"Neutral",0
+abit,A little bit,Usually used sarcastically,"Negative",-0.3
+abuden,'Ar bo, then?',Obviously; what else could it have been? Equivalent to "duh".,"Neutral",0
+ACBC,Acronym for "act cute, buay cute.",Behaving in an exaggeratedly cutesy manner, but comes across as annoying,"Negative",-0.5
+act blur,To feign ignorance,Pretending not to know,"Negative",-0.2
+act cute,A phrase which describes behaving in a cutesy manner,Behaving in a cutesy manner,"Neutral",0
+action,Refers to a person that is perceived as arrogant or haughty,Arrogant or haughty person,"Negative",-0.7
+agak agak / agak-agak,An estimate,An estimation,"Neutral",0
+agak-ration,An estimate or estimation,An estimation,"Neutral",0
+Ah Beng,A hillbilly, or someone with poor dress sense. Also used to refer to a gangster,Hillbilly/gangster,"Negative",-0.4
+Ah Seng,Ah Beng's sidekick. Also used to refer to a gangster,Ah Beng's sidekick/gangster,"Negative",-0.4
+ah,Exclamation. /  (... ah?),Exclamation/Expressing doubt,"Neutral",0
+ah gua / ah kwa / ah qua,A transvestite, often assumed to be a Thai transsexual,Feminine male/transvestite,"Negative",-0.3
+Ah Lian,A hillbilly, someone with little dress sense; female form of Ah Beng. Also used to refer to a gangster,Hillbilly/gangster (female),"Negative",-0.4
+Ah Huay,Ah Lian's sidekick; female form of Ah Seng. Also used to refer to a gangster,Ah Lian's sidekick/gangster (female),"Negative",-0.4
+Ah Long,Slang term for a loan shark. / Sometimes used to mistranslate Lee Hsien Loong,Loan shark,"Negative",-0.8
+ah neh,means older brother; a shortened version of a racial slur,Older brother (potentially derogatory),"Negative",-0.6
+ah pu neh neh,A racial slur for Indians,Racial slur,"Negative",-0.9
+ah tiong,Sometimes used simply as Tiong. A derogatory term for Chinese nationals,Derogatory term for Chinese nationals,"Negative",-0.8
+ai see,Used to describe someone on thin ice,Being in a precarious situation,"Negative",-0.5
+ai see buay see,Used to describe someone on thin ice,Being in a precarious situation,"Negative",-0.5
+aiseh,An exclamation made in awe of something,Expression of awe,"Positive",0.4
+ai swee mai m'niah,Used on a person who is so vain their life or wellbeing is compromised,Extreme vanity,"Negative",-0.6
+ai sui,Refers to a person who is beauty conscious,Beauty conscious person,"Neutral",0
+ai tzai / ai zai,Used in a reassuring manner to calm people down,Reassuring,"Positive",0.3
+Aiya(h) / Aiyo(h),"Oh no!" "Oh dear!",Expression of dismay,"Negative",-0.6
+Aiyoh, so embarrassing!,Refers to a catchphrase popularized by Aunty Lucy,"Negative",-0.3
+Aiyoyo / Ai-yoh-yoh ,Extreme version of Aiyoh, popularized by the role played by Chen Liping,"Negative",-0.4
+akan datang,Means 'coming soon', as seen in movie trailers. Used to reassure an impatient person,Coming soon,"Positive",0.2
+alamak,Phonetically close to the Chinese term "Oh, my mother!",Expression of shock or dismay,"Negative",-0.5
+amacam,A greeting, similar to "What's up?",Greeting,"Neutral",0
+ang mo(h),A term for people of European descent,Term for Europeans,"Neutral",0
+ang mo(h) pai,A term used among Chinese Singaporeans to insult those who speak good English but whose Chinese language skills are lacking, or whose mannerisms are perceived as too Western,Insult for Westernized Chinese,"Negative",-0.6
+ang pau / ang pow,Red packet with money to be given on Chinese New Year,Gift of money,"Positive",0.5
+an zhua?,Hokkien equivalent of "What's up?",Asking what's up,"Neutral",0
+ar,Used at the end of a sentence where opinions and affirmations are being sought. / Used as either a noun or a verb to denote a very cozy, non-sexual relationship with someone that might result in special considerations or leeway not available to anyone else without such a relationship.,Seeking affirmation/Cozy relationship,"Positive",0.2
+ar bo,Means "What else?" or "How else?",Obvious answer,"Neutral",0
+atas,Used to describe a snobbish and arrogant person. / Used to describe a "high class", well-to-do or sophisticated person,Snobbish/High class,"Negative",-0.4
+ayam,Used to describe someone who is easily intimidated,Easily intimidated person,"Negative",-0.5
+ay / aye / ayy,To express a bit of ‘yeah’ feeling,Affirmative,"Positive",0.1
+balik kampong / balek kampung,Pack up one's things and go home. The term also refers to returning to one's hometown,Going home,"Neutral",0
+bakkwa / bak kwa,A Chinese salty-sweet dried meat product similar to jerky,Dried meat snack,"Positive",0.3
+bao toh,The act of backstabbing someone, usually in an office or political context,Backstabbing,"Negative",-0.8
+barang barang,Personal belongings,Personal items,"Neutral",0
+basket,Replacement for the word "Bastard",Mildly vulgar insult,"Negative",-0.4
+berak,To defecate,Defecate,"Neutral",0
+belanja,To treat or pay for someone,Treat someone,"Positive",0.4
+bird bird,Penis,Crude term for male genitalia,"Negative",-0.5
+bo cheng sa,shirtless / half-naked,Being shirtless,"Neutral",0
+blur,Someone who is forgetful, clumsy, or oblivious,Forgetful/clumsy,"Negative",-0.3
+bodoh,Idiot, ignorant,Idiot,"Negative",-0.7
+bo(h) be(h) zao,Used to describe something that is of unrivalled excellence,Unrivaled excellence,"Positive",0.8
+bo(h) bian / bo(h) pien,No choice,No choice,"Negative",-0.4
+bo(h) chup,Hokkien for to not care/ disregard something,Not caring,"Negative",-0.6
+bo(h) eng,To have little or no time on one's hands,Being busy,"Negative",-0.3
+bo(h) gay / bo(h) ge(h),Usually used to describe someone with a missing tooth,Missing tooth,"Neutral",0
+bo(h) jio / bojio,You didn't invite me,Not inviting someone,"Negative",-0.2
+bo(h) liao,A slang expression to describe being in a situation of idleness. Also used to describe an act of doing something silly,Bored/Silly,"Negative",-0.3
+bo(h) ta bo lan pa,Usually used in drinking for "bottoms up",Bottoms up,"Positive",0.2
+bo(h) tao bo(h) be(h),A story that has no linkage,Incoherent story,"Negative",-0.4
+bo(h) tuah bo(h) suay,Ignorant or unaware of who is the 'senior' or 'junior',Ignorant of social hierarchy,"Negative",-0.5
+bo(h) zheng hu,Used to describe a lack of governance or authority,Lack of authority,"Negative",-0.7
+boleh,Can; possible,Ability,"Positive",0.2
+botak,Used to describe someone bald,Bald,"Neutral",0
+buay,Means 'cannot',Cannot,"Negative",-0.4
+buaya,Refers to a womanizer or flirt,Womanizer,"Negative",-0.6
+buay pai,This is commonly used for food, saying that it isn't very bad or not bad. It can also be applied to other things,Not bad,"Positive",0.3
+buay song,To be unhappy or angry about something,Unhappy/Angry,"Negative",-0.8
+buay gan/kan,Useless,Useless,"Negative",-0.7
+buay steady,Usually used to reply to someone whose conduct spoils the pleasure of others. A spoilsport,Spoilsport,"Negative",-0.5
+buay tahan,Means 'unable to withstand' or colloquially "cannot stand it" i.e. intolerable,Intolerable,"Negative",-0.8
+catch no ball,unable to understand something that someone says,Not understanding,"Negative",-0.4
+Calefare,An extra (actor playing a minor role),Extra in a movie,"Neutral",0
+CB,May refer to either the Hokkien vulgarity jibai / chee bye / ci bai / chee bai, Chio bu or the Circuit Breaker lockdown back in 2020,Potentially offensive slang/lockdown,"Negative",-0.7
+cert,Abbreviation of 'certificate',Certificate,"Neutral",0
+chao / chow,Used to refer to foul smells. / Used to describe cheating or playing foul (jiak chao) in a game. Darned,Smelly/Cheating,"Negative",-0.7
+chao keng,Feigning sickness or injury,Pretending to be sick,"Negative",-0.5
+chao mugger,Someone who frequently crams for tests for fear of failure,Crammer,"Negative",-0.3
+chap lau chu,A colloquial term to describe 10-storey flats,Ten-storey flat,"Neutral",0
+char bor / zha bo,Girl/Woman,Woman,"Neutral",0
+chee bai/ci bai,Vulgar term for the female sexual organ; or the English equivalent of 'cunt',Vulgar term for female genitalia,"Negative",-0.9
+chee ko pek,Hokkien or Teochew slang for 'pervert' or 'dirty old man',Pervert,"Negative",-0.8
+cheena,A slur used to denote Chinese people exhibiting very unpolished behaviour or mannerisms,Racial slur for Chinese people,"Negative",-0.9
+'cher / Tcher,Corruption & abbreviation of "teacher",Teacher,"Neutral",0
+chey / cheyyy,Used when you are disappointed or unimpressed,Disappointment,"Negative",-0.4
+chicken business,Direct translation of the Cantonese slang 做鸡 (lit. 'do chicken'), which means to prostitute oneself ("chicken" is the slang term for a prostitute),Prostitution,"Negative",-0.8
+chi fan,To eat,Eating,"Neutral",0
+chim / cheem,Used to describe something or a situation that is extremely hard to understand or comprehend,Hard to understand,"Negative",-0.5
+chin chai,When applied colloquially, it means 'anything' or 'whatever',Anything/Whatever,"Neutral",0
+chio bu,Generally means "a fuckable girl" or "buxom woman",Derogatory term for woman,"Negative",-0.8
+chiong,To rush or to charge,Rushing,"Neutral",0
+chiong sua,Otherwise used as a more exaggerated form of "chiong",Rushing (exaggerated),"Neutral",0
+chop,Refers to stamp or seal,Stamp,"Neutral",0
+chop chop,Used to tell someone to do something fast,Do something fast,"Neutral",0
+chope,Slang for reserving a seat,Reserving a seat,"Neutral",0
+chui,Something that is broken / or something that has gone wrong / Lousy,Broken/Lousy,"Negative",-0.6
+chiu kana kah, kah kana lum pah,Used to describe a clumsy person,Clumsy person,"Negative",-0.4
+cik,lit. 'Miss' in Malay. When used in a military context, it is used to address female warrant officers in the Singapore Armed Forces,Military title,"Neutral",0
+cmi,An acronym for "can't make it",Can't make it,"Negative",-0.3
+cockanaathan,Similar meaning to 'cock fella'. Extreme term for useless or stupid,Useless/Stupid,"Negative",-0.8
+corright,Shortened corruption/amalgamation of the words "correct" and "right". To confirm that something is correct and right,Confirming something,"Positive",0.2
+da pau / da pao / da bao,Take away (used only when cooked food is concerned),Takeaway food,"Neutral",0
+damn,Very,Very,"Neutral",0
+dao,aloof,Aloof,"Negative",-0.3
+dey,To call someone in a friendly informal way. Same as "Hey!" / They,Informal greeting/They,"Neutral",0
+diam,See "t(h)iam / diam",Quiet,"Neutral",0
+doneded,Past tense of the word done,Done,"Neutral",0
+don't play play,Telling others to be serious or even saying ”don't fool around”,Be serious,"Neutral",0
+du lan,A swear term that means 'very pissed.' / Used to describe someone who is very picky and who insists on following the rules literally and blindly with no accommodation for circumstances,Very pissed/Picky,"Negative",-0.7
+dunnid,A corruption of 'don't need',Don't need,"Neutral",0
+double confirm,Confirm and reconfirm. Used to emphasize the confirmation. Also to emphasize the seriousness of the topic, 'Triple Confirm' is also used,Reconfirming,"Neutral",0
+echerly,Corruption of 'actually',Actually,"Neutral",0
+eeyer,To express disgust,Disgust,"Negative",-0.6
+encik,lit. 'Mister' in Malay. When used in a military context, it is used to address male warrant officers in the Singapore Armed Forces,Military title,"Neutral",0
+eye power,Sarcastic remark to describe someone who does not contribute in group work and merely watches on,Not contributing,"Negative",-0.5
+falali / ferlali,Bastardisation of the car marque "Ferrari",Car (Ferrari),"Neutral",0
+fatty bom bom,To refer to someone who is fat. / A fast food restaurant in Singapore,Fat/Restaurant,"Neutral",0
+foto,Misspelling of photo,Photo,"Neutral",0
+fone,Misspelling of phone,Phone,"Neutral",0
+gabra,Used to describe confusion or disorganisation,Confusion/Disorganization,"Negative",-0.4
+gahmen,Mispronunciation of the word "government",Government (informal),"Neutral",0
+garang,Used to describe someone as courageous or enthusiastic,Courageous/Enthusiastic,"Positive",0.5
+geh geh,Means faking. Usually used to describe those who are hypocritical,Faking/Hypocritical,"Negative",-0.6
+geh kiang,May be used to describe someone who makes rash decisions without thinking or someone who pretends to know what they are doing,Pretending to be smart,"Negative",-0.5
+ger,Corruption of 'girl',Girl,"Neutral",0
+get/giat,Very cheeky; mischievous,Mischievous,"Neutral",0
+gila,Crazy or mad,Crazy,"Negative",-0.6
+gone-case,Means that one is doomed,Doomed,"Negative",-0.8
+goondu,Local meaning "idiot",Idiot,"Negative",-0.7
+gor chiam tua guay gu chia leng,To think that one's money can go further than it can actually afford,Overestimating wealth,"Negative",-0.4
+goreng,To brainwash,Brainwashing,"Negative",-0.7
+gostan,To reverse or go in the backward direction,Reversing,"Neutral",0
+guai lan / kwai lan,Arrogant,Arrogant,"Negative",-0.7
+handphone,Mobile phone,Mobile phone,"Neutral",0
+hao lian,Slang term for "boast" or to describe someone that is narcissistic,Boasting/Narcissistic,"Negative",-0.6
+heng,To be lucky or fortunate,Lucky,"Positive",0.6
+helication,Corruption of "education",Education,"Neutral",0
+horlan,Used to denote finding oneself in a far-off place, or unexpected consequence, usually unpleasant,Lost/Unpleasant situation,"Negative",-0.7
+ho liao,It means done,Done,"Neutral",0
+hong bao / hongbao,See ang pau / ang pow,Red packet with money,"Positive",0.5
+hong gan (liao) / hong kan (liao),Used when very angry or disappointed,Angry/Disappointed,"Negative",-0.8
+hosei / ho seh / ho say,Good; well,Good,"Positive",0.6
+Ho seh bo?,How Are You?,How are you?,"Neutral",0
+hosei liao,The phrase means 'very good' or 'excellent' and carries the positive connotation of respite,Very good/Excellent,"Positive",0.7
+huat,To prosper,Prosper,"Positive",0.8
+hum ji / humji / hum chi / humchi,A phrase that denominates cowardly behaviour,Cowardly,"Negative",-0.7
+ini macam,"Like this", also "That's how","Like this","Neutral",0
+jelak,To be overly satiated by food to the point you are repulsed by it,Overly full,"Negative",-0.3
+jiak,To eat,Eat,"Neutral",0
+jiak cao,Being in a situation of having no money for daily expenses (i.e., broke). / To play foul in a game,Broke/Playing foul,"Negative",-0.7
+jiak zua,Used of a person who slacks while on duty,Slacking on duty,"Negative",-0.5
+jiak kantang,A pejorative term referring to pompous condescending intellectuals who are slightly more educated about Western cultures,Westernized snob,"Negative",-0.6
+jiak liao bee,Means this younger generation (son or daughter) is raised to nothing,Spoiled generation,"Negative",-0.5
+jia lat / jialat,Used to describe being in trouble or a terrible situation,In trouble,"Negative",-0.7
+jibaboom / jibabom,The sound of an explosion, indicating something has spoilt,Something spoilt,"Negative",-0.6
+jibai / chee bye / ci bai / chee bai,Vulgar term for the female sexual organ; or the English equivalent of 'cunt',Vulgar term for female genitalia,"Negative",-0.9
+jibra,Corruption of "zebra",Zebra,"Neutral",0
+jio,Invite. Could also mean asking someone out,Invite,"Neutral",0
+jilo / jiro / zilo,Corruption of "zero",Zero,"Neutral",0
+jiuhu,Malaysia,Malaysia,"Neutral",0
+jom,Let's go,Let's go,"Positive",0.3
+kae ang moh,Used of someone who tries to act like a Westerner,Acting Western,"Negative",-0.4
+kah kenna chiu, chiu kenna kah,Used to describe a clumsy person,Clumsy person,"Negative",-0.4
+kana sai,bullshit,Bullshit,"Negative",-0.7
+khao peh khao bu,Means to complain terribly,Complaining,"Negative",-0.6
+kenz,Short form of kena,To get,"Neutral",0
+kampong / kampung,Means 'village'. Figuratively used to refer to one's hometown or place of origin,Village/Hometown,"Neutral",0
+kaninia,Abbreviated as 'KNN",Vulgar slang,"Negative",-0.8
+kar chng,Buttocks,Buttocks,"Neutral",0
+kar pak,Parking lot; Car park,Parking lot,"Neutral",0
+kaypoh,A busybody,Busybody,"Negative",-0.5
+kayu,Used to describe lack of spontaneity or wooden behaviour (lit. 'wood'),Lack of spontaneity,"Negative",-0.4
+kee siao,To go mad,To go mad,"Negative",-0.7
+keling kia,Used as a slur. An old name for Tamil Indians,Racial slur,"Negative",-0.9
+kena,Means to be afflicted with or to suffer from something,To be afflicted with,"Negative",-0.6
+kena sai,Means to "get into deep shit" or get into deep trouble,In deep trouble,"Negative",-0.8
+kerlik,Corruption of colleague,Colleague,"Neutral",0
+ki chia/khi chia,Die,Die,"Negative",-0.8
+kiam,Salty. / Used to describe a stingy or frugal person,Salty/Stingy,"Negative",-0.5
+khiam pa(h),Used to say that (the appearance or actions of) an individual evokes a desire to physically hit them,Annoying,"Negative",-0.7
+kiasi,Used in the same manner as "kiasu",Afraid to lose,"Negative",-0.6
+kiasu,lit. 'to be afraid of losing',Afraid to lose,"Negative",-0.6
+kilat,Means 'excellent',Excellent,"Positive",0.7
+kong ka kiao,Die,Die,"Negative",-0.8
+kopi,Coffee,Coffee,"Neutral",0
+kopi tiam / kopi-tiam / kopitiam,lit. 'coffee shop'. 'Coffee shop' in Singapore refers to "food centre",Coffee shop/Food center,"Neutral",0
+koyah,means that an object is torn or spoiled,Torn/Spoiled,"Negative",-0.6
+kuku bird/kuku jiao,A crude term to refer to the male genitalia,Crude term for male genitalia,"Negative",-0.8
+la(h),Interjection. Tagged at the end of a sentence as an exclamation but pronounced differently in questions,Emphasis,"Neutral",0
+lan jiao,Refers to male genitalia (crude),Crude term for male genitalia,"Negative",-0.8
+lao lan,Arrogant; egoistic; pretentious,Arrogant,"Negative",-0.7
+lao pei huet,To have a nosebleed,To have a nosebleed,"Neutral",0
+lao sai,To get diarrhoea,Diarrhea,"Negative",-0.5
+la sai,Create trouble,Creating trouble,"Negative",-0.7
+lagi,Means to want more of something,Wanting more,"Positive",0.2
+leh,Tagged at the end of a sentence in a similar manner as "lah". Used to emphasize the sentence,Emphasis,"Neutral",0
+leh chey,A gnarly, troublesome problem or situation,Troublesome problem,"Negative",-0.7
+lepak,Has the same meaning as relaxing,Relaxing,"Positive",0.4
+liao,Means 'already' or 'over', or generally indicates the past tense,Already/Over,"Neutral",0
+liek boh kiew / liak bo kiu,Used when one is unable to comprehend what others are saying,Not understanding,"Negative",-0.4
+liddat,Like (akin to) that,Like that,"Neutral",0
+limbu / lim bu,An arrogant way to say "I" (female),Arrogant "I" (female),"Negative",-0.5
+limpeh / lim peh / limpei,An arrogant way to say "I" (male),Arrogant "I" (male),"Negative",-0.5
+lin lao hia / lin nao hia,A vulgarity meaning of "damn it",Damn it,"Negative",-0.8
+lobang,Malay word which means 'hole', 'gap' or "opening'; also used to describe an opportunity or chance,Opportunity,"Positive",0.4
+lombang,May also be pronounced and written as "lobang",Hitching a ride,"Neutral",0
+long zhong / long zong,Altogether,Altogether,"Neutral",0
+lor,Tagged at the end of a sentence in a similar manner as lah,Emphasis,"Neutral",0
+luan,Hokkien word which means very messy,Messy,"Negative",-0.5
+lun zun,Means careless or clumsy,Careless/Clumsy,"Negative",-0.4
+mabuk,drunk,Drunk,"Negative",-0.6
+macam,Like; Means to resemble something,Like,"Neutral",0
+mader,Corruption of "mother",Mother,"Neutral",0
+mafan,Troublesome,Troublesome,"Negative",-0.6
+mah,Usually tagged at the end of a sentence to seek agreement or argue a point,Seeking agreement,"Neutral",0
+makan,To eat,Eat,"Neutral",0
+makcik,An auntie persona,Auntie,"Neutral",0
+malu,Embarrassing. Usually used when someone makes a fool of themself,Embarrassing,"Negative",-0.7
+mampat,Tight/firm. Usually referring to a woman's posterior or clothing,Tight/Firm,"Neutral",0
+mang zang,Means irritable or easily annoyed,Irritable,"Negative",-0.6
+masak-masak,Child's play,Child's play,"Neutral",0
+Mat,a Malay man,Malay man,"Neutral",0
+Mat Salleh,a white person (usually a man),White person,"Neutral",0
+mati,lit. 'to die'. "Die" in the Singaporean slang context means to be doomed,Doomed,"Negative",-0.8
+mata,lit. 'eye'. Used as a reference to the police,Police,"Neutral",0
+meh,Usually tagged at the end of a negative question to indicate someone is exploiting a possible loophole,Exploiting a loophole,"Neutral",0
+mong cha cha,To behave in a "blur" manner and be unaware of what is going on around,Clueless,"Negative",-0.4
+mug,To cram (for academic tests),Cramming,"Neutral",0
+neh neh,A woman's chest or breasts,Breasts,"Neutral",0
+neh neh pok,Nipples,Nipples,"Neutral",0
+ngeow,Used to describe someone who is overly meticulous or tries to find fault in everything. / Used to refer to someone stingy,Meticulous/Stingy,"Negative",-0.5
+nia,Common used to depict the meaning of "only". It is of a belittling tone. May also be used to downplay intensity,Only,"Neutral",0
+nia gong,Direct Translation of 'your grandfather',Your grandfather,"Neutral",0
+nia gong de ji dan,Direct translation of "your grandfather's egg",Your grandfather's egg,"Neutral",0
+no eye see,Means cannot bear to look at/ do not want to know,Cannot bear to look,"Negative",-0.6
+no horse run,Used to describe things (food usually) which are ahead of their peers,Excellent,"Positive",0.7
+nua(h),Lazing around, or resting,Lazing,"Neutral",0
+O$P$,Owe Money Pay Money,Owe Money Pay Money,"Negative",-0.8
+Obasan,Used to describe someone sloppily dressed and out of fashion,Sloppily dressed,"Negative",-0.4
+obiang/orbit,a corrupted version of English term "off-beat". Used to describe someone or something that is desperately out of fashion,Out of fashion,"Negative",-0.5
+orbi,May be used as a single term or combined to form "orbi quek" or "orbi good", which means 'serves you right',Serves you right,"Negative",-0.7
+ORD,Short-form of "Operationally Ready Date", which refers to the date on which a full-time National Serviceman completes his full-time stint of National Service,Completion of National Service,"Neutral",0
+ORD loh,Army slang. An exclamation made by NSFs close to completing their two-year NS stint in the army to jokingly provoke their counterparts who have yet to see the end of their NS stint,Exclamation of impending freedom,"Positive",0.3
+owadio,Corruption of "ORD loh",Exclamation of impending freedom,"Positive",0.3
+orh,Yes; okay. Used to express acknowledgement,Acknowledgement,"Neutral",0
+orh hor,Used when someone has done something wrong, and will now be in trouble,Impending trouble,"Negative",-0.6
+oso,Also,Also,"Neutral",0
+ownself,(by) himself, herself, myself, yourself, oneself, etc,Oneself,"Neutral",0
+pai kia,Teochew slang for 'hooligan' or 'gangster',Hooligan/Gangster,"Negative",-0.7
+pai seh / paiseh,Means to be embarrassed,Embarrassed,"Negative",-0.6
+pak chiu cheng (pcc),To masturbate,Masturbate,"Neutral",0
+pak zam,Used to describe something faulty or not usable,Faulty,"Negative",-0.6
+pak tor / paktor,To go on a date. Colloquially refers to general physical intimacy,Dating,"Positive",0.3
+pang chance,To give chance,Giving chance,"Neutral",0
+pang sai,To defecate,Defecate,"Neutral",0
+pang seh,Hokkien slang for "to be stood up" (at an appointment), or cancelled upon at the last minute,Stood up,"Negative",-0.7
+pang jio,To urinate,Urinate,"Neutral",0
+pariah,Used to describe something unsightly or disgusting. / In modern times, it is also used to describe something or someone of low quality,Unsightly/Low quality,"Negative",-0.7
+pasar malam,Refers to the night markets,Night market,"Neutral",0
+photostat,Photocopy,Photocopy,"Neutral",0
+pia,To work hard at something, or to rush something (such as homework),Working hard/Rushing,"Neutral",0
+piak piak,To have sexual intercourse,Sexual intercourse,"Neutral",0
+pian yi dao lao sai,A very low price,Very low price,"Positive",0.5
+pok kai,To go broke. / Used to curse people,Broke/Curse,"Negative",-0.8
+pon,Short form of 'ponteng'. To play truant,Playing truant,"Negative",-0.5
+powderful,Corruption of "powerful",Powerful,"Positive",0.6
+pai tao,To make plans with your friends and decide to not show up,Cancelling plans,"Negative",-0.6
+puki,Vulgar term for female genitalia,Vulgar term for female genitalia,"Negative",-0.9
+pundek,Vulgar term for female genitalia,Vulgar term for female genitalia,"Negative",-0.9
+rabak,A situation out of hand,Out of control,"Negative",-0.7
+rabz,Short form of rabak,Out of control,"Negative",-0.7
+rabz-kebabz,An out-of-control situation, usually with negative connotations,Out of control situation,"Negative",-0.8
+sabo,To play a trick on someone, with a related meaning of "getting someone else in trouble",Playing a trick,"Negative",-0.7
+sakar,To flatter, to lick one's boots,Flattering,"Negative",-0.5
+saman,Used for traffic summons,Traffic summons,"Negative",-0.7
+sampat,Mainly used to describe a female who is a combination of silly, crazy, wacky, sassy, ditzy, etc,Silly/Crazy female,"Negative",-0.4
+sam seng,Gangster,Gangster,"Negative",-0.8
+sargen,Corruption of 'sergeant',Sergeant,"Neutral",0
+scorching eagle,A high flyer at work,Successful person,"Positive",0.5
+sei,Steady,Steady,"Positive",0.4
+see first,A short form of "wait and see what happens; we’ll see.",Procrastinating,"Neutral",0
+see me no up,Means to be looked down upon by someone,Looked down upon,"Negative",-0.7
+see you very up,Means worthy of you,Worthy,"Positive",0.6
+sekali,Lest, what if,What if,"Neutral",0
+selamat,'Hello’ or ‘Good’,Greeting,"Positive",0.3
+shame shame,Childish slang meaning of "very disgraceful" or "embarrassing",Disgraceful/Embarrassing,"Negative",-0.7
+shiok,To express sheer delight with an experience, especially when eating great food,Delight,"Positive",0.8
+showflat,An event held by an estate agency that spans several weeks to promote a housing project, usually condominiums,Real estate promotion,"Neutral",0
+sia(h),An exclamation,Exclamation,"Neutral",0
+siam,"Get out of the way!",Get out of the way,"Negative",-0.6
+sian / sien,Bored, tired, or sick of something,Bored,"Negative",-0.6
+siao,Crazy. / An offensive term used to address a friend. / Used to refer to somebody who is a fanatic,Crazy/Fanatic,"Negative",-0.5
+sia suay,See xia suay,Disgrace,"Negative",-0.7
+sibe(h) / si be(h),Similar to 'very',Very,"Neutral",0
+simi / si mi,"What?",What?,"Neutral",0
+X (verb) simi X,"What/why are you..." in a derogatory sense,Derogatory question,"Negative",-0.7
+Si mi lan jiao,A much more derogatory term of "What's up?",Derogatory "What's up?","Negative",-0.8
+Si mi tai dzi,Taiwan equivalent 啥物代誌／啥物代志 meaning "What's up?",What's up?,"Neutral",0
+slow-po(ke),A person who is extremely slow,Slow person,"Negative",-0.4
+smoke,To confuse and convince someone or an entity (group/organisation/class of people),Confuse,"Negative",-0.5
+sod,Used to express a machine, person, or object that has gone mental or haywire,Haywire,"Negative",-0.6
+solid,Very good,Very good,"Positive",0.7
+solid bird bird,So good that you get an erection,Extremely good,"Positive",0.8
+song,Used to express pleasure or excitement,Pleasure/Excitement,"Positive",0.7
+sozai / sor zai,used to express 'silliness',Silly,"Negative",-0.4
+sotong,Forgetful or not knowing what is going on. / Spineless or without principles, like the cuttlefish,Clueless/Spineless,"Negative",-0.5
+stay on topic,meaning to tell the person not to change the subject,Stay focused,"Neutral",0
+steady pom pi pi,Used to describe someone who keeps their cool under pressure or in the face of a massive crisis,Calm under pressure,"Positive",0.6
+suay,Unlucky,Unlucky,"Negative",-0.7
+suka,Like,Like,"Positive",0.3
+suku,Meaning of "silly" or "foolish", or "only a quarter there",Silly/Foolish,"Negative",-0.5
+sui / swee,nicely/just right/perfect. / Pretty; beautiful (often used to describe a pretty woman),Pretty/Perfect,"Positive",0.7
+swaku,Not well informed or backward; a country bumpkin,Backward,"Negative",-0.5
+tahan,Handle; tolerate, commonly used as 'I cannot tahan' meaning "I can't bear it" or "I cannot tolerate",Tolerate,"Neutral",0
+tai ko / tyco,Lucky (only used sarcastically),Lucky (sarcastically),"Negative",-0.3
+tak boleh,Cannot,Cannot,"Negative",-0.4
+tak boleh tahan,cannot endure,"(From Malay) lit. 'cannot endure'. Used when someone is suffering from pain, or couldn't wait upon something.",negative,-0.5
+talk cock / tok kok,talking nonsense,"Vulgarity meaning of talking nonsense/senselessly and gibberish or engage in idle banter. Probably originated from the English expression ""cock and bull story"" or its equivalent, talking ""gibberish"" — English slang for talking nonsense.",negative,-0.7
+tan ku ku,"forget it, it won't happen","(From Hokkien 等久久, lit. 'wait long long') Hokkien phrase meaning ""Forget it, it won't happen"".",negative,-0.3
+ta pau / ta pao,see da bao,See da bao.,neutral,0.0
+tau pok,"fried tofu","(From Chinese) lit. 'fried tofu'. By students who throw themselves on one another in a pile, usually for fun or to bully. Special cases with vertical tau pok where a person gets squashed against a vertical object, found in MRTs on a crowded day.",negative,-0.4
+teh,tea,"(From Malay) Tea. Refer to ""Kopi/coffee"" for more information about the different types of orders for tea and coffee common in Singapore.",neutral,0.0
+tekan,"bully/torture/put under pressure","(From Malay) Bully/torture/put under pressure. Military slang for punishments.",negative,-0.8
+terbalik / tembalik,opposite,"(From Malay) Opposite/upside-down/inside-out. Also pronounced ""dom-ba-lek"".",neutral,0.0
+terok,bad,(From Malay) Bad,negative,-0.6
+thambi / tambi,little brother,"(From Tamil, தம்பி) Meaning ‘little brother’.",neutral,0.0
+t(h)iam / diam,shut up,"(From Hokkien/Malay) If used as an imperative, a very rude way of saying ""shut up!"" or ""please be quiet""; lit. 'quiet'. Can be used to describe silence like in ""Doing guard duty on holidays is very sian but also very diam since nobody is here.""",negative,-0.7
+tio,to get,"(From Hokkien/Teochew 著 tio̍h, Mandarin equivalent: 中 zhòng) 1. To get. (Synonym: kena, though it is used in different but overlapping contexts). Usually used as a verb. E.g. ""He tio scolded by teacher."" ""The car owner tio saman."" 2. To accurately choose something. E.g. ""He always play 4D (lottery) and this time he tio so he won big jackpot.""",neutral,0.0
+tir ko pek,lecherous man,(From Hokkien) A lecherous man.,negative,-0.8
+toot,stupid person,Stupid/silly [person].,negative,-0.6
+towkay / tow kay,boss,"(From Hokkien 頭家/头家 thâu-ke) head of the house, or the company; which is also borrowed into Malay tauke, meaning Boss.",neutral,0.2
+tsai / zai,skilled at something,"(From Hokkien 在 tsāi lit.  (of a person) steady; solid; confident and collected under pressure; possibly also conflated with Hokkien 才 tsâi - ""very talented"") to be very skilled at something.",positive,0.7
+tuang,hang out and not do anything,means to hang out and not do anything, commonly used in reference to not going to classes.,neutral,0.1
+twa kee,big or famous people,(From Hokkien 大枝) Used to describe big or famous people.,positive,0.4
+ulu,rural/remote,"(From Malay) Used to describe a rural or remote area or country bumpkin. Commonly found in road names around Singapore as well (e.g. Ulu Pandan).",neutral,-0.2
+un,understand,"(From English/Cantonese) Abbreviation for 'understand', was once used widely in Hong Kong.",neutral,0.0
+understooded,understood,(From English) Corruption of understood.,neutral,0.0
+up lorry,dead/spoilt,"(From Hokkien/Malay) - Used to describe a person who has already died or an item that is spoilt and can no longer be used. See also ki chia.",negative,-0.7
+use your brain / use your blain,think it through properly,Think it through properly. Made popular by Phua Chu Kang.,positive,0.3
+very the,very,"(From English/Chinese) Singlish phrase emphasising 'very', directly transliterated from the Chinese 非常地 (fēi cháng de), which means the same. Usually employed with a clearly sarcastic tone.",neutral,-0.1
+vomit blood,extreme difficulty,"A literal translation of the Chinese expression 吐血, which usually means to experience an extreme or unendurable difficulty or irritation. ""Vomit"" is often pronounced ""womit"".",negative,-0.6
+wa(h) lan (eh),exclamation,(From Hokkien/Teochew 我𡳞, lit. 'oh, my penis') Crude derivative of Wah Lau.,negative,-0.8
+wa(h) lao (eh) / walao (eh) / wah lau (eh) / walau (eh),exclamation of shock,"(From Hokkien/Teochew 我老, lit. 'my elderly') – Exclamation of shock; ""WTF”.",negative,-0.7
+wa(h) kao / wakao,exclamation of shock,(From Chinese 哇靠 wà kào) Exclamation of shock. "What the hell just happened?”,negative,-0.7
+wa(h) se(h),exclamation of shock,(From Hokkien/Teochew 哇塞 wah seh) Exclamation of shock. "What the hell".,negative,-0.7
+wayang,"acting/for show","(From Malay) lit. ""puppetry"", ""theatrical"". Means 'acting' or 'for show'.",negative,-0.3
+where got,this won't happen,‘This won’t happen’, ‘When did it happen?’",negative,-0.3
+white horse,influential person's son,"(From English) The son of a government official and/or some other influential person. The term is derived from the drawing of a white horse that used to appear at the bottom left-hand corner of the computer screen displaying patient information when said scion visits his camp's Medical Officer.",neutral,0.0
+womit,mispronunciation of vomit,Mispronunciation of 'vomit'.,neutral,0.0
+xia lan,arrogant,(From Hokkien) Arrogant; egoistic; pretentious.,negative,-0.7
+xia suay / sia suay,"disgrace/embarrassment",(From Hokkien/Teochew 瀉衰/泻衰 sià-soe) Disgrace; embarrassment. Unlucky.,negative,-0.8
+yandao,handsome male,(From Hokkien 緣投/缘投 iân-tâu) A handsome male.,positive,0.8
+yaya papaya,"proud/arrogant",Used to describe someone who's proud, arrogant, or showing off; often with disappointing outcomes, i.e., "Our football team's striker is damn yaya papaya, always try to solo dribble until lose the ball".,negative,-0.6
+your grandfather's road ah?,rude retort,"""Does your grandfather own this road?"". Used as a rhetorical question on a person who is road hogging or doing something inappropriate on the road. (""Kanina! This one your grandfather's road ah? Cannot see got people driving ah!?"")",negative,-0.8
+your head,disagreement,"Mild, rebellious curse used to disabuse someone of an erroneous assumption. Directly transliterated from Chinese 你的头 or 你个头. Often used in conjunction with the word ah, i.e. ""your head ah"".",negative,-0.4
+zai,skilled at something,See tsai / zai.,positive,0.7
+zao hor,impressive,(From Hokkien) Impressive.,positive,0.7
+zao kng,accidentally expose oneself,(From Hokkien) To accidentally expose oneself.,negative,-0.5
+zha bo,see char bor,See char bor.,neutral,0.0
+zhun,accurate,(From Chinese 準/准, Hokkien: chún, Mandarin:zhǔn) Accurate.,positive,0.8
+zhun bo,"are you sure or not?",(From Hokkien/Teochew 準無/准无 chún-bô, lit. 'Accurate or not?') Means "Are you sure or not?",neutral,0.3
+zilo,zero,Zero. See jilo / jiro / zilo.,neutral,0.0
+zi siao,"disturb/ridicule",(From Hokkien 恥笑/耻笑 thí-siâu) To disturb, ridicule or tease.,negative,-0.7
+char kway teow,"fried flat rice noodles","(From Hokkien/Teochew) Fried flat rice noodles with bean sprouts, Chinese sausages, eggs and cockles, in black sweet sauce, with or without chilli.",neutral,0.2
+chwee kueh,"steamed rice flour cakes","(From Teochew 水粿) Cup-shaped steamed rice flour cakes topped with preserved vegetables (usually radish) and served with or without chilli.",neutral,0.2
+Hokkien char mee,"kuala lumpur hokkien noodle","(From Hokkien 福建炒麵/福建炒面, lit. 'Fujian fried noodles') Refers to the Kuala Lumpur Hokkien noodle. It is a dish of thick yellow noodles braised in thick dark soy sauce with pork, squid, fish cake and cabbage as the main ingredients and cubes of pork fat fried until crispy.",neutral,0.2
+Hokkien hae mee,"fujian prawn noodles","(From Hokkien 福建蝦麵/福建虾面, lit. 'Fujian prawn noodles') Refers to either the Penang prawn noodle or Singapore prawn noodle. Soup-based (Penang) and stir-fried (Singapore). Egg noodles and rice noodles with no dark soya sauce used. Prawn is the main ingredient with slices of chicken or pork, squid and fish cake. Kang Kong (water spinach) is common in the Penang version.",neutral,0.2
+ice kacang,"crushed ice with syrup","(From Malay) Crushed ice with flavoured syrup poured into them. Beans and jelly are usually added as well.",positive,0.3
+kangkong / kangkung,"water spinach",(From Malay) Water spinach (Ipomoea aquatica).,neutral,0.1
+kaya,local jam,"(From Malay) Local jam mixture made of coconut, sugar and egg of Straits Chinese origins.",positive,0.4
+roti-kaya,"toasted bread with kaya","(From Malay) Toasted bread with Kaya.",positive,0.4
+mee goreng,"malay fried noodles","(From Chinese/Malay) Malay fried noodles.",neutral,0.2
+otah,"fish paste in banana leaf","(From Malay) Fish paste wrapped in banana leaf or coconut leaves and cooked over a charcoal fire. Southeast Asian influence - you can find similar versions in Thailand, Indonesia and Malaysia.",neutral,0.2
+popiah,"chinese spring rolls","(From Hokkien) Chinese spring rolls (non-fried). Various condiments and vegetables wrapped in a flour skin with sweet flour sauce. Condiments can be varied, but the common ones include turnip, bamboo shoots, lettuce, Chinese sausage, prawns, bean sprouts, garlic and peanut. Originates from China. Hokkien and Straits Chinese (Nonya) popiah are the main versions.",neutral,0.2
+rojak,"local salad","(From Malay) local salad of Malay origins. A mixture of sliced cucumber, pineapple, turnip, dried beancurd, Chinese doughsticks (Youtiao), bean sprouts with prawn paste, sugar, lotus buds and assam (tamarind).",neutral,0.2
+roti john,"indian hamburger","(From Malay/English) Indian version of western hamburger consisting of two halves of French loaves fried with egg and minced beef/mutton. Colonial origins.",neutral,0.2
+tauge / taoge / taugeh / taugey,bean sprout,(From Hokkien 豆芽 tāu-gê) Bean sprout.,neutral,0.1
+tau gee,"dried bean stick","(From Hokkien 豆枝 tāu-ki) Dried bean stick; dried beancurd strips in sticks or rolls.",neutral,0.1
+tze char,"cook and fry","(From Hokkien 煮炒 tsír-tshá) lit. meaning cook and fry. A general term for food served by mini restaurants in local hawker stalls serving restaurant-style Chinese dishes, like fried noodles, sweet and sour pork, claypot tofu, etc.",neutral,0.2
+teh,tea,(From Hokkien/Malay 茶 tê) Tea.,neutral,0.0
+teh-O,"tea with sugar","(From Hokkien 茶烏/茶乌 tê-o, lit. 'black tea') Tea without milk but instead with sugar.",neutral,0.1
+teh-O-ice-limau,"iced lemon tea","(From Hokkien-English-Malay) Home brewed iced lemon tea.",positive,0.3
+teh-C,"tea with evaporated milk","(From Hokkien/Hainanese) Tea with evaporated milk. The C refers to the evaporated milk, derived from Hainanese See/Xi which sounds like alphabet 'C', in Hainanese See Gu-Nin refers to Evaporated or Fresh (See/C) Milk (Gu-Nin) e.g. King of Kings or Carnation as many Coffeeshops and related businesses are operated by Hainanese people in earlier days and even today.",neutral,0.1
+teh-cino,"milk layered with tea","(From Hokkien) Milk layered with tea on top (similar to latte macchiato), though its name hints towards a tea version of cappuccino.",positive,0.3
+teh-peng,"iced milk tea","(From Hokkien 茶冰 tê-peng) Iced milk tea sweetened with condensed milk.",neutral,0.1
+teh-poh,weak tea,(From Hokkien 茶薄 tê-po̍h) Weak or thin tea.,negative,-0.2
+teh-kosong,plain tea,(From Hokkien/Malay) Plain Tea.,neutral,0.0
+teh-kah-dai,"tea with more sugar","(From Hokkien/Cantonese 加底 gaa1 dai2, lit. 'add base') Milk tea sweetened with condensed milk, with more sugar.",positive,0.3
+teh-siu-dai,"tea with less sugar","(From Hokkien/Cantonese 少底 siu2 dai2, lit. 'less base') Milk tea sweetened with condensed milk, with less sugar.",neutral,0.1
+teh-pua seo,lukewarm tea,(From Hokkien 茶半燒/茶半烧 tê puànn-sio) Lukewarm tea.,neutral,-0.1
+teh-O-kah-dai,"tea with more sugar","(From Hokkien/Cantonese 加底 gaa1 dai2, lit. 'add base') Tea with more sugar.",positive,0.3
+teh-O-siu-dai,"tea with less sugar","(From Hokkien/Cantonese 少底 siu2 dai2, lit. 'less base') Tea with less sugar.",neutral,0.1
+teh-C-kah-dai,"milk tea with more sugar","(From Hokkien/Hainanese/Cantonese 加底 gaa1 dai2, lit. 'add base') Milk tea with more sugar.",positive,0.3
+teh-C-siu-dai,"milk tea with less sugar","(From Hokkien/Hainanese/Cantonese 少底 siu2 dai2, lit. 'less base') Milk tea with less sugar.",neutral,0.1
+teh-packet or Teh-pao,tea to go,(From Hokkien 茶包 tê pau) Tea to go.,neutral,0.1
+teh-tarik,"pulled tea with milk","(From Malay) 'Pulled' tea with milk, a Malay specialty.",neutral,0.2
+teh-halia,"tea with ginger","(From Malay) Tea with ginger extract.",positive,0.3
+teh-halia tarik,"pulled tea with ginger","(From Malay) Pulled tea with milk (teh tarik) and ginger.",positive,0.4
+tiao he / tiau hir,"teabag in hot water","(From  Hokkien 釣魚/钓鱼 tiò-hî, lit. 'fishing') Teabag in hot water. Refers to dipping the teabag.",neutral,0.1
+kopi,coffee,(From Malay/Hokkien 咖啡 ka-pi) Coffee.,neutral,0.1
+kopi-O,"coffee with sugar","(From Malay/Hokkien 咖啡烏/咖啡乌 ka-pi-o, lit. 'black coffee') Coffee with sugar but no milk.",neutral,0.1
+kopi-C,"coffee with evaporated milk","(From Malay/Hainanese) Coffee with evaporated milk. The C refers to the evaporated milk, derived from Hainanese See/Xi which sounds like alphabet ""C"", in Hainanese See Gu-Nin refers to Evaporated or Fresh (See/C) Milk (Gu-Nin) e.g. King of Kings or Carnation as many Coffeeshops and related businesses are operated by Hainanese people in earlier days and even today.",neutral,0.1
+kopi kosong,plain coffee,(From Malay) Substitutes condensed for evaporated milk. Plain coffee.,neutral,0.0
+kopi-peng,"iced coffee","(From Malay/Hokkien 咖啡冰 ka-pi-peng) Coffee with ice.",neutral,0.1
+kopi-packet / kopi-pao,coffee to go,(From Malay/Hokkien 咖啡包 ka-pi-pau) Coffee to go.,neutral,0.1
+kopi-pua seo,lukewarm coffee,(From Malay/Hokkien 咖啡半燒/咖啡半烧 ka-pi-pua-sio) Lukewarm coffee.,neutral,-0.1
+kopi-gao,thick coffee,(From Malay/Hokkien 咖啡厚 ka-pi kāu) Thick coffee.,positive,0.2
+kopi-poh,weak coffee,(From Malay/Hokkien 咖啡薄 ka-pi-poh) Weak or thin coffee.,negative,-0.2
+kopi-kah-dai,"coffee with more sugar","(From Malay/Cantonese 加底 gaa1 dai2, lit. 'add base') Coffee with more sugar.",positive,0.3
+kopi-siu-dai,"coffee with less sugar","(From Malay/Cantonese 少底 siu2 dai2, lit. 'less base') Coffee with less sugar.",neutral,0.1
+bandung (drink),"rose syrup-milk drink","(From Malay) Rose syrup-milk drink, of Indian origins. (Goat's milk was traditionally used.)",positive,0.3
+ice kosong,iced water,(From English-Malay) Iced water.,neutral,0.0
+horlick-dinosaur,"iced horlicks with powder","(From English) Iced Horlicks with extra scoop of Horlicks powder on top.",positive,0.4
+horlick-sio,hot horlicks,(From Hokkien-English) Hot Horlicks.,neutral,0.2
+horlick-peng,iced horlicks,(From Hokkien-English) Iced Horlicks.,neutral,0.2
+milo-sio,hot milo,(From Hokkien-English) Hot Milo.,neutral,0.2
+milo dinosaur,"iced milo with powder","(From English) Iced Milo with extra scoop of undissolved Milo powder on top.",positive,0.4
+milo-peng,iced milo,(From Hokkien-English) Iced Milo.,neutral,0.2
+tak kiu,"milo","(From Hokkien 踢球, lit. 'play football' or 'play soccer') Milo; Nestlé Milo often uses soccer and other sports as the theme of its advertisement.",neutral,0.1
+tak kiu-peng,iced milo,(From Hokkien) Iced Milo.,neutral,0.2
+arrow,delegate task,to delegate an unpleasant or boring task to someone. The term derives from the military and government's practice of stamping a tiny arrow next to the name of the person in official documents.,negative,-0.4
+auntie,"middle-aged woman","a middle-aged or elderly women; a young woman who dresses very unfashionably. From Chinese equivalent 阿姨.",neutral,-0.2
+banana,"westernised chinese","westernised Chinese Singaporean who lives distinctively like a Westerner (lifestyle, religion, dress code, food, activities, English proficiency etc.) and usually cast aside or reject Chinese folk religions and traditions. The point of comparison is that both are ""yellow on the outside and white on the inside"".",neutral,-0.2
+blur,clueless,clueless; in a daze; unaware of what is going on. Also commonly used in the phrase "act blur", which refers to the act of intentionally playing innocent.,negative,-0.3
+blur like sotong,extremely clueless,lit. 'blur like a squid'. To be extremely clueless. Squids squirt ink as a self-defence mechanism to get away. The ink makes it hard to see, thus "blur": "Wah! You damn blur leh! Liddat also dunno!",negative,-0.6
+can,can do,Used extensively as both a question particle and an answer particle. The negative is "cannot". E.g. "Can or not?" (Can you do that?) —"Can!" (Sure!),positive,0.7
+confirm,for sure,For sure.,positive,0.9
+confirm plus guarantee got chop / confirm plus chop,extremely sure,Extremely sure of something (derives from National Service/Military situations where one needs to be absolutely sure about something; "guarantee got chop" denotes that the action and whatever subsequent paperwork, if any, will be approved). Basically "officially sanctioned.",positive,0.9
+earpiece,"earphones/headphones","earphones, headphones. ""Ah boy, don't wear your earpiece while crossing the road!""",neutral,0.0
+follow,"come along/understand","to come along/accompany or to understand. E.g. ""Can follow anot?""",neutral,0.2
+got,there is/have,(The past tense is always used.) 1. there is/are... 2. have. E.g. "Now got pandemic, got nothing to do at home one.",neutral,0.0
+help (lah),please,please, do lend me a hand by desisting from whatever it is you are doing; help me out here. E.g. "Help lah, stop hitting on my sister." (Please, stop flirting with my sister.),neutral,0.3
+ice cream,not up to par,not up to par or expectation. E.g. "Wah a simple task you also fail, you damn ice-cream sia.",negative,-0.5
+jam,traffic congestion,can also mean traffic congestion. A shortcut of the word "traffic jam".,negative,-0.3
+last time,previously,previously, in the past. E.g. "I last time want to go Africa, but now don't know 'ready.",neutral,0.0
+lightbulb,third wheel,"an unwelcome companion in a couple; a third wheel. Originates from colloquial Cantonese term 电灯胆 (lit. electric light bulb). E.g., ""You two go ahead lah, I don't want to be lightbulb.""",negative,-0.3
+mug,to study,to study. Derived from British 'mug up'. Common expression amongst all students. Instead of "He's mugging up...", locally used as "He's mugging for..." Confused with the Americanism, meaning assault with intent to rob.,neutral,0.3
+smug,to study (smu),to study (SMU students). The term smugging or smugger refers to mugging by SMU students. Derived from SMU and mugger.,neutral,0.3
+marketing,"buying food",going to the market or shops to buy food. E.g. "My dad may help in the marketing side, by going to the market to get some things.",neutral,0.0
+never,did not yet,"did not yet. ""you never tell me"".",neutral,0.0
+next time,in the future,"in the future. E.g. ""Next time when you get married, you'll know how to cook.""",neutral,0.2
+one,emphasize opinion,"used as a way to aggressively exaggerate/place emphasis on one's opinion E.g. ""You confirm can one lah!"" or ""I never say one hor.""",neutral,0.0
+on,off,"switch on/off. E.g. ""I on the TV"".",neutral,0.0
+on ah,it's settled then,It's settled then?,positive,0.7
+open,turn on,(Derived from Chinese 開/开, which can mean both "to open" and "to turn on".) E.g. "I open the light.",neutral,0.0
+pass up,hand in,(From Chinese 交上 jiāo shàng) E.g. "Pass up your homework." (Although once common, usage is now discouraged in schools.),neutral,0.0
+power,praise,Usually means to praise someone or something.,positive,0.8
+PRC,chinese national,a Chinese national (abbreviation of "People's Republic of China"). Often used disparagingly. See also cheena.,negative,-0.4
+return,give back,to give back. Direct translation from the Chinese phrase. Commonly used in business emails.,neutral,0.0
+revert,reply,"to reply. Often used in emails and text messages. ""Please revert your decision to us"" doesn't mean ""Please change your decision"", but rather ""Please get back to us with your decision.""",neutral,0.0
+send,take someone somewhere,to take (i.e. drive) somebody somewhere. E.g.: "I send you to the airport lah." "She gets her maid to send the boy in a cab.",neutral,0.0
+solid/steady,excellent,capable; excellent. E.g. "Solid sia, that movie." See also kilat.,positive,0.8
+spoil,broken down,Broken down.,negative,-0.5
+stay,to live somewhere,To live (in a place). From Malay tinggal. E.g. "My grandmother, my aunt and uncle also stay next door.",neutral,0.0
+step,act like someone,Act like (person). E.g. "Eh, don't step Ah Beng.",negative,-0.3
+steady,agreeing,"1. attached (in relationships). 2. agreeing over something, usually over an appointment. E.g. ""Eh u two steady liao ah?"", ""Today, come 3 o'clock? Steady."" 3. cool, capable (to praise integrity or strength) E.g. ""Wa you sick also turn up for work ah? Steady!""",positive,0.7
+stone,"spacing out",to space out; to do nothing. - BAKED.,negative,-0.4
+stun,steal,To steal. See: Cope. Can be used as part of "Gostan". See gostan.,negative,-0.7
+take,"to eat","to eat; to have a meal. E.g. ""Have you taken your lunch?"" ""I don't take pork.""",neutral,0.0
+uncle,"middle-aged man","a male who is middle-aged or older, especially not well acquainted; a younger person who behaves/dresses in an uncool/unfashionable manner. Comes from the Chinese languages, which refer the same group of males as 叔叔.",neutral,-0.2
+until,to such an extent,To such an extent that. A direct translation of the Chinese expression 到. Usually used after an adjective or a verb to express an extraordinary extent. E.g. "bad until like that" (so bad), "Hot until ah." (It's so hot.),neutral,0.0
+world,"nonsense","nonsense; bullshit.",negative,-0.7
+Don't fly my kite/aeroplane,don't stand me up,Originated from the Cantonese slang 放飛機/放飞机 (Mandarin equivalent: 放鸽子, lit. "release the pigeon"). In the past, letters were sometimes sent by pigeon. When one arranges to meet (via pigeon mail) and fails to turn up, it is said that the person has failed to keep the appointment. Rare expression. 'Do not go back on your word' or 'Do not stand me up',negative,-0.6
+Don't play play!,don't fool around,Uncommon expression, popularised by the local comedy series Phua Chu Kang Pte Ltd. Used only to evoke humour. Means 'Don't fool around' or 'Better take things seriously'.,negative,-0.5
+Got problem ah?,do you have a problem?,an aggressive, instigating challenge. Or an expression of annoyance when someone is disturbed. 'Do you have a problem?',negative,-0.8
+Having here,eat in at a restaurant,To eat in at a restaurant. The antonym is "take away" or "tah-bao". Used by eatery or restaurant staff as in, "Having here or take away?" (Are you eating in here or do you want to have it for take-away?),neutral,0.0
+He still small boy one,too young,a remark (Often offensive) made against someone who is not of a legally minimum age allowed by the law. Or expression used to excuse someone because he is either immature or still too young to know the difference.,neutral,-0.3
+Issit/Izzit?,is it?,Abbreviated form of "is it?" used as a standard tag question. E.g.: You going home now issit? E.g.: You not going home issit? E.g.: Someone comments: "You look good today." Answer: "Issit??",neutral,0.0
+Last time policemen wear shorts!,policies are out-dated,A retort made against a person who refers to how policies were made in the past, or in response to something which is passe. Direct reference to the three-quarter khaki pants standard in Singapore police uniforms until 1969.,negative,-0.3
+Liddat oso can!?,impossible!,(English - Like that also can?) In response to feats of achievement or actions which are almost impossible, or unexpected. Usually with tinge of awe, sarcasm or scepticism.,neutral,0.2
+My England not powderful!,my english is not good,(English - My English is not powerful (good)) Uncommon expression, used only to evoke humour. Means 'My English is not good'.,neutral,-0.2
+no fish prawn oso can,accepting a lesser alternative,(From the Hokkien idiom 無魚蝦嘛好/无鱼虾嘛好 bo hir hay mah hoh. lit. "no fish, prawns also ok") accepting a lesser alternative.,neutral,0.3
+Not happy, talk outside!,challenge to a fight,Used as a challenge to a fight to settle an argument, by taking it outside. (Hokkien: Ow buay gong (settle it at the back/alley way)),negative,-0.9
+On lah!/On!/Set!,it's on!,It's on!" An expression used to voice enthusiastic agreement or confirmation (of an arranged meeting, event etc.),positive,0.9
+Relak lah!,relax,(Malay-English for Relax) Expression used to ask someone to chill, cool it. 'Relak one corner' means to skive, or to literally go chill out in one corner.,positive,0.6
+..then you know!,emphasize consequence,Expression used at the back of a sentence to emphasise consequence of not heeding the advice. 'Tell you not to park double yellow line, kena summon then you know!',negative,-0.5
+Why you so liddat ar?,unreasonable appeal,(English - Why are you so "like that"?) 'an appeal made to someone who is being unreasonable.',negative,-0.4
+You think, he think, who confirm? / You think, I thought, who confirm?,organisational foul-up,Military expression used during organisational foul-ups. Generally used as a response to "I thought..." or "I think..." when something goes wrong.,negative,-0.6
+You want 10 cent?,buzz off!,Means to "buzz off!" Refers to public phones that require 10 cents per call.,negative,-0.7
+Your grandfather's place/road ah?,rude retort,Used to cut someone down to size in terms of their obnoxious boorish behaviour, behaving as if they owned the place.,negative,-0.8
+You play where one?,gang affiliation,Used to challenge someone to state their gang affiliations (if any).,negative,-0.8

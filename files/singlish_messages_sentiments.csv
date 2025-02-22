@@ -1,0 +1,178 @@
+;singlish;english;meaning;sentiment_description;sentiment_score
+0;Bugis oso near wat...;Bugis also near what;inquiring about the proximity of a location;Neutral;1.0
+1;Go until jurong point, crazy.. Available only in bugis n great world la e buffet... Cine there got amore wat...;Going to Jurong Point is crazy. The buffet is only available in Bugis and Great World. There's Amore at the cinema;"Statement with some negative words (""crazy"")";Negative;0.65
+2;I dunno until when... Lets go learn pilates...;I don't know until when. Let's go learn Pilates.;Suggesting an activity;Neutral;1.0
+3;Den only weekdays got special price... Haiz... Cant eat liao... Cut nails oso muz wait until i finish drivin wat, lunch still muz eat wat...;The special price is only for weekdays. Sigh. Can't eat anymore. I also need to cut nails and wait until I finish driving and eat lunch.;"Expressing frustration (""Sigh"") and necessity";Negative;0.4
+4;Meet after lunch la...;Let's meet after lunch;Suggesting a meeting;Neutral;1.0
+5;m walking in citylink now ü faster come down... Me very hungry...;I'm walking in Citylink now, you faster come down. I'm very hungry.;Expressing urgency and hunger;Negative;0.6
+6;5 nights...We nt staying at port step liao...Too ex;Five nights. We are not staying at Port Stephens anymore. Too expensive.;Expressing a change of plans due to expense;Negative;0.3
+7;Hey pple...$700 or $900 for 5 nights...Excellent location wif breakfast hamper!!!;Hey people. $700 or $900 for 5 nights. Excellent location with breakfast hamper!!!;Advertising a good travel deal;Positive;1.7
+8;Yun ah.the ubi one say if ü wan call by tomorrow.call 67441233 look for irene.ere only got bus8,22,65,61,66,382. Ubi cres,ubi tech park.6ph for 1st 5wkg days.èn;Yun, the Ubi branch says if you want, call by tomorrow. Call 67441233 look for Irene. There are only buses 8, 22, 65, 61, 66, 382. Ubi Cres, Ubi Tech Park. $6 per hour for the first 5 working days.;Giving information;Neutral;1.0
+9;Hey tmr maybe can meet you at yck;Hey tomorrow maybe can meet you at Yew Chung International School;Suggesting a meeting;Neutral;1.0
+10;Oh...i asked for fun. Haha...take care. ü;Oh, I asked for fun. Haha, take care you.;Playful and caring;Positive;1.6
+11;We are supposed to meet to discuss abt our trip... Thought xuhui told you? In the afternoon. Thought we can go for lesson after that;We are supposed to meet to discuss about our trip. Thought Xuhui told you? In the afternoon. Thought we can go for a lesson after that.;Expressing an expectation and suggesting an activity;Neutral;1.0
+12;t finish my film yet...;I haven't finished my film yet.;Progress update;Neutral;1.0
+13;m having dinner with my cousin...;I'm having dinner with my cousin.;Giving information;Neutral;1.0
+14;Oh... Kay... On sat right?;Oh, okay. On Saturday right?;Confirming information;Neutral;1.0
+15;I need... Coz i never go before;I need, because I never go before.;Expressing a need;Neutral;1.0
+16;s a basic yoga course... at bugis... We can go for that... Pilates intro next sat.... Tell me what time you r free;It's a basic yoga course, at Bugis. We can go for that. Pilates intro next Saturday. Tell me what time you are free.;Suggesting a course and asking for availability;Neutral;1.0
+17;I am going to sao mu today. Will be done only at 12;I am going to the temple today. Will only be done at 12.;Stating plans;Neutral;1.0
+18;Hey gals...U all wanna meet 4 dinner at nìte?;Hey girls, do you all want to meet for dinner at night?;Suggesting a meeting;Neutral;1.0
+19;Jos ask if u wana meet up?;Jos asked if you want to meet up?;Inquiring about meeting up;Neutral;1.0
+20;Haiyoh... Maybe your hamster was jealous of million;Oh dear, maybe your hamster was jealous of a million.;Expression of empathy and speculation;Negative;0.7
+21;is your hamster dead? Hey so tmr i meet you at 1pm orchard mrt?;Is your hamster dead? Hey, so tomorrow I'll meet you at 1pm at Orchard MRT?;Asking about a pet and confirming plans;Negative;0.5
+22;ve booked the pilates and yoga lesson already... Haha;I have booked the Pilates and Yoga lesson already. Haha.;Confirmation and happiness;Positive;1.7
+23;Yup... I havent been there before... You want to go for the yoga? I can call up to book;Yes, I haven't been there before. You want to go for the yoga? I can call to book.;Agreement, question and offering to book;Neutral;1.1
+24;K... Must book a not huh? so going for yoga basic on sunday?;Okay, do we need to book? So, are we going for yoga basic on Sunday?;Confirmation and question;Neutral;1.0
+25;Hey so this sat are we going for the intro pilates only? Or the kickboxing too?;Hey, so this Saturday, are we going for the intro pilates only? Or the kickboxing too?;Inquiring about plans;Neutral;1.0
+26;Sat right? Okay thanks...;Saturday right? Okay thanks.;Confirmation and gratitude;Positive;1.6
+27;Yup... From what i remb... I think should be can book...;Yes, from what I remember, I think we should be able to book.;Agreement and uncertainty;Neutral;1.1
+28;m going to get specs. My membership is PX3748;I'm going to get glasses. My membership is PX3748.;Giving information;Neutral;1.0
+29;We can go 4 e normal pilates after our intro...;We can go for the normal Pilates after our intro.;Suggesting an activity;Neutral;1.0
+30;Sun ah... Thk mayb can if dun have anythin on... Thk have to book e lesson... E pilates is at orchard mrt u noe hor...;Sunday, ah. Think maybe can if I don't have anything on. Think I have to book the lesson. The Pilates is at Orchard MRT, you know, right?;Questioning availability and providing information;Neutral;1.0
+31;Thk shld b can... Ya, i wana go 4 lessons... Haha, can go for one whole stretch...;Think we should be able to book. Yes, I want to go for lessons. Haha, can go for one whole stretch.;Optimism and wanting to go;Positive;1.8
+32;Sounds gd... Haha... Can... Wah, u yan jiu so fast liao...;Sounds good. Haha, can. Wow, you researched so fast already.;Enthusiasm and giving compliment;Positive;1.7
+33;Wah... Okie okie... Muz make use of e unlimited... Haha...;Wow, okay okay. Must make use of the unlimited. Haha.;Enthusiasm and agreement;Positive;1.7
+34;ll go yan jiu den msg u...;I'll go research then message you.;Stating intent;Neutral;1.0
+35;K.. I yan jiu liao... Sat we can go 4 bugis vill one frm 10 to 3 den hop to parco 4 nb. Sun can go cine frm 1030 to 2, den hop to orc mrt 4 hip hop at 4...;Ok, I researched already. Saturday we can go to Bugis Village from 10 to 3 then hop to Parco for New Balance. Sunday, we can go to cinema from 10:30 to 2, then hop to Orchard MRT for hip hop at 4.;Stating plans;Neutral;1.0
+36;ll go yan jiu too... We can skip ard oso, go cine den go mrt one, blah blah blah...;I'll go research too. We can skip around also, go to cinema then go to MRT, blah blah blah.;Stating intent;Neutral;1.0
+37;Nope... Juz off from work...;Nope, just off from work.;Giving information;Neutral;1.0
+38;Oh oh... Wasted... Den muz chiong on sat n sun liao...;Oh oh, what a waste. Then must rush on Saturday and Sunday.;Expressing disappointment and stating necessity;Negative;0.5
+39;Haha... Sounds crazy, dunno can tahan anot...;Haha, sounds crazy, I don't know if I can endure.;Amusement and uncertainty;Positive;1.4
+40;Hmmm.. Thk sure got time to hop ard... Ya, can go 4 free abt... Muz call u to discuss liao...;Hmm, think we will surely have time to hop around. Yes, can go for free a bit. Must call you to discuss already.;Optimism, agreement, and needing to call;Positive;1.6
+41;Oh... I was thkin of goin yogasana at 10 den no nd to go at 3 den can rush to parco 4 nb... Okie lor, u call me when ready...;Oh, I was thinking of going yogasana at 10 then no need to go at 3, then I can rush to Parco for New Balance. Okay then, you call me when you are ready.;Stating plans and asking to be called;Neutral;1.0
+42;After my work ah... Den 6 plus lor... U workin oso rite... Den go orchard lor, no other place to go liao...;After my work, then 6 plus. You are working too, right? Then let's go to Orchard, no other place to go anymore.;Question and stating plans;Neutral;1.0
+43;Aiyo... U always c our ex one... I dunno abt mei, she haven reply... First time u reply so fast... Y so lucky not workin huh, got bao by ur sugardad ah...gee..;Oh dear, you always see our ex. I don't know about Mei, she hasn't replied. First time you replied so fast. Why are you so lucky not working? Did you get sponsored by your sugar daddy, geez.;"Expressing surprise, speculation, and a hint of sarcasm (""gee"")";Neutral;1.0
+44;s ex wat... No ah, waitin 4 u to treat, somebody shld b rich liao...So gd, den u dun have to work frm tmr onwards...;It's an ex what? No ah, waiting for you to treat. Someone should be rich already. So good, then you don't have to work from tomorrow onwards.;Joking and speculating;Positive;1.4
+45;Oh oh... Den muz change plan liao... Go back have to yan jiu again...;Oh oh, then must change plans already. Go back and have to research again.;Expressing necessity and action;Neutral;1.0
+46;s nt much lesson to go if we attend kb on sat...;It's not a lot of lessons to go to if we attend kickboxing on Saturday.;Observation;Neutral;1.0
+47;Den wat will e schedule b lk on sun?;Then what will the schedule be like on Sunday?;Inquiring about schedule;Neutral;1.0
+48;Eh den sat u book e kb liao huh...;Eh, then you booked the kickboxing already, huh?;Inquiry;Neutral;1.0
+49;Yup... Hey then one day on fri we can ask miwa and jiayin take leave go karaoke;Yes. Hey, then one day on Friday, we can ask Miwa and Jiayin to take leave to go for karaoke.;Agreement and suggestion;Positive;1.4
+50;Yup... Ok i go home look at the timings then i msg ü again... Xuhui going to learn on 2nd may too but her lesson is at 8am;Yes, okay, I'll go home and look at the timings then I'll message you again. Xuhui is going to learn on 2nd May too, but her lesson is at 8am.;Agreement and giving information;Neutral;1.0
+51;Hey i booked the kb on sat already... what other lessons are we going for ah? Keep your sat night free we need to meet and confirm our lodging;Hey, I booked the kickboxing on Saturday already. What other lessons are we going for, ah? Keep your Saturday night free, we need to meet and confirm our lodging.;Confirmation, inquiry, and stating necessity;Neutral;1.0
+52;Hey... are you going to quit soon? Xuhui and i working till end of the month;Hey, are you going to quit soon? Xuhui and I are working till end of the month.;Inquiry and giving information;Neutral;1.0
+53;s a kb lesson tonight;It's a kickboxing lesson tonight.;Giving information;Neutral;1.0
+54;Hey so whats the plan this sat?;Hey, so what's the plan for this Saturday?;Inquiry about plans;Neutral;1.0
+55;ve woken up...;I've woken up.;Giving information;Neutral;1.0
+56;Hey i will be late ah... Meet you at 945+;Hey, I will be late ah. Meet you at 9:45+;Apology and stating plans;Negative;0.8
+57;Hey tmr meet at bugis 930 ?;Hey, tomorrow, meet at Bugis at 9:30?;Stating plans;Neutral;1.0
+58;Ha... Then we must walk to everywhere... Cannot take tram. My cousin said can walk to vic market from our hotel;Haha, then we must walk to everywhere. Cannot take the tram. My cousin said we can walk to Vic Market from our hotel.;Stating restrictions and giving information;Negative;0.6
+59;Haha... Yup hopefully  we will lose a few kg by mon. after hip hop can go orchard and weigh again;Haha, yes, hopefully we will lose a few kilograms by Monday. After hip hop, we can go to Orchard and weigh again.;Expressing hope;Positive;1.4
+60;ve booked the 2 lessons on sun liao...;I've booked the two lessons on Sunday.;Giving confirmation;Neutral;1.0
+61;Hmmm... Guess we can go 4 kb n power yoga... Haha, dunno we can tahan power yoga anot... Thk got lo oso, forgot liao...;Hmm, guess we can go for kickboxing and power yoga. Haha, I don't know if we can endure power yoga. I think there's something else too, forgot what.;Speculation and questioning endurance;Neutral;1.0
+62;Oh... Okie lor...We go on sat...;Oh, okay, let's go on Saturday.;Agreement;Neutral;1.0
+63;Oh... Haha... Den we shld had went today too... Gee, nvm la... Kaiez, i dun mind goin jazz oso... Scared hiphop open cant catch up...;Oh, haha, then we should have gone today too. Geez, never mind. Kaiez, I don't mind going for jazz also. Scared the hip hop one can't catch up.;Expressing preference and regret;Negative;0.5
+64;ll quit yet... Hmmm, can go jazz ? Yogasana oso can... We can go meet em after our lessons den...;I won't quit yet. Hmmm, can we go for jazz? Yogasana also can. We can go meet them after our lessons then.;Expressing alternatives and suggesting a meeting;Neutral;1.0
+65;m still sleepin, haha... Okie, u go home liao den confirm w me lor...;I'm still sleeping, haha. Okay, you go home already then confirm with me, alright?;Giving information and asking for confirmation;Neutral;1.0
+66;m nt goin, got somethin on, unless they meetin 4 dinner lor... Haha, i wonder who will go tis time...;I'm not going, I have something on, unless they are meeting for dinner. Haha, I wonder who will go this time.;Giving information and speculation;Neutral;1.0
+67;m eatin too much n puttin on weight...Haha... So anythin special happened?;I'm eating too much and putting on weight. Haha. So anything special happened?;Expressing concern about weight and asking about events;Negative;0.7
+68;Thk some of em find wtc too far... Weiyi not goin... E rest i dunno yet... R ur goin 4 dinner den i might b able to join...;Think some of them find the World Trade Center too far. Weiyi is not going. The rest, I don't know yet. Are you going for dinner, then I might be able to join.;Speculation and conditional joining;Neutral;1.0
+69;m eatin now lor, but goin back to work soon... E mountain deer show huh... I watch b4 liao, very nice...;I'm eating now, but going back to work soon. The mountain deer show, huh? I watched it before, very nice.;Giving information and positive opinion;Positive;1.6
+70;Goin to workout lor... Muz lose e fats...;Going to work out. Must lose the fats.;Stating intent and necessity;Neutral;1.0
+71;ve oredi booked slots 4 my weekends liao...;I've already booked slots for my weekends.;Giving information;Neutral;1.0
+72;I noe la... U wana pei bf oso rite... K lor, other days den...;I know. You want to accompany your boyfriend too, right? Okay then, another day.;Understanding and suggesting another time;Positive;1.4
+73;U meet other fren dun wan meet me ah... Muz b a guy rite... ;You meet other friends, don't want to meet me ah? Must be a guy, right?;Expressing jealousy;Negative;0.3
+74;Oh... Icic... K lor, den meet other day...;Oh, I see, I see. Okay then, meet another day.;Understanding and suggesting another day;Positive;1.4
+75;Haha... Where got so fast lose weight, thk muz go 4 a month den got effect... Gee,later we go aust put bk e weight;Haha, where will you lose weight so fast, think you must go for a month then get results. Geez, later we go to Australia and put back the weight.;Humorous resignation;Negative;0.9
+76;U attend ur driving lesson how many times a wk n which day?;You attend your driving lesson how many times a week and which day?;Inquiry;Neutral;1.0
+77;Ay wana meet on sat?ü wkg on sat?;Hey, do you want to meet on Saturday? Are you working on Saturday?;Inquiry about meeting;Neutral;1.0
+78;Shopping? Eh ger i toking abt syd leh...Haha;Shopping? Eh girl, I'm talking about Sydney, haha.;Statement and clarification;Neutral;1.2
+79;s é only $140 ard...É rest all ard $180 at least...Which is é price 4 é 2 bedrm ($900);It's only $140 around. The rest are all around $180 at least, which is the price for the 2 bedroom ($900).;Giving price information;Neutral;1.0
+80;Hmm...Bad news...Hype park plaza $700 studio taken...Only left 2 bedrm-$900;Hmm, bad news, Hype Park Plaza $700 studio is taken. Only left 2 bedroom - $900.;Bad news about availability;Negative;0.4
+81;Okay... I booked all already... Including the one at bugis;Okay, I booked all already, including the one at Bugis.;Confirmation;Neutral;1.0
+82;Yun ah.now ü wkg where?btw if ü go nus sc. Ü wana specialise in wad?;Yun, ah, now you working where? By the way, if you go to the National University of Singapore Science, what do you want to specialize in?;Inquiry about job and studies;Neutral;1.0
+83;Hey you still want to go for yogasana? Coz if we end at cine then can go bathe and hav the steam bath;Hey, do you still want to go for yogasana? Because if we end at the cinema, then we can go bathe and have the steam bath.;Inquiry and suggestion;Positive;1.4
+84;Hey we can go jazz power yoga hip hop kb and yogasana;Hey, we can go for jazz, power yoga, hip hop, kickboxing, and yogasana.;Suggesting a list of activities;Positive;1.5
+85;Can meh? Thgt some will clash... Really ah, i dun mind... I dun seen to have lost any weight... Gee...;Can, meh? Thought some will clash. Really? I don't mind. I don't seem to have lost any weight. Geez.;Inquiry, uncertainty, and complaint;Negative;0.5
+86;Oh... Lk tt den we take e one tt ends at cine lor... Dun wan yogasana oso can...;Oh, like that, then we'll take the one that ends at the cinema, let's do it. Don't want yogasana also can.;Decision and stating flexibility;Neutral;1.0
+87;Wa... U so efficient... Gee... Thanx...;Wow, you're so efficient. Geez, thanks.;Gratitude and compliment;Positive;1.8
+88;Hmmm.... Mayb can try e shoppin area one, but forgot e name of hotel...;Hmm, maybe we can try the shopping area one, but I forgot the name of the hotel.;Speculation and forgetting;Negative;0.7
+89;s e best choice den we juz have to take it;It's the best choice, then we just have to take it.;Accepting a decision;Positive;1.5
+90;I only work from mon to thurs but Sat i cant leh... Booked liao... Which other day u free?;I only work from Monday to Thursday, but Saturday I can't, already booked. Which other day are you free?;Stating restriction and inquiring about availability;Negative;0.7
+91;Until 545 lor... Ya, can go 4 dinner together...;Until 5:45. Yes, we can go for dinner together.;Giving information and suggestion;Positive;1.3
+92;Mon okie lor... Haha, best is cheap n gd food la, ex oso okie... Depends on whether wana eat western or chinese food... Den which u prefer...;Monday is okay. Haha, best is cheap and good food, expensive also okay. Depends on whether you want to eat Western or Chinese food. Then which do you prefer?;Acceptance and inquiry about preferences;Positive;1.5
+93;Chinatown got porridge, claypot rice, yam cake, fishhead beehoon... Either we eat cheap den go cafe n tok or go nydc or somethin...;Chinatown has porridge, claypot rice, yam cake, fish head bee hoon. Either we eat cheap, then go to a cafe and talk or go to NYDC or something.;Suggesting options;Neutral;1.0
+94;s shop ?;Is it a shop?;Inquiry;Neutral;1.0
+95;My fri ah... Okie lor,goin 4 my drivin den go shoppin after tt...;My friend, ah, okay then, I'm going for my driving, then go shopping after that.;Expressing agreement and stating plans;Positive;1.4
+96;Hey...Great deal...Farm tour 9am to 5pm $95/pax, $50 deposit by 16 May;Hey, great deal, Farm tour 9am to 5pm, $95 per person, $50 deposit by 16 May.;Advertising a good deal;Positive;1.7
+97;haha but no money leh... Later got to go for tuition... Haha and looking for empty slots for driving lessons;haha, but no money. Later, I have to go for tuition. Haha, and I'm looking for empty slots for driving lessons.;Humorous regret and stating intent;Negative;0.8
+98;My tuition is at 330. Hm we go for the 1120 to 1205 one? Do you mind?;My tuition is at 3:30. Hmm, shall we go for the 11:20 to 12:05 one? Do you mind?;Stating time and inquiring about preference;Neutral;1.0
+99;Hey... What time is your driving on fri? We go for evaluation on fri?;Hey, what time is your driving on Friday? We'll go for the evaluation on Friday?;Inquiry about time and planning;Neutral;1.0
+100;m going to be late leh.;I'm going to be late, ah.;Apology;Negative;0.7
+101;Hey are we going for the lo lesson or gym?;Hey, are we going for the lottery lesson or the gym?;Inquiry about plans;Neutral;1.0
+102;Okay... We wait ah;Okay, we'll wait.;Agreement and stating plan;Positive;1.6
+103;Hey come online! Use msn... We are all there;Hey, come online. Use MSN. We are all there.;Request;Neutral;1.0
+104;Oh yah... We never cancel leh... Haha;Oh yeah, we never canceled, haha.;Affirmation and humor;Positive;1.5
+105;K. Did you call me just now ah?;Okay. Did you call me just now?;Acknowledgment and inquiry;Neutral;1.0
+106;Okay lor... Wah... like that def they wont let us go... Haha... What did they say in the terms and conditions?;Okay then, wow, like that definitely they won't let us go. Haha. What did they say in the terms and conditions?;Agreement, speculation, and inquiry;Negative;0.8
+107;Okay lor... Will they still let us go a not ah? Coz they will not know until later. We drop our cards into the box right?;Okay then, will they still let us go, ah, not ah? Because they will not know until later. We drop our cards into the box, right?;Speculation and affirmation;Neutral;1.1
+108;You want to go?;Do you want to go?;Inquiry;Neutral;1.0
+109;Kay... Since we are out already;Okay, since we are out already.;Agreement and reason;Neutral;1.0
+110;Haha okay... Today weekend leh...;Haha okay, today is the weekend, though.;Acknowledging the weekend;Neutral;1.2
+111;Haha... They cant what... At the most tmr forfeit... haha so how?;Haha, they can't what, at the most, tomorrow we forfeit. Haha, so how?;Inquiry and speculating;Neutral;1.2
+112;Hey... Why dont we just go watch x men and have lunch... Haha;Hey, why don't we just go watch X-Men and have lunch? Haha;Suggestion with humor;Positive;1.6
+113;Haha... Really oh no... How? Then will they deduct your lesson tmr?;Haha, really, oh no, how? Then will they deduct your lesson tomorrow?;Expressing concern and asking about consequences;Negative;0.5
+114;m only reaching tp mrt;I'm only reaching Toa Payoh MRT.;Giving information;Neutral;1.0
+115;m goin to be late;I'm going to be late.;Apology;Negative;0.7
+116;Ya! when are ü taking ure practical lessons? I start in june;Yes, when are you taking your practical lessons? I start in June.;Acknowledgment and inquiry;Neutral;1.0
+117;Hey... Very inconvenient for your sis a not huh?;Hey, very inconvenient for your sister, is it?;Expressing concern;Negative;0.6
+118;m at amk. Need to drink tea or coffee;I'm at Ang Mo Kio. I need to drink tea or coffee.;Giving location and expressing a need;Neutral;1.0
+119;Hey you gave them your photo when you registered for driving ah? Tmr wanna meet at yck?;Hey, did you give them your photo when you registered for driving, ah? Tomorrow, do you want to meet at Yew Chung International School?;Inquiry and suggestion;Neutral;1.0
+120;s on 21 may. Coz thought wanna go out with jiayin. But she isnt free;It's on 21st May, because I thought I wanted to go out with Jiayin, but she isn't free.;Giving information and expressing disappointment;Negative;0.5
+121;Haha... dont be angry with yourself... Take it as a practice for the real thing. =);Haha, don't be angry with yourself, take it as a practice for the real thing.;Encouragement;Positive;1.8
+122;Haha... Hope ü can hear the receipt sound... Gd luck!;Haha, hope you can hear the receipt sound, good luck!;Expressing hope and wishing luck;Positive;1.8
+123;Huh? 6 also cannot? Then only how many mistakes?;Huh? Six also cannot? Then only how many mistakes?;Inquiry;Neutral;1.0
+124;Nope... Think i will go for it on monday... Sorry i replied so late;Nope, I think I will go for it on Monday. Sorry I replied so late.;Confirmation and apology;Negative;0.7
+125;Hey.. Something came up last min.. Think i wun be signing up tmr.. Hee;Hey, something came up last minute, I don't think I will be signing up tomorrow, hee.;Giving information and expressing uncertainty;Negative;0.5
+126;I am thinking of going down to reg for pract lessons.. Flung my advance.. Haha wat time u going?;I am thinking of going down to register for practical lessons. Flung my advance. Haha what time are you going?;Stating intent and inquiring about time;Positive;1.3
+127;Hey gals.. Anyone of u going down to e driving centre tmr?;Hey girls, is anyone of you going down to the driving center tomorrow?;Inquiry;Neutral;1.0
+128;Ok no prob;Okay, no problem.;Agreement;Positive;1.6
+129;Nope i waiting in sch 4 daddy...;Nope, I'm waiting in school for daddy.;Giving information;Neutral;1.0
+130;Dunno lei he neva say...;I don't know, he never said.;Giving information;Neutral;1.0
+131;Ü called dad oredi...;Did you call dad already?;Inquiry;Neutral;1.0
+132;Me hungry buy some food good lei... But mum n yun dun wan juz buy a little bit...;I'm hungry, buying some food is good, ah. But Mum and Yun don't want it, so I'll just buy a little bit.;Expressing hunger and stating plans with a limitation;Negative;0.8
+133;Dad went out oredi...;Dad went out already.;Giving information;Neutral;1.0
+134;Ü still attending da talks?;Are you still attending the talks?;Inquiry;Neutral;1.0
+135;Then she buying today? Ü no need to c meh...;Then she's buying today? You don't need to see, meh?;Inquiry;Neutral;1.0
+136;m free...;I'm free.;Giving availability;Positive;1.6
+137;Nope... C ü then...;Nope, see you then.;Acknowledgment;Neutral;1.0
+138;Is fujitsu s series lifebook good?;Is the Fujitsu S series Lifebook good?;Inquiry;Neutral;1.0
+139;Is toshiba portege m100 gd?;Is the Toshiba Portege m100 good?;Inquiry;Neutral;1.0
+140;Yun buying... But school got offer 2000 plus only...;Yun is buying. But school has an offer for 2000 plus only.;Giving information;Neutral;1.0
+141;Got fujitsu, ibm, hp, toshiba... Got a lot of model how to say...;Got Fujitsu, IBM, HP, Toshiba. Got a lot of models, how do I say?;Listing brands;Neutral;1.0
+142;Okie... Thanx...;Okay, thanks.;Acknowledgment and gratitude;Positive;1.8
+143;How come i din c ü... Yup i cut my hair...;How come I didn't see you? Yes, I cut my hair.;Inquiry and giving information;Positive;1.3
+144;No wonder... Cos i dun rem seeing a silver car... But i thk i saw a black one...;No wonder, because I don't remember seeing a silver car, but I think I saw a black one.;Providing reasoning and information;Neutral;1.0
+145;s naughty... Ü so free today? Can go jogging...;You are naughty. You are so free today? Can we go jogging?;Mild rebuke and inquiry with suggestion;Positive;1.2
+146;Ok... C ya...;Okay, see you.;Acknowledgment;Neutral;1.0
+147;m not drivin... I neva develop da photos lei...;I'm not driving. I never developed the photos.;Giving information;Neutral;1.0
+148;I wan but too early lei... Me outside now wun b home so early... Neva mind then...;I want to, but it's too early. I'm outside now, I won't be home so early. Never mind then.;Expressing desire and giving reasons for not being able to;Negative;0.8
+149;Ü dun need to pick ur gf?;You don't need to pick up your girlfriend?;Inquiry;Neutral;1.0
+150;Okie...;Okay.;Acknowledgment;Neutral;1.0
+151;m at home n ready...;I'm at home and ready.;Giving information;Positive;1.6
+152;Ok...;Okay.;Acknowledgment;Neutral;1.0
+153;Dunno lei... I thk mum lazy to go out... I neva ask her yet...;I don't know, I think Mum is too lazy to go out. I never asked her yet.;Speculation and giving information;Negative;0.7
+154;Mum say we wan to go then go... Then she can shun bian watch da glass exhibition...;Mum says if we want to go, then we'll go. Then she can conveniently watch the glass exhibition.;Giving information and stating convenience;Positive;1.3
+155;Dun need to use dial up juz open da browser n surf;You don't need to use dial-up, just open the browser and surf.;Giving instruction;Positive;1.4
+156;When did i use soc... I use it only at home... Ü dunno how 2 type it in word ar...;When did I use the School of Computing network? I use it only at home. You don't know how to type it in Word ah?;Disagreement and inquiry;Negative;0.8
+157;Can a not?;Can, ah, not?;Inquiry;Neutral;1.0
+158;Juz go google n search 4 qet...;Just go to Google and search for qet.;Giving instruction;Neutral;1.0
+159;s hostel?;Is it a hostel?;Inquiry;Neutral;1.0
+160;Ok...;Okay.;Acknowledgment;Neutral;1.0
+161;Huh means computational science... Y they like dat one push here n there...;Huh, means computational science. Why do they like to push people here and there?;Inquiry and questioning behavior;Neutral;1.0
+162;I not at home now lei...;I'm not at home now.;Giving location;Neutral;1.0
+163;Eatin my lunch...;Eating my lunch.;Giving information;Neutral;1.0
+164;Ü takin linear algebra today?;Are you taking linear algebra today?;Inquiry;Neutral;1.0
+165;Ü bot notes oredi... Cos i juz rem i got...;Did you buy notes already? Because I just remembered I have some.;Inquiry and giving information;Neutral;1.0
+166;Wah lucky man... Then can save money... Hee...;Wow lucky man. Then you can save money, hee.;Expressing luck and possibility of saving money;Positive;1.7
+167;Y so late but i need to go n get da laptop?;Why so late, but I need to go and get the laptop?;Inquiry and stating necessity;Neutral;1.0
+168;Where to get those?;Where to get those?;Inquiry;Neutral;1.0
+169;Then cant get da laptop? My matric card wif ü lei...;Then can't get the laptop? My matriculation card is with you.;Giving information;Neutral;1.0
+170;I dunno they close oredi not... Ü v ma fan...;I don't know if they are closed already, you are very troublesome.;Uncertainty and insult;Negative;0.2
+171;Hi dis is yijue i would be happy to work wif ü all for gek1510...;Hi, this is Yijue. I would be happy to work with you all for gek1510.;Introduction and expressing willingness to work;Positive;1.8
+172;Ü comin to fetch us oredi?;Are you coming to fetch us already?;Inquiry;Neutral;1.0
+173;Got smaller capacity one? Quite ex...;Do they have one with smaller capacity? Quite expensive.;Inquiry and expression of expense;Negative;0.5
+174;Ok thanx...;Okay, thanks.;Acknowledgment and gratitude;Positive;1.8
+175;Wat ü doing now?;What are you doing now?;Inquiry;Neutral;1.0
+176;Got meh... When?;Got, meh? When?;Inquiry;Neutral;1.0
