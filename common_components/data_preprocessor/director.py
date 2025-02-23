@@ -1,29 +1,26 @@
-class PreprocessingDirector:
-    """Director class that defines the order of preprocessing steps."""
+import pandas as pd
+from common_components.data_preprocessor.builder import PreprocessorBuilder
 
-    def __init__(self, builder):
+
+class PreprocessingDirector:
+    """Director that defines the order of preprocessing steps."""
+
+    def __init__(self, builder: PreprocessorBuilder):
         self.builder = builder
 
-    def construct_general_preprocessing(self):
-        """Constructs a general preprocessing pipeline."""
-        return (
-            self.builder
-            .add_duplicate_remover()
-            .add_missing_value_handler()
-            .add_text_trimmer()
-            .build()
-        )
+    def construct(self, data: pd.DataFrame):
+        """Executes preprocessing steps in order."""
+        self.builder.load_data(data)
+        self.builder.remove_duplicates()
+        self.builder.handle_missing_values()
+        self.builder.normalize_text()
+        self.builder.handle_slang_and_emojis()
+        self.builder.tokenize()
+        self.builder.lemmatize()
+        self.builder.remove_stopwords()
+        self.builder.stem_words()
+        return self.builder.get_result()
 
-    def construct_text_preprocessing(self):
-        """Constructs a text preprocessing pipeline."""
-        return (
-            self.builder
-            .add_emoji_handler()
-            .add_slang_handler()
-            .add_text_trimmer()  
-            .build()
-        )
-
-    def set_builder(self, builder):
+    def set_builder(self, builder: PreprocessorBuilder):
         """Allows switching builders dynamically."""
         self.builder = builder
