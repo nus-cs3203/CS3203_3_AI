@@ -1,3 +1,4 @@
+# Existing entries from the main branch
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -23,13 +24,11 @@ logs/
 *.swn
 *.bak
 
-
 # Unit test / coverage reports
 htmlcov/
 .tox/
 .nox/
 .coverage
-
 *.cover
 coverage.xml
 *.pytest_cache/
@@ -85,3 +84,14 @@ build/
 *.env
 config/settings.json
 secrets.json
+
+# Yang Xiang's additional entries
+# Model checkpoints and training artifacts
+results/
+*.bin
+*.pt
+*.pth
+
+# Custom files
+filtered_singapore_submissions_with_comments.csv
+command.txt
