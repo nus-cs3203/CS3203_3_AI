@@ -6,7 +6,7 @@ from insight_generator.base_decorator import InsightDecorator
 class PromptGeneratorDecorator(InsightDecorator):
     def __init__(self, wrapped):
         super().__init__(wrapped)
-        genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))  # Load API key
+        genai.configure(api_key="AIzaSyBMqNCUmVsw0lAnFJPc4XwW88S3BWW1bpE")  # Load API key
 
     def extract_insights(self, post):
         insights = super().extract_insights(post)
