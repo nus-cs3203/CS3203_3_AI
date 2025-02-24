@@ -15,8 +15,6 @@ class PreprocessingDirector:
         self.builder.handle_missing_values()
         self.builder.normalize_text()
         self.builder.handle_slang_and_emojis()
-        self.builder.tokenize()
-        self.builder.lemmatize()
         self.builder.remove_stopwords()
         self.builder.stem_words()
         return self.builder.get_result()

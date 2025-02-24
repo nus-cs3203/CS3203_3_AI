@@ -46,10 +46,6 @@ class GeneralPreprocessorBuilder(PreprocessorBuilder):
         """Handles slangs and emojis in text columns."""
         self.data = self.emoji_slang_handler.process(self.data)
 
-    def tokenize(self):
-        """Tokenizes text."""
-        self.data = self.tokenizer.process(self.data, self.text_columns)
-
     def lemmatize(self):
         """Applies lemmatization."""
         self.data = self.lemmatizer.process(self.data)

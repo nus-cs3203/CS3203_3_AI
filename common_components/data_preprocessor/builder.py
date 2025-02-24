@@ -32,11 +32,6 @@ class PreprocessorBuilder(ABC):
         pass
 
     @abstractmethod
-    def tokenize(self):
-        """Tokenizes text."""
-        pass
-
-    @abstractmethod
     def lemmatize(self):
         """Applies lemmatization."""
         pass
