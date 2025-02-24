@@ -1,61 +1,62 @@
 import pandas as pd
 import numpy as np
 import json
-from typing import Dict, Any
+import os
+from typing import List, Callable
 
 from common_components.data_validator.validation_handler import ValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-
 class FormatValidator(ValidationHandler):
     """
-    Concrete Handler that validates if a field matches an allowed format.
-    Supported formats: Pandas DataFrame, JSON (dict), NumPy array, or .txt file.
+    Concrete Handler that validates if a specified DataFrame column matches an allowed format.
+    Supported formats: JSON (dict or list of dicts), NumPy array (or list of arrays), or .txt file paths.
     """
 
     FORMAT_CHECKS = {
-        "pandas": lambda value: isinstance(value, pd.DataFrame),
-        "json": lambda value: isinstance(value, dict) and FormatValidator.is_json_serializable(value),
-        "numpy": lambda value: isinstance(value, np.ndarray),
-        "txt": lambda value: isinstance(value, str) and value.lower().endswith('.txt')
+        "json": lambda value: isinstance(value, (dict, list)) and FormatValidator.is_json_serializable(value),
+        "numpy": lambda value: isinstance(value, (np.ndarray, list)) and all(isinstance(v, np.ndarray) for v in (value if isinstance(value, list) else [value])),
+        "txt": lambda value: isinstance(value, str) and value.lower().endswith('.txt') and os.path.isfile(value)
     }
 
-    def __init__(self, field_name: str, allowed_formats: list, logger: ValidatorLogger) -> None:
+    def __init__(self, column_name: str, allowed_formats: List[str], logger: ValidatorLogger, custom_formats: dict = None) -> None:
         """
-        :param field_name: The field in the request dictionary to validate.
-        :param allowed_formats: List of allowed formats (e.g., ['pandas', 'json', 'numpy', 'txt']).
+        :param column_name: The column in the DataFrame to validate.
+        :param allowed_formats: List of allowed formats (e.g., ['json', 'numpy', 'txt']).
         :param logger: Logger instance for logging validation results.
+        :param custom_formats: Optional dictionary of additional format validation functions.
         """
         super().__init__()
-        self.field_name = field_name
+        self.column_name = column_name
         self.allowed_formats = set(allowed_formats)
         self.logger = logger
 
-    def validate(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        # Merge default format checks with custom ones if provided
+        self.format_checks = {**self.FORMAT_CHECKS, **(custom_formats or {})}
+
+    def validate(self, df: pd.DataFrame) -> dict:
         """
-        Validates that the specified field matches one of the allowed formats.
+        Validates that each value in the specified DataFrame column matches one of the allowed formats.
         """
-        self.logger.log_request(request)
-        value = request.get(self.field_name)
-
-        # Check if the value matches any allowed format
-        if any(check(value) for fmt, check in self.FORMAT_CHECKS.items() if fmt in self.allowed_formats):
-            self.logger.log_success(self.field_name)
-            return self._validate_next(request)
-
-        error_message = f"Validation failed: '{self.field_name}' must be one of {self.allowed_formats}"
-        self.logger.log_failure(self.field_name, error_message)
-        return {"error": error_message}
-
-    def _validate_next(self, request):
-        """ Pass the request to the next handler if exists, else return success """
-        if self._next_handler:
-            return self._next_handler.validate(request)
-        return {"success": True}
+        self.logger.log_dataframe(df)
+        
+        if self.column_name not in df.columns:
+            error_message = f"Validation failed: Column '{self.column_name}' does not exist in DataFrame."
+            self.logger.log_failure(self.column_name, error_message)
+            return {"error": error_message}
+        
+        for index, value in df[self.column_name].items():
+            if not any(check(value) for fmt, check in self.format_checks.items() if fmt in self.allowed_formats):
+                error_message = f"Row {index}: '{self.column_name}' must be one of {self.allowed_formats}"
+                self.logger.log_failure(self.column_name, error_message)
+                return {"error": error_message}
+        
+        self.logger.log_success(self.column_name)
+        return self._validate_next(df)
 
     @staticmethod
     def is_json_serializable(value) -> bool:
-        """ Helper function to check if a dictionary is JSON serializable """
+        """ Helper function to check if a dictionary or list is JSON serializable """
         try:
             json.dumps(value)
             return True
