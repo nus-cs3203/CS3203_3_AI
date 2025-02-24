@@ -59,7 +59,7 @@ def process_batch(batch_texts):
     
     # Parse the response
     response_text = completion.choices[0].message.content
-    print(response_text)
+    #print(response_text)
     categories = [line for line in response_text.strip().split('\n') if line.strip()]
     
     # Validate response length
@@ -131,4 +131,4 @@ def categorize_complaints(input_csv, output_csv):
     total_time = end_time - start_time
     print(f"Total time taken: {total_time:.2f} seconds")
 # Example usage
-categorize_complaints('data/2023_filtered_data.csv', 'data/2023_categorized_chunked2.csv')
+#categorize_complaints('data/2023_filtered_data.csv', 'data/2023_categorized_chunked2.csv')
