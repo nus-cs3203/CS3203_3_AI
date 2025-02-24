@@ -19,13 +19,13 @@ class PromptGeneratorDecorator(InsightDecorator):
         insights.setdefault("ups", 0)
         insights.setdefault("downs", 0)
 
-        # Generate Yes/No or Agree/Disagree poll
+        # Generate poll details
         insights["generated_poll"] = self.generate_poll_prompt(insights)
         return insights
 
     def generate_poll_prompt(self, insights):
         user_prompt = f"""
-        Generate a **Yes/No or Agree/Disagree** polling question based on the following Reddit insight:
+        Generate a poll question based on the following Reddit insight:
 
         - **Intent**: {insights.get('Intent Category', 'unknown')}
         - **Domain**: {insights.get('Domain Category', 'general')}
@@ -33,16 +33,26 @@ class PromptGeneratorDecorator(InsightDecorator):
         - **Post Score**: {insights.get('score', 0)}
         - **Engagement (Ups: {insights.get('ups', 0)}, Downs: {insights.get('downs', 0)})**
 
-        The poll should:
-        1. Be **short and clear** (one sentence).
-        2. Use **Yes/No** or **Agree/Disagree**.
-        3. Be relevant for authorities to take action on.
-
+        The poll should include the following:
+        1. **Question**: A **clear and concise** poll question that aligns with the post's context.
+        2. **Question Type**: Specify if the poll is:
+            - **MCQ** (Multiple Choice with 1 correct answer)
+            - **Single answer** (Yes/No or Agree/Disagree)
+            - **Scale** (e.g., Rate from 1-5, etc.)
+            - **Open-ended** (User provides a response)
+        3. **Answers** (if applicable):
+            - For **MCQ**: Provide 3-5 answer choices.
+            - For **Single answer**: Yes/No or Agree/Disagree.
+            - For **Scale**: Specify the range of scores (e.g., 1-5).
+            - For **Open-ended**: Allow the user to give any response.
+        4. **Reasoning**: Why this poll is relevant and important for authorities to consider action.
+        
         Example output:
         ```
-        Poll: [Generated question]
-        👍 Yes  
-        👎 No  
+        Question: [Generated question]
+        Question Type: [Type]
+        Answers: [Answer choices, if applicable]
+        Reason: [Explanation]
         ```
         """
 

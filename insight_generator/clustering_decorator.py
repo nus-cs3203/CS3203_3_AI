@@ -1,3 +1,4 @@
+import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 from insight_generator.base_decorator import InsightDecorator
@@ -10,21 +11,29 @@ class ClusteringDecorator(InsightDecorator):
         self.kmeans = None
 
     def cluster_posts(self, posts_df):
-        """Cluster posts based on sentiment or text using KMeans"""
-        # Use the selftext for clustering
+        """Cluster posts based on selftext using KMeans"""
         tfidf_matrix = self.vectorizer.fit_transform(posts_df['selftext'])
         
         # Apply KMeans clustering
         self.kmeans = KMeans(n_clusters=self.num_clusters, random_state=42)
         posts_df['cluster'] = self.kmeans.fit_predict(tfidf_matrix)
 
-    def extract_insights(self, post):
-        """Override the base method to include clustering insights"""
-        insights = super().extract_insights(post)  # Get existing insights from the wrapped component
+    def extract_insights(self, posts_df):
+        """Override the base method to include clustering insights for batch processing"""
+        # Apply the base method for each post and cluster them
+        insights_list = []
         
-        # Here you would assign the post to a cluster based on its 'selftext'
-        tfidf_matrix = self.vectorizer.transform([post['selftext']])
-        cluster = self.kmeans.predict(tfidf_matrix)[0]  # Assign to a cluster
+        if self.kmeans is None:  # Perform clustering if not already done
+            self.cluster_posts(posts_df)
         
-        insights["cluster"] = cluster
-        return insights
+        for _, row in posts_df.iterrows():
+            insights = super().extract_insights(row)  # Get existing insights from the wrapped component
+            
+            # Assign the post to its cluster based on the 'selftext'
+            tfidf_matrix = self.vectorizer.transform([row['selftext']])
+            cluster = self.kmeans.predict(tfidf_matrix)[0]  # Assign to a cluster
+            
+            insights["cluster"] = cluster
+            insights_list.append(insights)
+        
+        return pd.DataFrame(insights_list)

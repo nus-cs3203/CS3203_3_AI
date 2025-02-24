@@ -14,15 +14,21 @@ class DateMatcherDecorator(InsightDecorator):
         daily_trends = posts_df.groupby(posts_df['date'].dt.date).size()
         return daily_trends
 
-    def extract_insights(self, post):
-        """Override the base method to include date-related insights"""
-        insights = super().extract_insights(post)  # Get existing insights from the wrapped component
+    def extract_insights(self, posts_df):
+        """Override the base method to include date-related insights for batch processing"""
+        insights_list = []
         
-        # You can optionally pass a DataFrame of posts and get trends, for simplicity:
-        trends = self.track_trends(post)
+        # Track trends across the entire DataFrame
+        trends = self.track_trends(posts_df)
         
-        # Here we will just include the count of posts in the last week (or similar)
-        last_week_trends = trends[trends.index > (pd.Timestamp.today() - pd.Timedelta(7, 'D'))]
-        insights["last_week_post_count"] = len(last_week_trends)
+        # Process each post
+        for _, row in posts_df.iterrows():
+            insights = super().extract_insights(row)  # Get existing insights from the wrapped component
+            
+            # Filter trends for the last week
+            last_week_trends = trends[trends.index > (pd.Timestamp.today() - pd.Timedelta(7, 'D'))]
+            insights["last_week_post_count"] = len(last_week_trends)
+            
+            insights_list.append(insights)
         
-        return insights
+        return pd.DataFrame(insights_list)

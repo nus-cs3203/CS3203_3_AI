@@ -39,3 +39,7 @@ class EngagementDecorator(InsightDecorator):
             insights["engagement"]["adjusted_engagement_score"] = engagement_score * 0.8  # Reduce for negative sentiment
 
         return insights
+    
+    def process_batch(self, posts_df):
+        """Handle a batch of posts in DataFrame"""
+        return posts_df.apply(self.extract_insights, axis=1)
