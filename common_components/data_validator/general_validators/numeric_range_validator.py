@@ -36,6 +36,7 @@ class NumericRangeValidator(ValidationHandler):
     def validate(self, df: pd.DataFrame) -> dict:
         """
         Validates that the column values fall within the specified numeric range.
+        Logs errors and drops invalid rows.
         """
         self.logger.log_dataframe(df)
 
@@ -53,19 +54,22 @@ class NumericRangeValidator(ValidationHandler):
         # Identify invalid rows
         if self.inclusive:
             invalid_rows = df[
-                (df[self.column_name] < self.min_value) if self.min_value is not None else False |
-                (df[self.column_name] > self.max_value) if self.max_value is not None else False
+                ((self.min_value is not None) & (df[self.column_name] < self.min_value)) |
+                ((self.max_value is not None) & (df[self.column_name] > self.max_value))
             ]
         else:
             invalid_rows = df[
-                (df[self.column_name] <= self.min_value) if self.min_value is not None else False |
-                (df[self.column_name] >= self.max_value) if self.max_value is not None else False
+                ((self.min_value is not None) & (df[self.column_name] <= self.min_value)) |
+                ((self.max_value is not None) & (df[self.column_name] >= self.max_value))
             ]
 
+        # Log and drop invalid rows
         if not invalid_rows.empty:
             error_message = f"Validation failed: '{self.column_name}' has out-of-range values in rows {list(invalid_rows.index)}."
             self.logger.log_failure(self.column_name, error_message)
-            return {"error": error_message, "invalid_rows": invalid_rows.to_dict(orient='records')}
+            df = df.drop(index=invalid_rows.index).reset_index(drop=True)
+            self.logger.log_failure(self.column_name, f"Dropped {len(invalid_rows)} invalid rows.")
+        else:
+            self.logger.log_success(self.column_name)
 
-        self.logger.log_success(self.column_name)
         return self._validate_next(df)

@@ -71,13 +71,17 @@ def process_batch(batch_texts):
     # Return parsed categories
     return categories
 
-def categorize_complaints(input_csv, output_csv):
+def categorize_complaints(df=None, input_csv=None, output_csv=None):
     # Start timing
     start_time = time.time()
     
-    # Read the entire CSV file
-    df = pd.read_csv(input_csv, usecols=['title'])  # Adjusted to only use 'title' if 'selftext' is not available
+    # Read the CSV file if df is not provided
+    if df is None and input_csv is not None:
+        df = pd.read_csv(input_csv, usecols=['title'])  # Adjusted to only use 'title' if 'selftext' is not available
 
+    if df is None:
+        raise ValueError("Either a DataFrame or an input CSV file must be provided.")
+    
     # Count and print the number of completely empty rows
     empty_rows_count = df.isnull().all(axis=1).sum()
     print(f"Number of completely empty rows: {empty_rows_count}")
@@ -123,12 +127,14 @@ def categorize_complaints(input_csv, output_csv):
     df['Intent Category'] = intent_categories
     df['Domain Category'] = domain_categories
     
-    # Write the results to the output CSV
-    df.to_csv(output_csv, index=False)
+    # Write the results to the output CSV if provided
+    if output_csv is not None:
+        df.to_csv(output_csv, index=False)
     
     # End timing and print the total time taken
     end_time = time.time()
     total_time = end_time - start_time
     print(f"Total time taken: {total_time:.2f} seconds")
+    return df
 # Example usage
 #categorize_complaints('data/2023_filtered_data.csv', 'data/2023_categorized_chunked2.csv')

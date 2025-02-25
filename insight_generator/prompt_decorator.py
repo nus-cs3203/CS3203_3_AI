@@ -2,11 +2,16 @@ import os
 import google.generativeai as genai
 
 from insight_generator.base_decorator import InsightDecorator
+from dotenv import load_dotenv
 
 class PromptGeneratorDecorator(InsightDecorator):
     def __init__(self, wrapped):
         super().__init__(wrapped)
-        genai.configure(api_key="AIzaSyBMqNCUmVsw0lAnFJPc4XwW88S3BWW1bpE")  # Load API key
+        # Load environment variables from .env file
+        load_dotenv()
+        GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+        
+        genai.configure(api_key=GOOGLE_API_KEY)  # Load API key
 
     def extract_insights(self, post):
         insights = super().extract_insights(post)

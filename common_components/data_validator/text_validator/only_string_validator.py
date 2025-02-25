@@ -22,10 +22,10 @@ class OnlyStringValidator(ValidationHandler):
         """
         Validates that the specified text columns contain only string values.
         :param df: pandas DataFrame.
-        :return: Dictionary with success status and error details if validation fails.
+        :return: Updated DataFrame after dropping invalid rows.
         """
-        self.logger.log_dataframe(df)  # Log the incoming DataFrame
-        errors = []
+        self.logger.log_dataframe(df)  # Log incoming DataFrame
+        invalid_indices = set()
 
         for col in self.text_cols:
             if col not in df.columns:
@@ -33,22 +33,19 @@ class OnlyStringValidator(ValidationHandler):
                 self.logger.log_warning(col, warning_message)
                 continue  # Skip missing columns
 
-            # Handle NaN values based on configuration
-            if self.allow_nan:
-                invalid_mask = ~df[col].apply(lambda x: isinstance(x, str) or pd.isna(x))
-            else:
-                invalid_mask = ~df[col].apply(lambda x: isinstance(x, str))
-
-            invalid_rows = df[invalid_mask].index.tolist()
+            # Identify non-string values
+            valid_mask = df[col].apply(lambda x: isinstance(x, str) or (self.allow_nan and pd.isna(x)))
+            invalid_rows = df.loc[~valid_mask].index.tolist()
+            invalid_indices.update(invalid_rows)
 
             if invalid_rows:
-                error_message = f"Column '{col}' must contain only strings."
+                error_message = f"Column '{col}' must contain only strings. Dropping {len(invalid_rows)} rows."
                 self.logger.log_failure(col, error_message)
-                errors.append({col: {"invalid_rows": invalid_rows, "error": error_message}})
             else:
                 self.logger.log_success(col)
 
-        if errors:
-            return {"success": False, "errors": errors}
+        # Drop invalid rows
+        if invalid_indices:
+            df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
 
         return self._validate_next(df)
