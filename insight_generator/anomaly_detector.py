@@ -54,20 +54,27 @@ class SentimentAnomalyDetectionDecorator(InsightDecorator):
         :return: List of dates where anomalies were detected
         """
         # Filter historical data for this category
-        topic_data = self.historical_data[self.historical_data[self.category_col] == category]
+        topic_data = self.historical_data[self.historical_data[self.category_col] == category].copy()
 
         if topic_data.empty:
             return []
 
-        # Convert timestamp and group by day
-        topic_data["ds"] = pd.to_datetime(topic_data[self.time_col], unit="s")
+        # Convert timestamps, ensuring timezone-naive format
+        topic_data["ds"] = pd.to_datetime(topic_data[self.time_col], errors="coerce", utc=True).dt.tz_localize(None)
+
+        # Group by day and compute mean sentiment
         daily_sentiment = topic_data.groupby(topic_data["ds"].dt.date)[self.sentiment_col].mean()
 
         if len(daily_sentiment) < 5:
             return []  # Not enough data for anomaly detection
 
-        # Compute Z-scores
+        # Compute Z-scores with a safety check
+        if daily_sentiment.std() == 0:
+            return []  # Avoid division by zero errors
+
         z_scores = stats.zscore(daily_sentiment)
+
+        # Flag anomalies where |Z-score| > threshold
         anomaly_dates = daily_sentiment.index[np.abs(z_scores) > self.z_threshold]
 
         return anomaly_dates.tolist()
