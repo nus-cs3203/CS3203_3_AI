@@ -1,19 +1,18 @@
 import os
 import google.generativeai as genai
 import pandas as pd
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class PromptGeneratorDecorator(InsightDecorator):
-    def __init__(self, wrapped, time_window_days=7, category_col="Domain Category"):
+    def __init__(self, wrapped, category_col="Domain Category", log_file="poll_prompts_log.txt"):
         """
         Generates poll prompts based on extracted insights using an LLM.
 
         Args:
         - wrapped: Base Insight Generator
-        - time_window_days: Filters posts within the last X days.
         - category_col: Column containing categories.
+        - log_file: File to log generated poll prompts.
         """
         super().__init__(wrapped)
         load_dotenv()
@@ -22,58 +21,74 @@ class PromptGeneratorDecorator(InsightDecorator):
         if not self.api_key:
             raise ValueError("GOOGLE_API_KEY is missing. Please set it in your .env file.")
 
-        genai.configure(api_key=self.api_key)
-        self.model = genai.GenerativeModel("gemini-pro")  # Initialize once
-        self.time_window_days = time_window_days
+        genai.configure(api_key=self.api_key)  # Configure API key
+        self.model = genai.GenerativeModel("gemini-2.0-flash")  # Use GenerativeModel
         self.category_col = category_col
+        self.log_file = log_file
 
     def extract_insights(self, df):
         """Processes DataFrame and generates poll prompts per category."""
         insights = self._wrapped.extract_insights(df)
 
-        # Filter posts within the time window
-        time_cutoff = datetime.utcnow() - timedelta(days=self.time_window_days)
-        df = df[pd.to_datetime(df["utc_created_at"], unit="s") >= time_cutoff]
+        # Ensure required columns exist
+        required_cols = {"title", "selftext", self.category_col}
+        missing_cols = required_cols - set(df.columns)
+        if missing_cols:
+            raise ValueError(f"Missing required columns: {missing_cols}")
 
         # Group posts by category and generate poll prompts
         polls_by_category = {}
-        with open("poll_prompts_log.txt", "w", encoding="utf-8") as log_file:
-            for category, group in df.groupby(self.category_col):
-                combined_text = " ".join(group["title_selftext"].dropna())  # Concatenate all text
+        log_entries = []
+        status_entries = []
 
-                if combined_text.strip():  # Avoid empty polls
-                    poll_prompt = self.generate_poll_prompt(category, combined_text)  # LLM Call
-                    
-                    polls_by_category[category] = poll_prompt
-                    log_file.write(f"Category: {category}\nPoll Prompt: {poll_prompt}\n\n")
+        for category, group in df.groupby(self.category_col):
+            group["title_selftext"] = group["title"].fillna("") + " " + group["selftext"].fillna("")
+            combined_text = " ".join(group["title_selftext"].dropna())
+
+            if combined_text.strip():
+                poll_prompt = self.generate_poll_prompt(category, combined_text)
+                polls_by_category[category] = poll_prompt
+                log_entries.append(f"Category: {category}\nPoll Prompt: {poll_prompt}\n\n")
+                status_entries.append(f"{category}: Poll Generated")
+            else:
+                status_entries.append(f"{category}: No Poll Generated")
+
+        # Write to log file
+        if log_entries:
+            with open(self.log_file, "a", encoding="utf-8") as log_file:
+                log_file.writelines(log_entries)
+
+        # Print summary of poll generation status
+        print("\nPoll Generation Status:")
+        for status in status_entries:
+            print(status)
 
         insights["polls_by_category"] = polls_by_category
         return insights
-
+    
     def generate_poll_prompt(self, category, text):
         """Uses Gemini API to generate a poll prompt for a given category."""
         user_prompt = f"""
-        Based on the following Reddit discussions in the category **{category}**, generate a poll question:
+        You are a Reddit poll generator for discussions in the category: **{category}**.
 
-        {text}
+        Based **only** on the following Reddit discussions, generate **one** poll question:
 
-        The poll should include:
-        1. **Question**: A **clear and concise** poll question.
-        2. **Type**: Specify if it's:
-            - **MCQ** (Multiple Choice)
-            - **Single answer** (Yes/No or Agree/Disagree)
-            - **Scale** (1-5 rating)
-            - **Open-ended** (User provides a response)
-        3. **Answers** (if applicable).
-        4. **Reasoning**: Why this poll is useful.
+        "{text}"
 
-        Example output:
+        **Output Format:**
         ```
-        Question: [Generated question]
-        Question Type: [Type]
+        Question: [A concise, relevant question based strictly on the provided discussions]
+        Question Type: [MCQ / Single answer / Scale / Open-ended]
         Answers: [Options, if applicable]
-        Reason: [Explanation]
+        Reason: [Why this poll is useful + trends from given data that makes this post relevant]
         ```
+
+        **Rules:**
+        - Stick strictly to the category and the given text.
+        - Keep the prompt relevant to the Singapore context
+        - Derive prompts from the insights gathered from given text
+        - Each statement should stand on its own (i.e. do not refer specific posts or make it too narrow)
+        - Avoid unnecessary explanations.
         """
 
         try:
