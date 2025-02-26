@@ -1,6 +1,6 @@
-from components.tokenizer import Tokenizer
-from components.normalizer import Normalizer
-from components.lemmatizer import Lemmatizer
+from .components.tokenizer import Tokenizer
+from .components.normalizer import Normalizer
+from .components.lemmatizer import Lemmatizer
 
 class TextProcessorBuilder:
     def __init__(self):

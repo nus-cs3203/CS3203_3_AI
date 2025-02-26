@@ -1,4 +1,4 @@
-from builder import TextProcessorBuilder
+from .builder import TextProcessorBuilder
 
 class TextProcessorDirector:
     def __init__(self, builder: TextProcessorBuilder):

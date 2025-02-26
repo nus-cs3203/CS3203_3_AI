@@ -5,6 +5,9 @@ from sentiment_analyser.classifiers.vader_classifier import VaderSentimentClassi
 from datetime import datetime
 import pandas as pd
 from validators.reddit_post_validator import RedditPostValidator
+from common_components.preprocessors.text_preprocessor.builder import TextProcessorBuilder
+from common_components.preprocessors.text_preprocessor.director import TextProcessorDirector
+from common_components.preprocessors.text_preprocessor.text_processor import TextProcessorComponent
 
 def process_complaints(request_data):
     """
@@ -43,7 +46,8 @@ def process_complaints(request_data):
                     "id": string,
                     "title": string,
                     "description": string,
-                    "category": string,
+                    "intent_category": string,
+                    "domain_category": string,
                     "date": string,
                     "sentiment": float,
                     "url": string,
@@ -67,17 +71,26 @@ def process_complaints(request_data):
     # Get categories using new function
     categories = categorize_for_api(df)
 
+    # 添加文本预处理
+    builder = TextProcessorBuilder()
+    director = TextProcessorDirector(builder)
+    director.construct_basic_pipeline()
+    text_processor = TextProcessorComponent(builder)
+
     for i, post in enumerate(posts):
         # Create complaint ID using post name
         complaint_id = post['name']  # Already unique for Reddit posts
 
-        # Get sentiment
+        # 预处理文本
         text = f"{post['title']} {post['selftext']}"
+        processed_text = text_processor.process(text)
+
+        # 使用处理后的文本进行情感分析
         sentiment_pipeline = SentimentPipelineBuilder(
             strategy=VaderSentimentClassifier()  
         )
         director = SentimentPipelineDirector(sentiment_pipeline)
-        sentiment_result = director.construct_pipeline(text)
+        sentiment_result = director.construct_pipeline(processed_text)
         
         # Format date according to specified format
         date_str = datetime.fromtimestamp(post['created_utc']).strftime("%d-%m-%Y %H:%M:%S")
