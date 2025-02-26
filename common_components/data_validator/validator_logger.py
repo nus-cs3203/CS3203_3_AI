@@ -9,17 +9,17 @@ class ValidatorLogger:
         """
         Initialize the logger with a given log level.
         """
-        logging.basicConfig(level=log_level, format="%(asctime)s - %(levelname)s - %(message)s")
         self.logger = logging.getLogger("ValidatorLogger")
+        self.logger.disabled = True  # 完全禁用日志输出
 
     def log_success(self, field_name: str):
         """Log a successful validation."""
-        self.logger.info(f"Validation passed for field: {field_name}")
+        pass  # 不执行任何日志记录
 
     def log_failure(self, field_name: str, error_message: str):
         """Log a failed validation."""
-        self.logger.warning(f"Validation failed for field '{field_name}': {error_message}")
+        pass  # 不执行任何日志记录
 
     def log_request(self, request: dict):
         """Log the incoming request."""
-        self.logger.debug(f"Processing request: {request}")
+        pass  # 不执行任何日志记录
