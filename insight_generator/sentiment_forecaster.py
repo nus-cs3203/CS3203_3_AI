@@ -30,23 +30,34 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         """Processes DataFrame and appends sentiment forecasts per category."""
         insights = self._wrapped.extract_insights(df)
 
-        # Open log file once for efficiency
+        if self.category_col not in self.historical_data.columns:
+            raise ValueError(f"Column '{self.category_col}' not found in historical_data!")
+
+        sentiment_forecasts = {}
+        log_lines = []
+
+        categories = df[self.category_col].unique()
+        for category in categories:
+            forecast_score, forecast_label, conf_interval = self.forecast_sentiment(category)
+
+            sentiment_forecasts[category] = {
+                "score": forecast_score,
+                "label": forecast_label,
+                "confidence_interval": conf_interval
+            }
+
+            # Prepare log entry
+            log_lines.append(f"\nCategory: {category}, Score: {forecast_score:.4f}, Label: {forecast_label}")
+            log_lines.append(f"Confidence Interval: {conf_interval}")
+
+            # Sample posts
+            sample_texts = df[df[self.category_col] == category]["selftext"].head(3)
+            log_lines.append("Sample Posts:")
+            log_lines.extend([f"- {text}" for text in sample_texts])
+
+        # Write logs in batch for efficiency
         with open(self.log_file, "w") as log_file:
-            sentiment_forecasts = {}
-
-            for category, group in df.groupby(self.category_col):
-                forecast_score, forecast_label = self.forecast_sentiment(category)
-                
-                sentiment_forecasts[category] = {
-                    "score": forecast_score,
-                    "label": forecast_label
-                }
-
-                # Log forecasted sentiment + sample text from each category
-                log_file.write(f"\nCategory: {category}, Score: {forecast_score:.4f}, Label: {forecast_label}\n")
-                log_file.write("Sample Posts:\n")
-                for text in group["selftext"].head(3):  # Log first 3 posts
-                    log_file.write(f"- {text}\n")
+            log_file.write("\n".join(log_lines))
 
         insights["sentiment_forecasts"] = sentiment_forecasts
         return insights
@@ -56,20 +67,35 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         category_data = self.historical_data[self.historical_data[self.category_col] == category]
 
         if category_data.empty or self.sentiment_col not in category_data.columns:
-            return 0.0, "neutral"  # Default if no data
+            return 0.0, "neutral", (0.0, 0.0)  # Default if no data
 
-        # Prepare data for Prophet
+        # Convert time column to datetime
         category_data = category_data[[self.time_col, self.sentiment_col]].copy()
-        category_data["ds"] = pd.to_datetime(category_data[self.time_col], unit="s")
+        category_data["ds"] = pd.to_datetime(category_data[self.time_col], errors="coerce", utc=True).dt.tz_localize(None)
         category_data["y"] = category_data[self.sentiment_col]
 
+        # Ensure enough data points before fitting
+        if len(category_data) < 10:
+            return 0.0, "neutral", (0.0, 0.0)  # Skip if too few data points
+
+        # Aggregate to weekly level if data is sparse
+        if category_data["ds"].diff().dt.days.median() > 7:
+            category_data = category_data.resample("W", on="ds").mean().reset_index()
+
+        # Dynamic forecast period based on data length
+        forecast_days = min(len(category_data) // 2, self.forecast_days)
+
+        # Train Prophet model
         model = Prophet()
         model.fit(category_data[["ds", "y"]])
 
         # Predict future sentiment
-        future = model.make_future_dataframe(periods=self.forecast_days)
+        future = model.make_future_dataframe(periods=forecast_days)
         forecast = model.predict(future)
+        
+        # Extract last forecasted sentiment and confidence interval
         forecasted_sentiment = forecast["yhat"].iloc[-1]
+        conf_interval = (forecast["yhat_lower"].iloc[-1], forecast["yhat_upper"].iloc[-1])
 
         # Classify sentiment
         if forecasted_sentiment > 0.1:
@@ -79,4 +105,4 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         else:
             sentiment_label = "neutral"
 
-        return forecasted_sentiment, sentiment_label
+        return forecasted_sentiment, sentiment_label, conf_interval
