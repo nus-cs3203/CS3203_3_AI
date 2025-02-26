@@ -2,18 +2,18 @@ import os
 import google.generativeai as genai
 import pandas as pd
 from datetime import datetime, timedelta
-from insight_generator.base_decorator import InsightDecorator
 from dotenv import load_dotenv
+from insight_generator.base_decorator import InsightDecorator
 
 class PromptGeneratorDecorator(InsightDecorator):
-    def __init__(self, wrapped, time_window_days=7, category_filter=None):
+    def __init__(self, wrapped, time_window_days=7, category_col="Domain Category"):
         """
-        Initializes the Prompt Generator with optional time-based and category-based filtering.
-        
+        Generates poll prompts based on extracted insights using an LLM.
+
         Args:
         - wrapped: Base Insight Generator
-        - time_window_days: Integer, filters posts within the last X days (default=7)
-        - category_filter: String, filters by category (default=None, meaning all categories)
+        - time_window_days: Filters posts within the last X days.
+        - category_col: Column containing categories.
         """
         super().__init__(wrapped)
         load_dotenv()
@@ -25,50 +25,37 @@ class PromptGeneratorDecorator(InsightDecorator):
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel("gemini-pro")  # Initialize once
         self.time_window_days = time_window_days
-        self.category_filter = category_filter.lower() if category_filter else None
-        self.polls_by_category = {}
+        self.category_col = category_col
 
-    def extract_insights(self, post):
-        """Extracts insights and generates a poll question for eligible posts."""
-        insights = super().extract_insights(post)
+    def extract_insights(self, df):
+        """Processes DataFrame and generates poll prompts per category."""
+        insights = self._wrapped.extract_insights(df)
 
-        # Ensure required keys exist
-        insights.setdefault("category", "general")
-        insights.setdefault("utc_created_at", 0)  # Unix timestamp
-        insights.setdefault("score", 0)
-        insights.setdefault("ups", 0)
-        insights.setdefault("downs", 0)
-
-        # Check if the post falls within the time window
-        post_time = datetime.utcfromtimestamp(insights["utc_created_at"])
+        # Filter posts within the time window
         time_cutoff = datetime.utcnow() - timedelta(days=self.time_window_days)
-        if post_time < time_cutoff:
-            return insights  # Skip poll generation if post is too old
+        df = df[pd.to_datetime(df["utc_created_at"], unit="s") >= time_cutoff]
 
-        # Check if category filtering is applied
-        category = insights["category"].lower()
-        if self.category_filter and category != self.category_filter:
-            return insights  # Skip if the category doesn't match
+        # Group posts by category and generate poll prompts
+        polls_by_category = {}
+        with open("poll_prompts_log.txt", "w", encoding="utf-8") as log_file:
+            for category, group in df.groupby(self.category_col):
+                combined_text = " ".join(group["title_selftext"].dropna())  # Concatenate all text
 
-        # Generate poll question for eligible posts
-        poll_question = self.generate_poll_prompt(insights)
-        if poll_question:
-            if category not in self.polls_by_category:
-                self.polls_by_category[category] = []
-            self.polls_by_category[category].append(poll_question)
+                if combined_text.strip():  # Avoid empty polls
+                    poll_prompt = self.generate_poll_prompt(category, combined_text)  # LLM Call
+                    
+                    polls_by_category[category] = poll_prompt
+                    log_file.write(f"Category: {category}\nPoll Prompt: {poll_prompt}\n\n")
 
+        insights["polls_by_category"] = polls_by_category
         return insights
 
-    def generate_poll_prompt(self, insights):
-        """Generates a poll question using the Gemini API."""
+    def generate_poll_prompt(self, category, text):
+        """Uses Gemini API to generate a poll prompt for a given category."""
         user_prompt = f"""
-        Generate a poll question based on the following Reddit insight:
+        Based on the following Reddit discussions in the category **{category}**, generate a poll question:
 
-        - **Category**: {insights["category"]}
-        - **Sentiment**: {insights.get("sentiment_title_selftext_label", "neutral")}
-        - **Post Score**: {insights["score"]}
-        - **Engagement (Ups: {insights["ups"]}, Downs: {insights["downs"]})**
-        - **Time of Post**: {datetime.utcfromtimestamp(insights["utc_created_at"]).strftime('%Y-%m-%d %H:%M:%S')} UTC
+        {text}
 
         The poll should include:
         1. **Question**: A **clear and concise** poll question.
@@ -94,20 +81,3 @@ class PromptGeneratorDecorator(InsightDecorator):
             return response.text.strip() if response else "No poll generated."
         except Exception as e:
             return f"Poll generation failed: {str(e)}"
-
-    def process_batch(self, posts_df):
-        """Processes a batch of posts, filtering by time and category before generating polls."""
-        posts_df.apply(self.extract_insights, axis=1)
-        self.generate_report()
-
-    def generate_report(self):
-        """Creates a report summarizing generated polls per category."""
-        with open("report.txt", "w", encoding="utf-8") as report_file:
-            report_file.write("Poll Generation Report\n")
-            report_file.write("=======================\n\n")
-            for category, polls in self.polls_by_category.items():
-                report_file.write(f"Category: {category}\n")
-                report_file.write(f"Total Polls: {len(polls)}\n\n")
-                for i, poll in enumerate(polls, 1):
-                    report_file.write(f"Poll {i}:\n{poll}\n\n")
-                report_file.write("----------------------------------\n\n")

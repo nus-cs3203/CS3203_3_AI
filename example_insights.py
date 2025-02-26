@@ -1,46 +1,31 @@
 import pandas as pd
 
 from insight_generator.base_insight import BaseInsightGenerator
-from insight_generator.prompt_decorator import PromptGeneratorDecorator
-from insight_generator.sentiment_forecast_decorator import TopicSentimentForecastDecorator
+from insight_generator.category_summary_decorator import CategorySummarizerDecorator
+from insight_generator.clustering_decorator import SentimentClustering
+from insight_generator.sentiment_discrepancy import SentimentDiscrepancyDecorator
 
-# Load historical data
-historical_data = pd.read_csv("files/sentiment_scored_2023_data.csv")
+# Step 1: Read CSV into DataFrame
+csv_file = "files/sentiment_scored_2023_data.csv"  # Change to your actual file path
+df = pd.read_csv(csv_file)
+df['title_selftext'] = df['title'] + " " + df['selftext']
 
-# Load new posts
-new_posts = pd.read_csv("files/sentiment_scored_2023_data.csv")
-
-# Custom column names
-time_col = "created_utc"
-sentiment_col = "sentiment_title_selftext_polarity"
-category_col = "Domain Category"
-
-# Step 1: Base Insight Generator
+# Step 2: Initialize the base insight generator
 base_generator = BaseInsightGenerator()
 
-# Step 2: Wrap with Sentiment Forecasting (Custom Columns)
-forecast_decorator = TopicSentimentForecastDecorator(
-    wrapped_insight_generator=base_generator,
-    historical_data=historical_data,
-    time_col=time_col,
-    sentiment_col=sentiment_col,
-    category_col=category_col,
-    forecast_days=5  # Example: Forecast for next 5 days
-)
+# Step 3: Apply Sentiment Discrepancy Decorator
+discrepancy_decorator = SentimentDiscrepancyDecorator(base_generator)
+df["insights"] = df.apply(lambda row: discrepancy_decorator.extract_insights(row), axis=1)
 
-# Step 3: Wrap with Poll Prompt Generator
-prompt_generator = PromptGeneratorDecorator(forecast_decorator)
+# Step 4: Apply Category Summarizer Decorator
+summarizer_decorator = CategorySummarizerDecorator(base_generator)
+df["summaries"] = df.apply(lambda row: summarizer_decorator.extract_insights(row), axis=1)
 
-# Step 4: Process all posts
-processed_posts = []
-for _, post in new_posts.iterrows():
-    insights = prompt_generator.extract_insights(post)
-    processed_posts.append(insights)
+# Step 5: Apply Sentiment Clustering
+clustering = SentimentClustering()
+clusters = clustering.cluster_sentiments(df)
 
-# Convert to DataFrame
-df_final = pd.DataFrame(processed_posts)
+# Step 6: Save updated DataFrame with insights
+df.to_csv("processed_reddit_posts.csv", index=False)
 
-# Save output
-df_final.to_csv("processed_reddit_insights.csv", index=False)
-
-print("Processing completed. Insights saved to processed_reddit_insights.csv!")
+print("Processing complete! Insights and logs are saved.")
