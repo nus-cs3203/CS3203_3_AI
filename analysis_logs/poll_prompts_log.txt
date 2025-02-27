@@ -1,0 +1,56 @@
+Category: Education
+Poll Prompt: ```
+Question: In Singapore, should gay teachers be allowed to openly discuss their sexual orientation in the classroom?
+Question Type: MCQ
+Answers: Yes, without restrictions / Yes, with age-appropriate considerations / No, it's inappropriate / Unsure
+Reason: The discussion raises concerns about the appropriateness of gay teachers disclosing their sexual orientation in class, highlighting differing views between educators and parents. This poll will gauge public sentiment on the issue.
+```
+
+Category: Employment
+Poll Prompt: ```
+Question: As a foreign student, how concerned are you about your job prospects in nursing in Singapore after graduation?
+Question Type: Scale
+Answers: Very Concerned, Somewhat Concerned, Not Concerned, Not Applicable (Not a foreign student/Not studying nursing)
+Reason: Gauges the level of anxiety among foreign nursing students regarding employment opportunities in Singapore, reflecting concerns often discussed regarding visa sponsorships and competition.
+```
+
+Category: Housing
+Poll Prompt: ```
+Question: Do you believe there is corruption or slack within HDB (Housing Development Board) in Singapore?
+Question Type: Single answer
+Answers: Yes / No / Unsure
+Reason: The discussion raises concerns about potential corruption or negligence within HDB, prompted by news of high rental prices for properties like Dalvey Estate bungalows. This poll aims to gauge public sentiment on this issue.
+```
+
+Category: Public Safety
+Poll Prompt: ```
+Question: Given recent events, should Singapore implement stricter entry protocols for travelers from specific regions with potential public safety concerns?
+Question Type: MCQ
+Answers: Yes, immediately / Yes, after further assessment / No, current measures are sufficient / No, it's discriminatory / Unsure
+Reason: Reflects concerns about balancing public safety with travel restrictions, drawing from discussions on traveler origins and safety incidents.
+```
+
+Category: Recreation
+Poll Prompt: ```
+Question: What's the longest amount of time you've spent on Singapore's MRT/LRT system in a single day?
+Question Type: Scale
+Answers: Less than 1 hour / 1-3 hours / 3-6 hours / 6-9 hours / 9+ hours
+Reason: Inspired by someone's attempt to visit all MRT/LRT stations in under 10 hours, this poll gauges how much time people typically spend on the public transport system and contextualizes the speedrun achievement.
+```
+
+Category: Technology
+Poll Prompt: ```
+Question: Given recent reports of misplaced tech devices and air traffic control issues, how confident are you in the reliability of air travel for ensuring the safety of your belongings and smooth journeys?
+Question Type: Scale
+Answers: 1 (Not at all confident) - 5 (Extremely confident)
+Reason: Reflects user sentiment regarding the reliability of air travel considering recent reports of lost items and technical issues in air traffic control, both are trends highlighted from the given data.
+```
+
+Category: Transportation
+Poll Prompt: ```
+Question: Why do some Singapore MRT tracks have more than two rails?
+Question Type: MCQ
+Answers: Standard Gauge + Power Rail, Express & Stopping Services, Signalling System, Other
+Reason: To gauge public awareness regarding the purpose of the multiple rails present on certain MRT tracks, particularly if people understand the function of the third/fourth rail.
+```
+

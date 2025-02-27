@@ -1,0 +1,590 @@
+
+Category: Transportation, Score: 0.1504, Label: positive
+Confidence Interval: (-0.43465969551701783, 0.7262502060940715)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Employment, Score: -0.1485, Label: negative
+Confidence Interval: (-0.8215521766611437, 0.4362128351202184)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Housing, Score: -0.0969, Label: neutral
+Confidence Interval: (-0.7223318315919891, 0.5150587696945862)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Technology, Score: 0.0787, Label: neutral
+Confidence Interval: (-0.5443888814266539, 0.7128175224495006)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Recreation, Score: 0.0289, Label: neutral
+Confidence Interval: (-0.6143825158143844, 0.6931331699568418)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Education, Score: -0.1610, Label: negative
+Confidence Interval: (-0.7560690304357996, 0.41069928766363545)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Public Safety, Score: -0.2968, Label: negative
+Confidence Interval: (-0.9602661241574536, 0.3477608083984849)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: General, Score: 0.4240, Label: positive
+Confidence Interval: (0.12388454105625847, 0.742589971333764)
+Sample Posts:
+- nan
+- Talk about your day. Anything goes, but subreddit rules still apply. Please be polite to each other!
+- nan
+
+Category: Healthcare, Score: -0.1418, Label: negative
+Confidence Interval: (-0.6871885944456816, 0.43087480218787294)
+Sample Posts:
+- nan
+- nan
+- Given the fears over a potential variant coming out of China, I hope this number will be a lot higher.
+
+Category: Social Services, Score: 0.2928, Label: positive
+Confidence Interval: (-0.40577425424810826, 0.9419666969784766)
+Sample Posts:
+- nan
+- [deleted]
+- We live in a Democratic society. What if democracy extended to the court of law? Do you approve the general public who has access to Singpass be able to vote for the punishments to be given to criminals? For example: There will be a voting system in Singpass where you can choose to lower or increase the punishments or even get alternatives given to those found guilty of crimes (drugs, rape, molest, theft, traffic offences, money laundering, violence). Could we as a nation build a new law system that is based on what our citizens choose? Any Tom, Dick and Harry who are Singapore Citizens and have the right to vote will have their say and within a year, people can make a change for acts that are "criminalised".Share your ideas. I'm interested in knowing what are your say
+
+Category: Financial, Score: -0.2403, Label: negative
+Confidence Interval: (-0.9464120681555404, 0.36187754031092184)
+Sample Posts:
+- If you've backpacked, share an experience you've had or a lesson you'd like others to have.Edit:  maybe should start SGtravellers sub-reddit
+- nan
+- nan
+
+Category: Political, Score: -0.0608, Label: neutral
+Confidence Interval: (-0.5889969324651545, 0.5372864909016108)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Food Services, Score: -0.1977, Label: negative
+Confidence Interval: (-0.8773172700611955, 0.48566319283768405)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Environmental, Score: -0.2637, Label: negative
+Confidence Interval: (-0.9275412594468764, 0.34848569603862756)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Retail, Score: -0.0528, Label: neutral
+Confidence Interval: (-0.6878221075180416, 0.5477794692111092)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Neutral Discussion, Score: 0.1792, Label: positive
+Confidence Interval: (-0.4749517109473579, 0.7629573358855424)
+Sample Posts:
+- Talk about your day. Anything goes, but subreddit rules still apply. Please be polite to each other!
+- [deleted]
+- nan
+
+Category: Entertainment, Score: -0.0091, Label: neutral
+Confidence Interval: (-0.6132853789663645, 0.622535524076945)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Travel, Score: -0.0298, Label: neutral
+Confidence Interval: (-0.5280433950832735, 0.41602388600817414)
+Sample Posts:
+- nan
+- nan
+- Just got back from a great trip, and while it was amazing I am wondering if I overindulged a bit - especially given the slowing economy. For context, I spent about 3% of my gross annual income on the trip, and I make well above the median pay.Curious how much Singaporeans generally spend/budget for vacations?
+
+Category: Sports, Score: -0.4176, Label: negative
+Confidence Interval: (-0.9600823196706396, 0.10582839669364583)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Infrastructure, Score: -0.2085, Label: negative
+Confidence Interval: (-0.8222113698636976, 0.42147771399607376)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Health, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- My resolution is to drink sugar free / 0 sugar drinks only for the year.And I just drank a regular coke so RIP.
+- nan
+- nan
+
+Category: Economic, Score: -0.4884, Label: negative
+Confidence Interval: (-0.9533612513827955, -0.04035599364543683)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Cultural Events, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Talk about your day. Anything goes, but subreddit rules still apply. Please be polite to each other!
+- [deleted]
+- nan
+
+Category: Legal, Score: -0.5522, Label: negative
+Confidence Interval: (-0.9718558528027897, -0.13095352292502063)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Architecture, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: History, Score: 0.2213, Label: positive
+Confidence Interval: (-0.3083817759790012, 0.7333300422250996)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Media, Score: -0.3577, Label: negative
+Confidence Interval: (-0.8553855125344647, 0.12090008081078028)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Fashion, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- SG folks who have visited the USA, what places did you like? What did you hate?Trying to get the SG relatives to visit me in the USA, and avoid obvious mistakes like recommending San Francisco (open defecation and drug use on the streets).
+- nan
+
+Category: Language, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- [deleted]
+
+Category: Music, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- [deleted]
+- [deleted]
+
+Category: Cultural, Score: -0.4492, Label: negative
+Confidence Interval: (-0.865848477758785, -0.04367410098142826)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Noise, Score: -0.2157, Label: negative
+Confidence Interval: (-0.8193404632443413, 0.35955887323782787)
+Sample Posts:
+- nan
+- nan
+- Hey, is anybody else feeling and hearing the rumbling noise near Hougang region.. its been going on for a few minutes now.. definitely not thunder
+
+Category: Unknown, Score: -0.2425, Label: negative
+Confidence Interval: (-0.9092617543240625, 0.42901315712307164)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Culture, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Art, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Marketing, Score: 0.0000, Label: neutral
+Confidence Interval: (-1.2829300170815363e-09, 1.4191652630189341e-09)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Postal Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Telecommunications, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Talk about your day. Anything goes, but subreddit rules still apply. Please be polite to each other!
+- nan
+- nan
+
+Category: Arts, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Politics, Score: -0.1458, Label: negative
+Confidence Interval: (-0.393404303017033, 0.08709206143083932)
+Sample Posts:
+- nan
+- nan
+- [deleted]
+
+Category: Tourism, Score: -0.2051, Label: negative
+Confidence Interval: (-0.7574237003674067, 0.3814441669019194)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Immigration, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Real Estate, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Weather, Score: 8.0530, Label: positive
+Confidence Interval: (8.052120610474864, 8.053360751216122)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Economics, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Social Media, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Beauty, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Hobbies, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- [deleted]
+
+Category: Military, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Advertising, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- No seriously, how did it pass quality checks before publication? The girl looks elderly and the colours used hurt my eyes.
+- nan
+
+Category: Mental Health, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- [deleted]
+- nan
+- nan
+
+Category: Storage, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Neutral, Score: 0.8405, Label: positive
+Confidence Interval: (0.38915780572884184, 1.2867779551384257)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Cultural Heritage, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Fitness, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Engineering, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Hospitality, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Foot Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Customer Service, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Utilities, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Since Nov 22, my power bill suddenly tripled and I was charged ~$360 for five months when my bills are usually -$120.  After SP changed the power meter, the usage dropped to the usual amount.   I’d tried to appeal to Geneco for refund but not getting a response at all. What can I do? Is there any other official channels to dispute the bill?
+
+Category: International Relations, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- Singapore and Qatar share a natural affinity for each other and hold a similar strategic outlook. Qatar evolved from a small fishing community to a modern state.Qatar and Singapore have excellent relations and frequent high-level exchanges, with economic ties growing steadily over the years.
+- nan
+
+Category: Parking, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: News, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Government, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- "This year, I celebrated my 44th year at DBS and my journey, from a messenger dispatching documents to an analyst, has been nothing short of amazing.   I come from a family of 14 and didn't do too well academically. The day I received the letter of offer from DBS – My heart was beating so fast with excitement as I held the envelope that would determine my fate. My parents circled around me in anticipation as I tore the envelope open. Much to our delight, I was accepted into DBS! It meant additional income for us and the opportunity for me to prove myself. I was grateful that DBS was willing to take a chance on me with my qualifications from a vocational institute.  As a messenger, I was responsible for dispatching important documents from one office to another within Shenton Way, as well as unlocking and locking the office every day. It was a humble job, but I took immense pride in wearing that official DBS uniform.  I soon learnt what really set DBS apart from other companies was the bank’s commitment to upskilling its employees.  One of my bosses, Mr Nawaz Vilcassim, once sat me down to tell me I should never stop learning. That advice was the foundation of my growth at DBS. I was blessed to have supportive colleagues who provided me with on-the-job training in addition to trainings that the bank sent me to. I was able to move into various roles like being a clerk, an office assistant, and finally an analyst who verifies important documents for clients.  Adapting to my new roles was relatively easy for me, as I had gained familiarity with the tasks beforehand by observing my colleagues when there were no deliveries. This was especially helpful when we all worked together late into the night during peak times.  I recall one task in particular, in 1985, where we had to prepare stacks of prospectuses and applications for the shares application when it was still done manually. Although we worked late into the night, there was a strong sense of camaraderie as we all came together to get the job done. And while we worked hard, we also “played” hard. From the early days, we had many activities that encouraged team bonding. I remember taking part in inter-company competitions, proudly taking home medals and trophies. Many of us who took part in the games are still in contact and catch up from time to time. One of the competitions I still get teased about is the Mr DBS pageant that I took part in … and won!  DBS has been a remarkable journey for me, and I am forever grateful for the opportunities it has given me. It's not just a bank, but a family that I am proud to be a part of. In fact, I met my wife at DBS, and on our wedding day in 1987, the bank even loaned us the company car and driver for our special occasion! It was a special initiative for newly-wed employees then. Three years ago, I experienced a “full circle” moment.  My daughter received an email confirming her internship at DBS. And just like how my parents felt when I joined the bank, I was filled with pride and excitement that my daughter would now get to experience life at DBS."   Abdul Wahib Kassim, IBG Operations team aka Mr DBS#HumansofDBS #LifeAtDBS
+
+Category: Religion, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Agriculture, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Energy, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Consumer Protection, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Spirituality, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Oblivious or making a stand? I can't tell.
+
+Category: Air Quality, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- This first night is already causing me coughing fits (still recovering from pneumonia), and my wife's 7 months pregnant. This Seventh Month mass burning is stupidly unhealthy, and I want to get an air purifier asap to help. Any suggestions?
+
+Category: Furniture, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Library Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Personal, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Historical, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Public Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Business, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Supply Chain, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Please vote for ng kok song. Tharman has enough votes and will surely win; so, supporting ng kok song is more important in view of his vast experience with our reserves 👍
+
+Category: Geography, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Scams, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Personal Development, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Community Engagement, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Hey friend, if u see this message, text me again. Hide the chat message by mistake and couldn't find the chat back.
+
+Category: Social Issues, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Economic Development, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- Invest Johor Condos NOW!!!!!
+
+Category: Health Services, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- Wanting to start tracking calories and curious what apps people are using
+- nan
+
+Category: Population, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+
+Category: Telecommunication, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Animal Welfare, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Urban Planning, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Family Law, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Public Relations, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Public Transportation, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+
+Category: Pest Control, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
+- nan
+- nan
+
+Category: Relationships, Score: 0.0000, Label: neutral
+Confidence Interval: (0.0, 0.0)
+Sample Posts:
+- nan
