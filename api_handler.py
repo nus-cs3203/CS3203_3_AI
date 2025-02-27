@@ -13,11 +13,11 @@ from common_components.data_validator.text_validator.only_string_validator impor
 from common_components.data_validator.validator_logger import ValidatorLogger
 from categorizer.deepseek_categorizer_chunked import categorize_complaints
 from categorizer.post_process_data import post_process_data
-from sentiment_analyser.classifiers.polarity.bert import BERTClassifier
-from sentiment_analyser.classifiers.polarity.vader import VaderSentimentClassifier
 from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
 from sentiment_analyser.emotion.roberta import RobertaClassifier
 from sentiment_analyser.context import SentimentAnalysisContext
+from sentiment_analyser.polarity.bert import BERTClassifier
+from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 
 app = FastAPI()
 
@@ -88,7 +88,6 @@ async def process_complaints(request: PostRequest):
             context = SentimentAnalysisContext(classifier)
             df = context.analyze(df, text_cols=["title_with_desc"])
         
-        # 打印列名看看有什么
         print("Columns after sentiment analysis:", df.columns)
         print("Sample row:", df.iloc[0])
         
@@ -110,13 +109,12 @@ async def process_complaints(request: PostRequest):
         return {"complaints": complaints}
         
     except Exception as e:
-        # 添加详细的错误日志
         import traceback
         error_detail = {
             "error": str(e),
             "traceback": traceback.format_exc()
         }
-        print("Error occurred:", error_detail)  # 打印错误详情
+        print("Error occurred:", error_detail)  
         raise HTTPException(status_code=500, detail=error_detail)
 
 if __name__ == "__main__":
