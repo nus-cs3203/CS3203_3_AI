@@ -18,4 +18,4 @@ director = PreprocessingDirector(builder)
 processed_df = director.construct(df)
 
 # Save the processed file
-processed_df.to_csv("/Users/aishwaryahariharaniyer/Desktop/CS3203_3_AI/files/preprocessed_data.csv", index=False)
+processed_df.to_csv("files/preprocessed_data.csv", index=False)
