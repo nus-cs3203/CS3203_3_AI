@@ -1,3 +1,12 @@
 pandas
 openai
 nltk
+uvicorn[standard]>=0.24.0
+fastapi
+emoji
+transformers
+requests
+torch
+vaderSentiment
+scikit-learn
+numpy
