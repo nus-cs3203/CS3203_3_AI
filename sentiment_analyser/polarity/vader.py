@@ -9,7 +9,7 @@ class VaderSentimentClassifier(SentimentClassifier):
     """Concrete Strategy - Uses VADER for sentiment classification on DataFrame columns."""
     
     def __init__(self):
-        self.analyzer = SentimentIntensityAnalyzer()
+        self.model = SentimentIntensityAnalyzer()
 
     def classify(self, df: pd.DataFrame, text_cols: list) -> pd.DataFrame:
         """
@@ -33,7 +33,7 @@ class VaderSentimentClassifier(SentimentClassifier):
 
     def _analyze_text(self, text: str) -> dict:
         """Helper function to classify sentiment of a single text input."""
-        scores = self.analyzer.polarity_scores(text)
+        scores = self.model.polarity_scores(text)
         sentiment_score = scores["compound"]  # VADER's compound score (-1 to 1)
 
         # Define sentiment labels

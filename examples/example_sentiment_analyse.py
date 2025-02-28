@@ -1,13 +1,13 @@
 import pandas as pd
 
-from sentiment_analyser.classifiers.polarity.bert import BERTClassifier
-from sentiment_analyser.classifiers.polarity.vader import VaderSentimentClassifier
 from sentiment_analyser.context import SentimentAnalysisContext
 from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
 from sentiment_analyser.emotion.roberta import RobertaClassifier
+from sentiment_analyser.polarity.bert import BERTClassifier
+from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 
 # Load dataset
-df = pd.read_csv("files/sentiment_scored_2023_data.csv")
+df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
 df.dropna(subset=["title", "selftext"], inplace=True)
 df.reset_index(drop=True, inplace=True)
 df["title_with_desc"] = df["title"] + " " + df["selftext"]
