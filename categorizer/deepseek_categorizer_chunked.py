@@ -8,7 +8,17 @@ client = OpenAI(
     base_url="https://ark.cn-beijing.volces.com/api/v3"
 )
 
-def process_batch(batch_texts):
+def process_batch(batch_texts, categories=None):
+    if categories is None:
+        categories = [
+            "Housing", "Healthcare", "Public Safety", "Transport",
+            "Education", "Environment", "Employment", "Public Health",
+            "Legal", "Economy", "Politics", "Technology",
+            "Infrastructure", "Others"
+        ]
+    
+    categories_str = ", ".join(categories)
+    
     # Prepare the system message
     system_message = {
         "role": "system", 
@@ -37,11 +47,10 @@ def process_batch(batch_texts):
             {num_entries}. "Yes/No", "Domain Category"
 
             So the first entry means whether the text is a useful complaint that may be potentially beneficial to the government.
-            The second entry means the domain category of the complaint, it must be one of the following:
-            Housing, Healthcare, Transportation, Public Safety, Transport, Education, Environment, Employment, Public Health, Legal, Economy, Politics, Technology, Infrastructure, Others
+            The second entry means the domain category of the complaint, it must be one of the following categories:
+            {categories_str}
             There are {num_entries} input contents, so you should return {num_entries} rows of output. There should be no space between each row, and
             each response starts with a new line.
-
         """
     }
     
@@ -71,7 +80,7 @@ def process_batch(batch_texts):
     # Return parsed categories
     return categories
 
-def categorize_complaints(df=None, input_csv=None, output_csv=None):
+def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=None):
     # Start timing
     start_time = time.time()
     
@@ -105,7 +114,7 @@ def categorize_complaints(df=None, input_csv=None, output_csv=None):
         futures = []
         for i in range(0, len(df), batch_size):
             batch_texts = df['combined_text'][i:i+batch_size]
-            futures.append(executor.submit(process_batch, batch_texts))
+            futures.append(executor.submit(process_batch, batch_texts, categories))
         
         for future in futures:
             categories = future.result()

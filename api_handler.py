@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import List, Optional
 import pandas as pd
 from datetime import datetime
+import requests
 
 # Import all necessary functions from main_pipeline
 from common_components.data_preprocessor.concrete_builder import GeneralPreprocessorBuilder
@@ -72,7 +73,20 @@ async def process_complaints(request: PostRequest):
             raise ValueError(f"Validation failed: {validation_result['errors']}")
         
         # Step 3: Categorization & Post-processing
-        df = categorize_complaints(df=df)
+        try:
+            # Try to get categories from backend
+            categories_response = requests.get("http://localhost:3000/get_categories")
+            categories = categories_response.json()["categories"]
+        except:
+            # Use default categories if backend is not available
+            categories = [
+                "Housing", "Healthcare", "Public Safety", "Transport",
+                "Education", "Environment", "Employment", "Public Health",
+                "Legal", "Economy", "Politics", "Technology",
+                "Infrastructure", "Others"
+            ]
+        
+        df = categorize_complaints(df=df, categories=categories)
         df = post_process_data(df=df)
         
         # Step 4: Sentiment Analysis
@@ -120,6 +134,18 @@ async def process_complaints(request: PostRequest):
         }
         print("Error occurred:", error_detail)  
         raise HTTPException(status_code=500, detail=error_detail)
+
+@app.post("/update_categories")
+async def update_categories(categories: List[str]):
+    try:
+        # Update categories in the categorizer
+        response = requests.post(
+            "http://localhost:3000/get_categories",
+            json={"categories": categories}
+        )
+        return {"message": "Categories updated successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
