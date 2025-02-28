@@ -16,7 +16,6 @@ validator_chain = (
     NotEmptyValidator(["title", "selftext"], logger)  # Removed "column" if unnecessary
     .set_next(OnlyStringValidator(["title", "selftext"], logger=logger))  
     .set_next(LengthValidator({"selftext": (5, 100)}, logger=logger))  
-    .set_next(RegexValidator(["title"], ["^[A-Za-z0-9\s]+$"], logger=logger))  # Dict instead of list for clarity
 )
 
 # Validate the DataFrame

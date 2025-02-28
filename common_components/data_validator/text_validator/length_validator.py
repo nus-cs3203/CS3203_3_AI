@@ -1,22 +1,31 @@
 import pandas as pd
 from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
+from typing import Dict, Tuple, Optional
 
 class LengthValidator(BaseValidationHandler):
     """
     Validates that specified text columns have string lengths within the given range.
     """
 
-    def __init__(self, text_cols: dict[str, tuple[int, int]], logger: ValidatorLogger, log_valid: bool = False) -> None:
+    def __init__(self, text_cols: Dict[str, Tuple[int, int]], logger: ValidatorLogger, log_valid: bool = False) -> None:
         """
         :param text_cols: Dictionary where keys are column names, and values are (min_length, max_length) tuples.
         :param logger: Logger instance.
         :param log_valid: Whether to log successful validations (default: False).
         """
-        BaseValidationHandler.__init__(self)  # Explicitly call base class init
+        super().__init__()
         self.text_cols = text_cols  # e.g., {"name": (3, 50), "description": (10, 200)}
         self.logger = logger
         self.log_valid = log_valid  # Reduce log spam by default
+        self.next_handler: Optional[BaseValidationHandler] = None  # Next validator in the chain
+
+    def set_next(self, handler: 'BaseValidationHandler') -> 'BaseValidationHandler':
+        """
+        Sets the next handler in the chain.
+        """
+        self.next_handler = handler
+        return handler
 
     def validate(self, df: pd.DataFrame) -> dict:
         """
@@ -24,8 +33,9 @@ class LengthValidator(BaseValidationHandler):
         :param df: pandas DataFrame.
         :return: Dictionary with success status and error details if validation fails.
         """
-        self.logger.log_dataframe(df)  # Log the incoming DataFrame
+        self.logger.log_dataframe(df)
         invalid_indices = set()
+        errors = []
 
         for col, (min_length, max_length) in self.text_cols.items():
             if col not in df.columns:
@@ -44,6 +54,7 @@ class LengthValidator(BaseValidationHandler):
             if invalid_rows:
                 error_message = f"Column '{col}' must have length between {min_length} and {max_length}."
                 self.logger.log_failure(col, f"{error_message} Dropping {len(invalid_rows)} rows.")
+                errors.append(error_message)
             elif self.log_valid:
                 self.logger.log_success(col)
 
@@ -51,4 +62,12 @@ class LengthValidator(BaseValidationHandler):
         if invalid_indices:
             df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
 
-        return self._validate_next(df)  # Pass to next validator in chain
+        validation_result = {"success": not bool(errors), "errors": errors}
+
+        # Pass the cleaned DataFrame to the next handler
+        if self.next_handler:
+            next_result = self.next_handler.validate(df)
+            validation_result["errors"].extend(next_result.get("errors", []))
+            validation_result["success"] = validation_result["success"] and next_result["success"]
+
+        return validation_result
