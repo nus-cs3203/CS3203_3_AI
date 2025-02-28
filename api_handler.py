@@ -94,6 +94,10 @@ async def process_complaints(request: PostRequest):
         # Format response
         complaints = []
         for _, row in df.iterrows():
+            # Only include complaints where Intent Category is "Yes"
+            if row["Intent Category"] != "Yes":
+                continue
+            
             complaint = {
                 "id": row["name"],
                 "title": row["title"],
