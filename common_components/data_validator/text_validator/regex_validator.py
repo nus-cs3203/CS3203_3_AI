@@ -1,9 +1,9 @@
 import re
 import pandas as pd
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-class RegexValidator(ValidationHandler):
+class RegexValidator(BaseValidationHandler):
     """
     Validates that specified string fields in a DataFrame match a given regex pattern.
     """
@@ -16,7 +16,7 @@ class RegexValidator(ValidationHandler):
         :param allow_nan: Whether NaN values should be treated as valid (default: True).
         :param log_sample: Number of sample invalid values to log for debugging.
         """
-        super().__init__()
+        BaseValidationHandler.__init__(self)  # Explicitly call Base class init
 
         if len(columns) != len(patterns):
             raise ValueError("`columns` and `patterns` must have the same length.")
@@ -49,7 +49,10 @@ class RegexValidator(ValidationHandler):
 
             if invalid_rows:
                 sample_invalid_values = df.loc[invalid_rows, col].head(self.log_sample).tolist()
-                error_message = f"Column '{col}' contains invalid values. Examples: {sample_invalid_values} (Dropping {len(invalid_rows)} rows)"
+                error_message = (
+                    f"Column '{col}' contains invalid values. "
+                    f"Examples: {sample_invalid_values} (Dropping {len(invalid_rows)} rows)"
+                )
                 self.logger.log_failure(col, error_message)
             else:
                 self.logger.log_success(col)
@@ -58,4 +61,4 @@ class RegexValidator(ValidationHandler):
         if invalid_indices:
             df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
 
-        return self._validate_next(df)
+        return self._validate_next(df)  # Pass to next validator

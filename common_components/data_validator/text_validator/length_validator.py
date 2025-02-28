@@ -1,19 +1,19 @@
 import pandas as pd
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-class LengthValidator(ValidationHandler):
+class LengthValidator(BaseValidationHandler):
     """
     Validates that specified text columns have string lengths within the given range.
     """
 
-    def __init__(self, text_cols: dict, logger: ValidatorLogger, log_valid: bool = False) -> None:
+    def __init__(self, text_cols: dict[str, tuple[int, int]], logger: ValidatorLogger, log_valid: bool = False) -> None:
         """
         :param text_cols: Dictionary where keys are column names, and values are (min_length, max_length) tuples.
         :param logger: Logger instance.
         :param log_valid: Whether to log successful validations (default: False).
         """
-        super().__init__()
+        BaseValidationHandler.__init__(self)  # Explicitly call base class init
         self.text_cols = text_cols  # e.g., {"name": (3, 50), "description": (10, 200)}
         self.logger = logger
         self.log_valid = log_valid  # Reduce log spam by default
@@ -51,4 +51,4 @@ class LengthValidator(ValidationHandler):
         if invalid_indices:
             df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
 
-        return self._validate_next(df)
+        return self._validate_next(df)  # Pass to next validator in chain

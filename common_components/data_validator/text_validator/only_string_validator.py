@@ -1,8 +1,8 @@
 import pandas as pd
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-class OnlyStringValidator(ValidationHandler):
+class OnlyStringValidator(BaseValidationHandler):
     """
     Validates that specified fields in a DataFrame contain only string values.
     """
@@ -13,7 +13,7 @@ class OnlyStringValidator(ValidationHandler):
         :param logger: Logger instance.
         :param allow_nan: Whether NaN values should be treated as valid (default: True).
         """
-        super().__init__()
+        BaseValidationHandler.__init__(self)  # Explicitly call Base class init
         self.text_cols = text_cols  # Example: ["name", "description"]
         self.logger = logger
         self.allow_nan = allow_nan  # Controls NaN validation behavior
@@ -48,4 +48,4 @@ class OnlyStringValidator(ValidationHandler):
         if invalid_indices:
             df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
 
-        return self._validate_next(df)
+        return self._validate_next(df)  # Pass to next validator

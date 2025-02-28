@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 import json
 import os
-from typing import List, Callable
+from typing import List, Dict
 
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-class FormatValidator(ValidationHandler):
+class FormatValidator(BaseValidationHandler):
     """
     Concrete Handler that validates if a specified DataFrame column matches an allowed format.
     Supported formats: JSON (dict or list of dicts), NumPy array (or list of arrays), or .txt file paths.
@@ -15,18 +15,20 @@ class FormatValidator(ValidationHandler):
 
     FORMAT_CHECKS = {
         "json": lambda value: isinstance(value, (dict, list)) and FormatValidator.is_json_serializable(value),
-        "numpy": lambda value: isinstance(value, (np.ndarray, list)) and all(isinstance(v, np.ndarray) for v in (value if isinstance(value, list) else [value])),
+        "numpy": lambda value: isinstance(value, (np.ndarray, list)) and all(
+            isinstance(v, np.ndarray) for v in (value if isinstance(value, list) else [value])
+        ),
         "txt": lambda value: isinstance(value, str) and value.lower().endswith('.txt') and os.path.isfile(value)
     }
 
-    def __init__(self, column_name: str, allowed_formats: List[str], logger: ValidatorLogger, custom_formats: dict = None) -> None:
+    def __init__(self, column_name: str, allowed_formats: List[str], logger: ValidatorLogger, custom_formats: Dict[str, callable] = None) -> None:
         """
         :param column_name: The column in the DataFrame to validate.
         :param allowed_formats: List of allowed formats (e.g., ['json', 'numpy', 'txt']).
         :param logger: Logger instance for logging validation results.
         :param custom_formats: Optional dictionary of additional format validation functions.
         """
-        super().__init__()
+        BaseValidationHandler.__init__(self)  # Explicitly call base class init
         self.column_name = column_name
         self.allowed_formats = set(allowed_formats)
         self.logger = logger
@@ -60,7 +62,7 @@ class FormatValidator(ValidationHandler):
         else:
             self.logger.log_success(self.column_name)
 
-        return self._validate_next(df)
+        return self._validate_next(df)  # Pass to the next handler in the chain
 
     @staticmethod
     def is_json_serializable(value) -> bool:
