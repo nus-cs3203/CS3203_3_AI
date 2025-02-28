@@ -1,4 +1,3 @@
-
 from common_components.data_preprocessor.builder import PreprocessorBuilder
 from common_components.data_preprocessor.components.duplicate_remover import DuplicateRemover
 from common_components.data_preprocessor.components.emoji_slang_handler import EmojiSlangHandler
@@ -10,23 +9,25 @@ from common_components.data_preprocessor.components.stopword_remover import Stop
 from common_components.data_preprocessor.components.text_trimmer import TextTrimmer
 from common_components.data_preprocessor.components.tokenizer import Tokenizer
 
-
-
 class GeneralPreprocessorBuilder(PreprocessorBuilder):
-    """Concrete Builder implementing preprocessing steps."""
+    """Concrete Builder implementing preprocessing steps for general text preprocessing."""
 
-    def __init__(self, critical_columns, text_columns):
-        super().__init__()
+    def __init__(self, critical_columns, text_columns, data):
         self.critical_columns = critical_columns
         self.text_columns = text_columns
+        self.data = data
+        self.reset()
+
+    def reset(self):
+        """Resets the preprocessing components."""
         self.duplicate_remover = DuplicateRemover()
-        self.missing_value_handler = MissingValueHandler(critical_columns)
-        self.text_trimmer = TextTrimmer()
-        self.emoji_slang_handler = EmojiSlangHandler(text_columns)
-        self.tokenizer = Tokenizer()
-        self.lemmatizer = Lemmatizer(text_columns)
-        self.stemmer = Stemmer()
-        self.stopword_remover = StopwordRemover()
+        self.missing_value_handler = MissingValueHandler(self.critical_columns)
+        self.text_trimmer = TextTrimmer(self.text_columns)
+        self.emoji_slang_handler = EmojiSlangHandler(self.text_columns)
+        self.tokenizer = Tokenizer(self.text_columns)
+        self.lemmatizer = Lemmatizer(self.text_columns)
+        self.stemmer = Stemmer(self.text_columns)
+        self.stopword_remover = StopwordRemover(self.text_columns)
         self.normalizer = Normalizer()
 
     def remove_duplicates(self):
@@ -40,7 +41,7 @@ class GeneralPreprocessorBuilder(PreprocessorBuilder):
     def normalize_text(self):
         """Normalizes text (lowercasing, trimming, etc.)."""
         self.data = self.normalizer.process(self.data, self.text_columns)
-        self.data = self.text_trimmer.process(self.data, self.text_columns)
+        self.data = self.text_trimmer.process(self.data)
 
     def handle_slang_and_emojis(self):
         """Handles slangs and emojis in text columns."""
@@ -52,8 +53,12 @@ class GeneralPreprocessorBuilder(PreprocessorBuilder):
 
     def remove_stopwords(self):
         """Removes stopwords."""
-        self.data = self.stopword_remover.process(self.data, self.text_columns)
+        self.data = self.stopword_remover.process(self.data)
 
     def stem_words(self):
         """Applies stemming."""
-        self.data = self.stemmer.process(self.data, self.text_columns)
+        self.data = self.stemmer.process(self.data)
+
+    def get_result(self):
+        """Returns the preprocessed data."""
+        return self.data
