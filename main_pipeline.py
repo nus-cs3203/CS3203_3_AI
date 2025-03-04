@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common_components.data_preprocessor.concrete_builder import GeneralPreprocessorBuilder
+from common_components.data_preprocessor.concrete_builder_general import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
 from common_components.data_validator.general_validators.not_empty_validator import NotEmptyValidator
 from common_components.data_validator.text_validator.length_validator import LengthValidator

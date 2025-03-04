@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common_components.data_preprocessor.concrete_builder import GeneralPreprocessorBuilder
+from common_components.data_preprocessor.concrete_builder_general import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
 
 # Load dataset
