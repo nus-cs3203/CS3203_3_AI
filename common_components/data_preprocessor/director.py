@@ -6,15 +6,10 @@ class PreprocessingDirector:
     def __init__(self, builder: PreprocessorBuilder):
         self.builder = builder
 
-    def construct_general_builder(self):
-        """Executes preprocessing steps for the general preprocessor."""
-        self.builder.remove_duplicates()
-        self.builder.handle_missing_values()
-        self.builder.normalize_text()
-        self.builder.handle_slang_and_emojis()
-        self.builder.lemmatize()
-        self.builder.remove_stopwords()
-        self.builder.stem_words()
+    def construct_builder(self):
+        """Executes preprocessing steps for the chosen preprocessor."""
+        self.builder.reset()
+        self.builder.perform_preprocessing()
 
     def set_builder(self, builder: PreprocessorBuilder):
         """Allows changing the builder instance."""

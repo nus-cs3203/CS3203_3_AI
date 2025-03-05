@@ -4,7 +4,16 @@ import re
 class Normalizer:
     """Normalizes text columns in a Pandas DataFrame."""
 
-    def process(self, df: pd.DataFrame, columns: list) -> pd.DataFrame:
+    def __init__(self, text_columns: list):
+        """
+        Initializes the Normalizer with the specified text columns.
+
+        :param text_columns: List of column names containing text data.
+        """
+        self.text_columns = text_columns
+
+
+    def process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Applies normalization to specified text columns.
 
@@ -23,7 +32,7 @@ class Normalizer:
             text = re.sub(r'[:;=][-~]?[\(\[]', '<sad>', text)  # Replace sad emoticons
             return text
 
-        valid_columns = [col for col in columns if col in df.columns]
+        valid_columns = [col for col in self.text_columns if col in df.columns]
 
         if not valid_columns:
             print("Warning: No valid text columns found for normalization. Skipping process.")

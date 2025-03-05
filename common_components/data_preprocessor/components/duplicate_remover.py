@@ -4,11 +4,17 @@ import logging
 class DuplicateRemover:
     """Removes duplicate rows in a Pandas DataFrame."""
 
-    def __init__(self):
-        """Initialize the duplicate remover."""
-        self.logger = logging.getLogger(__name__)
+    def __init__(self, subset: list = None):
+        """
+        Initialize the duplicate remover.
 
-    def process(self, df: pd.DataFrame, subset=None) -> pd.DataFrame:
+        :param subset: List of column names to check for duplicates. If None, checks all columns.
+        """
+
+        self.logger = logging.getLogger(__name__)
+        self.subset = subset
+
+    def process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Removes duplicate rows based on all or specific columns.
 
@@ -22,7 +28,7 @@ class DuplicateRemover:
             return df
 
         before_count = len(df)
-        df = df.drop_duplicates(subset=subset, keep="first").reset_index(drop=True)
+        df = df.drop_duplicates(subset=self.subset, keep="first").reset_index(drop=True)
         after_count = len(df)
 
         if self.logger:

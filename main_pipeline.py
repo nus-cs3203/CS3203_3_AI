@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common_components.data_preprocessor.concrete_builder import GeneralPreprocessorBuilder
+from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
 from common_components.data_validator.general_validators.not_empty_validator import NotEmptyValidator
 from common_components.data_validator.text_validator.length_validator import LengthValidator
@@ -33,9 +33,9 @@ CRITICAL_COLUMNS = ["title_with_desc"]
 TEXT_COLUMNS = ["title_with_desc", "comments"]
 
 # Step 1: Preprocessing
-builder = GeneralPreprocessorBuilder(CRITICAL_COLUMNS, TEXT_COLUMNS)
+builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df)
 director = PreprocessingDirector(builder)
-df = director.construct(df)
+df = director.construct_builder(df)
 
 # Step 2: Validation
 logger = ValidatorLogger()
