@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+import logging
 
 class TextTrimmer:
     """Cleans up extra spaces in text fields within specified columns."""
@@ -9,6 +10,8 @@ class TextTrimmer:
         :param text_columns: List of text columns to process.
         """
         self.text_columns = text_columns
+        logging.basicConfig(level=logging.WARNING)
+        self.logger = logging.getLogger(__name__)
 
     def process(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -25,6 +28,12 @@ class TextTrimmer:
 
         for col in self.text_columns:
             if col in df.columns:
-                df[col] = df[col].map(trim_text)  # More efficient than apply
+                self.logger.info(f"Processing column: {col}")
+                try:
+                    df[col] = df[col].map(trim_text)  # More efficient than apply
+                except Exception as e:
+                    self.logger.error(f"Error processing column {col}: {e}")
+            else:
+                self.logger.warning(f"Column {col} does not exist in the DataFrame")
 
         return df

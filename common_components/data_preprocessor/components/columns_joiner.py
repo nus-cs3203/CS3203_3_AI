@@ -11,7 +11,7 @@ class ColumnsJoiner:
         :param subset: List of column names to join. If None, joins no columns.
         :param join_column_name: Name of the new column to create by joining the subset columns.
         """
-
+        logging.basicConfig(level=logging.WARNING)
         self.logger = logging.getLogger(__name__)
         self.subset = subset
         self.join_column_name = join_column_name
@@ -38,7 +38,9 @@ class ColumnsJoiner:
                 raise ValueError(f"DataFrame does not contain columns: {missing_columns}")
 
             try:
+                self.logger.info(f"Joining columns {self.subset} into {self.join_column_name}")
                 df[self.join_column_name] = df[self.subset].astype(str).agg(' '.join, axis=1)
+                self.logger.info(f"Successfully joined columns into {self.join_column_name}")
             except Exception as e:
                 self.logger.error(f"Error while joining columns: {e}")
                 raise

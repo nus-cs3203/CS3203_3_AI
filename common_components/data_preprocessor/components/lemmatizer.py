@@ -19,6 +19,7 @@ class Lemmatizer:
         """
         self.text_columns = text_columns
         self.lemmatizer = WordNetLemmatizer()
+        logging.basicConfig(level=logging.WARNING)
         self.logger = logging.getLogger(__name__)
 
     def process(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -34,17 +35,26 @@ class Lemmatizer:
 
         for col in self.text_columns:
             if col in df.columns:
-                df[col] = df[col].astype(str).apply(self._lemmatize_text)
+                try:
+                    df[col] = df[col].astype(str).apply(self._lemmatize_text)
+                    self.logger.info(f"Lemmatization applied to column: {col}")
+                except Exception as e:
+                    self.logger.error(f"Error processing column '{col}': {e}")
+            else:
+                self.logger.warning(f"Column '{col}' not found in DataFrame.")
 
-        self.logger.info(f"Lemmatization applied to columns: {self.text_columns}")
         return df
 
     def _lemmatize_text(self, text):
         """Helper function to lemmatize a single text entry with better tokenization."""
         if not isinstance(text, str):
+            self.logger.warning(f"Expected string type but got {type(text)}. Returning original value.")
             return text  # Return as-is if not a string
 
-        tokens = word_tokenize(text)  # More robust tokenization
-        lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
-
-        return " ".join(lemmatized_tokens)
+        try:
+            tokens = word_tokenize(text)  # More robust tokenization
+            lemmatized_tokens = [self.lemmatizer.lemmatize(token) for token in tokens]
+            return " ".join(lemmatized_tokens)
+        except Exception as e:
+            self.logger.error(f"Error lemmatizing text '{text}': {e}")
+            return text  # Return original text if an error occurs

@@ -12,6 +12,7 @@ class EmojiSlangHandler:
         :param slang_dict: Optional custom dictionary for slang replacement.
         """
         self.text_columns = text_columns
+        logging.basicConfig(level=logging.WARNING)
         self.logger = logging.getLogger(__name__)
 
         # Allow a custom slang dictionary, or use the default one
@@ -36,7 +37,13 @@ class EmojiSlangHandler:
 
         for col in self.text_columns:
             if col in df.columns:
-                df[col] = df[col].astype(str).apply(self._process_text)
+                try:
+                    df[col] = df[col].astype(str).apply(self._process_text)
+                    self.logger.debug(f"Processed column: {col}")
+                except Exception as e:
+                    self.logger.error(f"Error processing column {col}: {e}", exc_info=True)
+            else:
+                self.logger.warning(f"Column {col} not found in DataFrame.")
 
         self.logger.info(f"Processed emoji and slang normalization for columns: {self.text_columns}")
         return df
@@ -44,15 +51,22 @@ class EmojiSlangHandler:
     def _process_text(self, text):
         """Replaces slang and converts emojis for a single text entry."""
         if not isinstance(text, str):
+            self.logger.debug(f"Non-string value encountered: {text}")
             return text  # Return as-is if not a string
 
-        # Tokenize while preserving punctuation (better than simple .split())
-        tokens = re.findall(r'\b\w+\b|[^\w\s]', text)
+        try:
+            # Tokenize while preserving punctuation (better than simple .split())
+            tokens = re.findall(r'\b\w+\b|[^\w\s]', text)
 
-        # Replace slang words efficiently
-        tokens = [self.slang_dict.get(word.lower(), word) for word in tokens]
+            # Replace slang words efficiently
+            tokens = [self.slang_dict.get(word.lower(), word) for word in tokens]
 
-        # Convert emojis to text representation
-        tokens = [emoji.demojize(word) for word in tokens]
+            # Convert emojis to text representation
+            tokens = [emoji.demojize(word) for word in tokens]
 
-        return " ".join(tokens)
+            processed_text = " ".join(tokens)
+            self.logger.debug(f"Processed text: {processed_text}")
+            return processed_text
+        except Exception as e:
+            self.logger.error(f"Error processing text: {text}. Error: {e}", exc_info=True)
+            return text  # Return original text if an error occurs

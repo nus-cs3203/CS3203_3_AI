@@ -9,6 +9,7 @@ class MissingValueHandler:
         :param critical_columns: List of columns that must not have missing values.
         """
         self.critical_columns = critical_columns or []  # Ensure it's a list
+        logging.basicConfig(level=logging.WARNING)
         self.logger = logging.getLogger(__name__)
 
     def process(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -18,6 +19,14 @@ class MissingValueHandler:
         :param df: Pandas DataFrame containing data.
         :return: DataFrame with rows having missing critical values removed.
         """
+        if df is None:
+            self.logger.error("Input DataFrame is None.")
+            raise ValueError("Input DataFrame cannot be None.")
+
+        if not isinstance(df, pd.DataFrame):
+            self.logger.error("Input is not a pandas DataFrame.")
+            raise TypeError("Input must be a pandas DataFrame.")
+
         if df.empty:
             self.logger.warning("DataFrame is empty. No missing value handling applied.")
             return df
@@ -33,13 +42,13 @@ class MissingValueHandler:
             return df
 
         before_rows = len(df)
-        df = df.dropna(subset=valid_columns).copy()  # Avoid modifying original DataFrame
+        df = df.dropna(subset=valid_columns)
         after_rows = len(df)
 
         removed_rows = before_rows - after_rows
         if removed_rows > 0:
-            self.logger.debug(f"Removed {removed_rows} rows with missing values in {valid_columns}")
+            self.logger.info(f"Removed {removed_rows} rows with missing values in {valid_columns}")
         else:
-            self.logger.debug("No missing values found in the specified critical columns.")
+            self.logger.info("No missing values found in the specified critical columns.")
 
         return df
