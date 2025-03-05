@@ -18,13 +18,16 @@ class LengthValidator(BaseValidationHandler):
         self.text_cols = text_cols  # e.g., {"name": (3, 50), "description": (10, 200)}
         self.logger = logger
         self.log_valid = log_valid  # Reduce log spam by default
-        self.next_handler: Optional[BaseValidationHandler] = None  # Next validator in the chain
+        self.is_valid = True
+        self._next_handler: Optional[BaseValidationHandler] = None  # Next validator in the chain
 
-    def set_next(self, handler: 'BaseValidationHandler') -> 'BaseValidationHandler':
+    def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
         """
-        Sets the next handler in the chain.
+        Sets the next handler in the chain, only if validation has passed.
         """
-        self.next_handler = handler
+        if not self.is_valid:
+            raise ValueError("Cannot set next handler because the current validation failed.")
+        self._next_handler = handler
         return handler
 
     def validate(self, df: pd.DataFrame) -> dict:
@@ -41,33 +44,40 @@ class LengthValidator(BaseValidationHandler):
             if col not in df.columns:
                 warning_message = f"Warning: Column '{col}' not found in DataFrame. Skipping validation."
                 self.logger.log_warning(col, warning_message)
-                continue  # Skip missing columns
+                continue
 
-            # Ensure NaN values are treated safely
+            # Ensure valid (non-NaN) values are treated as strings and stripped
             valid_mask = df[col].notna()
-            text_lengths = df.loc[valid_mask, col].astype(str).str.len()
+            valid_texts = df.loc[valid_mask, col].astype(str).str.strip()
+            
+            # Ensure the dtype is string before measuring length
+            text_lengths = valid_texts[valid_texts != ""].str.len()
 
+            if text_lengths.empty:
+                continue  # If no valid strings exist, skip validation
+            
             # Identify invalid rows
             invalid_rows = text_lengths[~text_lengths.between(min_length, max_length)].index.tolist()
             invalid_indices.update(invalid_rows)
 
             if invalid_rows:
-                error_message = f"Column '{col}' must have length between {min_length} and {max_length}."
-                self.logger.log_failure(col, f"{error_message} Dropping {len(invalid_rows)} rows.")
+                error_message = f"Column '{col}' must have length between {min_length} and {max_length}. Found {len(invalid_rows)} invalid rows."
+                self.logger.log_failure(col, error_message)
                 errors.append(error_message)
+                self.is_valid = False
             elif self.log_valid:
                 self.logger.log_success(col)
 
-        # Drop invalid rows
-        if invalid_indices:
-            df = df.drop(index=list(invalid_indices)).reset_index(drop=True)
+        validation_result = {"success": self.is_valid, "errors": errors, "invalid_indices": list(invalid_indices)}
 
-        validation_result = {"success": not bool(errors), "errors": errors}
-
-        # Pass the cleaned DataFrame to the next handler
-        if self.next_handler:
-            next_result = self.next_handler.validate(df)
+        if not self.is_valid:
+            raise ValueError(f"Validation failed. Errors: {errors}")
+        
+        # Pass the validation result to the next handler if valid
+        if self._next_handler:
+            next_result = self._next_handler.validate(df)
             validation_result["errors"].extend(next_result.get("errors", []))
             validation_result["success"] = validation_result["success"] and next_result["success"]
+            validation_result["invalid_indices"].extend(next_result.get("invalid_indices", []))
 
         return validation_result

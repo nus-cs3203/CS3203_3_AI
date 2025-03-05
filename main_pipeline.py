@@ -25,20 +25,17 @@ SUBSET_COLUMNS = ["title", "selftext"]
 # Step 1: Preprocessing
 builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df, subset=SUBSET_COLUMNS)
 director = PreprocessingDirector(builder)
-df = director.construct_builder(df)
+director.construct_builder()
+df = builder.get_result()
 
 # Step 2: Validation
 logger = ValidatorLogger()
 validator_chain = (
     NotEmptyValidator(CRITICAL_COLUMNS, logger)
     .set_next(OnlyStringValidator(TEXT_COLUMNS, logger))
-    .set_next(LengthValidator({"title_with_desc": (5, 100)}, logger))
 )
 
-validation_result = validator_chain.validate(df)
-if not validation_result["success"]:
-    print("Validation failed:", validation_result["errors"])
-    exit(1)
+validator_chain.validate(df)
 
 # Step 3: Categorization & Post-processing
 df = categorize_complaints(df=df)
