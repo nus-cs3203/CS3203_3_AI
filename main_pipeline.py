@@ -16,24 +16,14 @@ from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 
 # Load dataset
 df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
-df.dropna(subset=["title", "selftext"], inplace=True)
-df.reset_index(drop=True, inplace=True)
-df.drop(columns=[
-    "sentiment_title_selftext_polarity", 
-    "sentiment_title_selftext_label", 
-    "sentiment_comments_polarity", 
-    "sentiment_comments_label", 
-    "Intent Category", 
-    "Domain Category"
-], inplace=True)
-df["title_with_desc"] = df["title"] + " " + df["selftext"]
 
 # Define critical and text columns
-CRITICAL_COLUMNS = ["title_with_desc"]
+CRITICAL_COLUMNS = ["title"]
 TEXT_COLUMNS = ["title_with_desc", "comments"]
+SUBSET_COLUMNS = ["title", "selftext"]
 
 # Step 1: Preprocessing
-builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df)
+builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df, subset=SUBSET_COLUMNS)
 director = PreprocessingDirector(builder)
 df = director.construct_builder(df)
 

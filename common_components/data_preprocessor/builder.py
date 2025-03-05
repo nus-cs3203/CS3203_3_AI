@@ -14,3 +14,8 @@ class PreprocessorBuilder(ABC):
     def perform_preprocessing(self):
         """Executes the preprocessing steps."""
         pass
+
+    @abstractmethod
+    def get_result(self):
+        """Returns the processed data."""
+        pass
