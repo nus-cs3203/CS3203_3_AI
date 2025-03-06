@@ -10,7 +10,6 @@ class CategoryABSAInsightDecorator(InsightDecorator):
                  category_col="Domain Category"):
         """
         Decorator to perform Aspect-Based Sentiment Analysis (ABSA) per category.
-        Logs ABSA results into a file.
         
         :param wrapped: The wrapped InsightGenerator instance.
         :param text_col: Column containing text to analyze.
@@ -37,10 +36,10 @@ class CategoryABSAInsightDecorator(InsightDecorator):
         for category, texts in category_texts.items():
             absa_results[category] = self._perform_absa(texts)
         
-        # Log ABSA results
-        self._log_absa_results(absa_results)
+        # Format ABSA results
+        formatted_absa_results = self._format_absa_results(absa_results)
         
-        insights["absa_results"] = absa_results
+        insights["absa_results"] = formatted_absa_results
         return insights
     
     def _perform_absa(self, texts):
@@ -48,11 +47,9 @@ class CategoryABSAInsightDecorator(InsightDecorator):
         sentiments = self.absa_pipeline(texts)
         return {text: sentiment["label"] for text, sentiment in zip(texts, sentiments)}
     
-    def _log_absa_results(self, absa_results):
-        """Logs ABSA results into a text file."""
-        with open("absa_results_log.txt", "a") as log_file:
-            for category, results in absa_results.items():
-                log_file.write(f"Category: {category}\n")
-                for text, sentiment in results.items():
-                    log_file.write(f"- {text[:100]}... Sentiment: {sentiment}\n")
-                log_file.write("\n")
+    def _format_absa_results(self, absa_results):
+        """Format ABSA results into the form of 'THEME, sentiment'."""
+        formatted_results = {}
+        for category, results in absa_results.items():
+            formatted_results[category] = [f"{text[:100]}, {sentiment}" for text, sentiment in results.items()]
+        return formatted_results
