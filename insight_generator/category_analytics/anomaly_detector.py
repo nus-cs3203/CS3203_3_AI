@@ -34,17 +34,14 @@ class SentimentAnomalyDetectionDecorator(InsightDecorator):
         """
         insights = self._wrapped.extract_insights(df)
 
-        # Open log file once for efficiency
-        with open(self.log_file, "w") as log_file:
-            anomalies = {}
+        anomalies = {}
 
-            for category, group in df.groupby(self.category_col):
-                anomaly_dates = self.detect_anomalies(category)
-                if anomaly_dates:
-                    anomalies[category] = anomaly_dates
-                    self.log_anomalies(log_file, category, anomaly_dates)
+        for category, group in df.groupby(self.category_col):
+            anomaly_dates = self.detect_anomalies(category)
+            if anomaly_dates:
+                anomalies[category] = anomaly_dates
 
-        insights["sentiment_anomalies"] = anomalies
+        insights["dates_with_shift"] = anomalies
         return insights
 
     def detect_anomalies(self, category):
@@ -76,16 +73,6 @@ class SentimentAnomalyDetectionDecorator(InsightDecorator):
 
         # Flag anomalies where |Z-score| > threshold
         anomaly_dates = daily_sentiment.index[np.abs(z_scores) > self.z_threshold]
+        anomaly_dates = [str(date) for date in anomaly_dates]
 
-        return anomaly_dates.tolist()
-
-    def log_anomalies(self, log_file, category, anomaly_dates):
-        """
-        Logs detected anomalies to a file.
-        :param log_file: Open file handle for logging
-        :param category: Category where anomalies were found
-        :param anomaly_dates: List of dates with detected anomalies
-        """
-        log_file.write(f"\nAnomalies detected in category: {category}\n")
-        for date in anomaly_dates:
-            log_file.write(f"- Date: {date} (Sudden sentiment shift detected!)\n")
+        return anomaly_dates
