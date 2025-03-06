@@ -1,51 +1,69 @@
 import pandas as pd
 import numpy as np
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
+from typing import Optional, List
 
-class NotEmptyValidator(ValidationHandler):
+class NotEmptyValidator(BaseValidationHandler):
     """
-    Validates that a given DataFrame column is not None, empty, or NaN.
-    Drops rows that fail validation.
+    Validates that specified DataFrame columns are not None, empty, or NaN.
     """
 
-    def __init__(self, column_names: list, logger: ValidatorLogger = None) -> None:
+    def __init__(self, column_names: List[str], logger: Optional[ValidatorLogger] = None) -> None:
+        """
+        :param column_names: List of columns to check for emptiness or NaN values.
+        :param logger: Optional logger instance. Uses default logger if not provided.
+        """
         super().__init__()
         self.column_names = column_names
-        self.logger = logger
+        self.logger = logger or ValidatorLogger()
+        self.is_valid = True
+        self._next_handler: Optional[BaseValidationHandler] = None  # Only set if validation passes
 
-    def validate(self, df: pd.DataFrame) -> pd.DataFrame:
+    def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
         """
-        Validate that the specified columns do not contain null, empty, or NaN values.
-        Invalid rows are dropped from the DataFrame.
+        Set the next handler in the chain only if the current validation has passed.
         """
-        if self.logger:
-            self.logger.log_dataframe(df)
+        if not self.is_valid:
+            raise ValueError("Cannot set next handler because the current validation failed.")
+        self._next_handler = handler
+        return handler
 
-        valid_df = df.copy()
-        for column in self.column_names:
-            if column not in valid_df.columns:
-                error_message = f"Validation failed: Column '{column}' not found in DataFrame."
-                if self.logger:
-                    self.logger.log_failure(column, error_message)
-                continue  # Skip validation for missing columns
+    def validate(self, df: pd.DataFrame) -> dict:
+        """
+        Validates that the specified columns do not contain null, empty, or NaN values.
+        """
+        self.logger.log_dataframe(df)
 
-            # Drop rows where the column is empty or NaN
-            invalid_rows = valid_df[
-                valid_df[column].isna() | 
-                (valid_df[column].astype(str).str.strip() == "")
-            ]
+        missing_cols = [col for col in self.column_names if col not in df.columns]
+        if missing_cols:
+            self.is_valid = False
+            for col in missing_cols:
+                self.logger.log_failure(col, f"Validation failed: Column '{col}' not found in DataFrame.")
+            return {"success": False, "errors": [f"Missing columns: {missing_cols}"]}
 
-            if not invalid_rows.empty:
-                error_message = f"Validation failed: '{column}' contains empty/null values. Dropping {len(invalid_rows)} rows."
-                if self.logger:
-                    self.logger.log_failure(column, error_message)
-                
-                valid_df = valid_df.drop(invalid_rows.index)  # Drop invalid rows
+        # Identify invalid rows
+        invalid_mask = df[self.column_names].isna() | (df[self.column_names].astype(str).str.strip() == "")
+        invalid_rows = df[invalid_mask.any(axis=1)]
 
-            else:
-                if self.logger:
-                    self.logger.log_success(column)
+        if not invalid_rows.empty:
+            self.is_valid = False
+            error_msg = f"Validation failed: {len(invalid_rows)} rows contain empty/null values."
+            self.logger.log_failure(", ".join(self.column_names), error_msg)
+            return {"success": False, "errors": [error_msg]}
 
-        # Return the cleaned DataFrame
-        return self._validate_next(valid_df)
+        # Log success for each validated column
+        for col in self.column_names:
+            self.logger.log_success(col)
+
+        # Pass to next handler if it exists
+        return self._validate_next(df)
+
+    def _validate_next(self, df: pd.DataFrame) -> dict:
+        """
+        Pass the DataFrame to the next handler in the chain if it exists.
+        """
+        if self._next_handler:
+            return self._next_handler.validate(df)
+
+        return {"success": True, "data": df}

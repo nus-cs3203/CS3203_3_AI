@@ -1,9 +1,10 @@
 import numpy as np
 import pandas as pd
-from common_components.data_validator.validation_handler import ValidationHandler
+from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
+from typing import Optional
 
-class NumericRangeValidator(ValidationHandler):
+class NumericRangeValidator(BaseValidationHandler):
     """
     Validates that a numeric DataFrame column is within a specified range.
     """
@@ -12,8 +13,8 @@ class NumericRangeValidator(ValidationHandler):
         self, 
         column_name: str, 
         logger: ValidatorLogger,
-        min_value: float = None, 
-        max_value: float = None, 
+        min_value: Optional[float] = None, 
+        max_value: Optional[float] = None, 
         inclusive: bool = True
     ) -> None:
         """
@@ -21,55 +22,75 @@ class NumericRangeValidator(ValidationHandler):
         :param min_value: Minimum allowed value (None for no lower bound).
         :param max_value: Maximum allowed value (None for no upper bound).
         :param logger: Logger instance.
-        :param inclusive: If True, uses <= and >= for bounds; otherwise, uses < and >.
+        :param inclusive: If True, bounds are inclusive (<=, >=); otherwise, exclusive (<, >).
         """
-        super().__init__()
         if min_value is None and max_value is None:
             raise ValueError("At least one of 'min_value' or 'max_value' must be specified.")
         
+        super().__init__()
         self.column_name = column_name
         self.min_value = min_value
         self.max_value = max_value
         self.logger = logger
         self.inclusive = inclusive
+        self.is_valid = True
+        self._next_handler: Optional[BaseValidationHandler] = None
+
+    def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
+        """
+        Set the next handler in the chain only if validation has passed.
+        """
+        if not self.is_valid:
+            raise ValueError("Cannot set next handler because the current validation failed.")
+        self._next_handler = handler
+        return handler
 
     def validate(self, df: pd.DataFrame) -> dict:
         """
         Validates that the column values fall within the specified numeric range.
-        Logs errors and drops invalid rows.
+        Logs errors but does not drop rows. Returns validation results.
         """
-        self.logger.log_dataframe(df)
+        errors = []
 
         if self.column_name not in df.columns:
-            error_message = f"Validation failed: Column '{self.column_name}' not found in DataFrame."
+            error_message = f"Column '{self.column_name}' not found in DataFrame."
             self.logger.log_failure(self.column_name, error_message)
-            return {"error": error_message}
+            self.is_valid = False
+            return {"success": False, "errors": [error_message]}
 
-        # Ensure the column is numeric
-        if not np.issubdtype(df[self.column_name].dtype, np.number):
-            error_message = f"Validation failed: '{self.column_name}' must be a numeric column."
+        # Convert column to numeric, coercing non-numeric values to NaN
+        column_data = pd.to_numeric(df[self.column_name], errors="coerce")
+
+        # Check for non-numeric values (NaNs after coercion)
+        invalid_mask = column_data.isna()
+        if invalid_mask.any():
+            error_message = f"Column '{self.column_name}' contains {invalid_mask.sum()} non-numeric values."
             self.logger.log_failure(self.column_name, error_message)
-            return {"error": error_message}
+            errors.append(error_message)
 
-        # Identify invalid rows
-        if self.inclusive:
-            invalid_rows = df[
-                ((self.min_value is not None) & (df[self.column_name] < self.min_value)) |
-                ((self.max_value is not None) & (df[self.column_name] > self.max_value))
-            ]
+        # Validate range (only if column is numeric)
+        if errors:
+            self.is_valid = False
         else:
-            invalid_rows = df[
-                ((self.min_value is not None) & (df[self.column_name] <= self.min_value)) |
-                ((self.max_value is not None) & (df[self.column_name] >= self.max_value))
-            ]
+            if self.inclusive:
+                out_of_range_mask = ((self.min_value is not None) & (column_data < self.min_value)) | \
+                                    ((self.max_value is not None) & (column_data > self.max_value))
+            else:
+                out_of_range_mask = ((self.min_value is not None) & (column_data <= self.min_value)) | \
+                                    ((self.max_value is not None) & (column_data >= self.max_value))
 
-        # Log and drop invalid rows
-        if not invalid_rows.empty:
-            error_message = f"Validation failed: '{self.column_name}' has out-of-range values in rows {list(invalid_rows.index)}."
-            self.logger.log_failure(self.column_name, error_message)
-            df = df.drop(index=invalid_rows.index).reset_index(drop=True)
-            self.logger.log_failure(self.column_name, f"Dropped {len(invalid_rows)} invalid rows.")
-        else:
-            self.logger.log_success(self.column_name)
+            if out_of_range_mask.any():
+                error_message = f"Column '{self.column_name}' has {out_of_range_mask.sum()} out-of-range values."
+                self.logger.log_failure(self.column_name, error_message)
+                errors.append(error_message)
+                self.is_valid = False
+            else:
+                self.logger.log_success(self.column_name)
 
-        return self._validate_next(df)
+        # Pass validation results to the next handler if valid
+        if self.is_valid and self._next_handler:
+            next_result = self._next_handler.validate(df)
+            errors.extend(next_result["errors"])
+            self.is_valid &= next_result["success"]
+
+        return {"success": self.is_valid, "errors": errors}

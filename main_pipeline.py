@@ -1,6 +1,6 @@
 import pandas as pd
 
-from common_components.data_preprocessor.concrete_builder_general import GeneralPreprocessorBuilder
+from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
 from common_components.data_validator.general_validators.not_empty_validator import NotEmptyValidator
 from common_components.data_validator.text_validator.length_validator import LengthValidator
@@ -16,39 +16,26 @@ from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 
 # Load dataset
 df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
-df.dropna(subset=["title", "selftext"], inplace=True)
-df.reset_index(drop=True, inplace=True)
-df.drop(columns=[
-    "sentiment_title_selftext_polarity", 
-    "sentiment_title_selftext_label", 
-    "sentiment_comments_polarity", 
-    "sentiment_comments_label", 
-    "Intent Category", 
-    "Domain Category"
-], inplace=True)
-df["title_with_desc"] = df["title"] + " " + df["selftext"]
 
 # Define critical and text columns
-CRITICAL_COLUMNS = ["title_with_desc"]
+CRITICAL_COLUMNS = ["title"]
 TEXT_COLUMNS = ["title_with_desc", "comments"]
+SUBSET_COLUMNS = ["title", "selftext"]
 
 # Step 1: Preprocessing
-builder = GeneralPreprocessorBuilder(CRITICAL_COLUMNS, TEXT_COLUMNS)
+builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df, subset=SUBSET_COLUMNS)
 director = PreprocessingDirector(builder)
-df = director.construct(df)
+director.construct_builder()
+df = builder.get_result()
 
 # Step 2: Validation
 logger = ValidatorLogger()
 validator_chain = (
     NotEmptyValidator(CRITICAL_COLUMNS, logger)
     .set_next(OnlyStringValidator(TEXT_COLUMNS, logger))
-    .set_next(LengthValidator({"title_with_desc": (5, 100)}, logger))
 )
 
-validation_result = validator_chain.validate(df)
-if not validation_result["success"]:
-    print("Validation failed:", validation_result["errors"])
-    exit(1)
+validator_chain.validate(df)
 
 # Step 3: Categorization & Post-processing
 df = categorize_complaints(df=df)

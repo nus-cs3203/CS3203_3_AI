@@ -1,6 +1,6 @@
 import pandas as pd
 from insight_generator.base_insight import BaseInsightGenerator
-from insight_generator.cluster_maker import SentimentClusteringDecorator
+from insight_generator.developer_analytics.cluster_maker import SentimentClusteringDecorator
 
 # Sample Reddit posts
 df = pd.read_csv("files/sentiment_scored_2023_data.csv")
