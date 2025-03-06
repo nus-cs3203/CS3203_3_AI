@@ -5,7 +5,7 @@ class BaseInsightGenerator(InsightGenerator):
         return {
             #"name": post["Intent Category"],
             #"summary": post.get("summary", ""),
-            #"keywords": post.get("keywords", []),
+            "keywords": post.get("keywords", []),
             #"concerns": post.get("concerns", []),
             #"suggestions": post.get("suggestions", []),
             #"sentiment": float(post["sentiment_title_selftext_label"]),

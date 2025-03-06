@@ -1,16 +1,12 @@
+import spacy
 from insight_generator.base_decorator import InsightDecorator
-from keybert import KeyBERT
-import pandas as pd
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-import string
+import pytextrank
 
-class TopicClusteringTrendDecorator(InsightDecorator):
+class KeywordsTrendDecorator(InsightDecorator):
     def __init__(self, wrapped_insight_generator, log_file="topic_trends.txt", 
-                 text_col="selftext", category_col="Domain Category", time_col="created_utc", id_col=None):
+                 text_col="title", category_col="Domain Category", time_col="created_utc", id_col=None):
         """
-        Extracts salient words per category using KeyBERT.
+        Extracts salient words per category.
         
         :param wrapped_insight_generator: Base insight generator
         :param log_file: File to log detected topics and trends
@@ -25,19 +21,8 @@ class TopicClusteringTrendDecorator(InsightDecorator):
         self.category_col = category_col
         self.time_col = time_col
         self.id_col = id_col
-        self.stop_words = set(stopwords.words('english'))
-        self.lemmatizer = WordNetLemmatizer()
-        self.keyword_extractor = KeyBERT()
-
-    def preprocess_text(self, text):
-        """Removes stopwords, punctuation, and lemmatizes text."""
-        if not text or not isinstance(text, str):
-            return ""
-        text = text.lower()
-        text = text.translate(str.maketrans('', '', string.punctuation))
-        words = word_tokenize(text)
-        words = [self.lemmatizer.lemmatize(word) for word in words if word not in self.stop_words]
-        return " ".join(words)
+        self.nlp = spacy.load("en_core_web_sm")
+        self.nlp.add_pipe("textrank")
 
     def extract_insights(self, df):
         """
@@ -46,11 +31,9 @@ class TopicClusteringTrendDecorator(InsightDecorator):
         :return: Insights with detected keywords per category
         """
         insights = self._wrapped.extract_insights(df)
-        df[self.text_col] = df[self.text_col].apply(self.preprocess_text)
-        df = df[df[self.text_col] != ""]  # Remove empty strings after preprocessing
+        df = df[df[self.text_col].notna() & (df[self.text_col] != "")]
         category_keywords = self.extract_keywords_per_category(df)
-        self.log_keywords(category_keywords)
-        insights["category_keywords"] = category_keywords
+        insights["keywords"] = category_keywords
         return insights
 
     def extract_keywords_per_category(self, df):
@@ -61,14 +44,17 @@ class TopicClusteringTrendDecorator(InsightDecorator):
         """
         category_keywords = {}
         for category, group in df.groupby(self.category_col):
-            merged_text = " ".join(group[self.text_col].tolist())
-            keywords = self.keyword_extractor.extract_keywords(merged_text, keyphrase_ngram_range=(1, 2), stop_words='english', top_n=10)
-            category_keywords[category] = [kw[0] for kw in keywords]
+            merged_text = " ".join(group[self.text_col])
+            merged_text = " ".join([word for word in merged_text.split() if "Singapore" not in word])
+            doc = self.nlp(merged_text)
+            seen_keywords = set()
+            keywords = []
+            for phrase in doc._.phrases:
+                if len(keywords) >= 5:
+                    break
+                if phrase.text not in seen_keywords:
+                    keywords.append(phrase.text)
+                    seen_keywords.add(phrase.text)
+            category_keywords[category] = keywords
         return category_keywords
 
-    def log_keywords(self, category_keywords):
-        """Logs detected keywords per category to a file."""
-        with open(self.log_file, "a") as file:
-            for category, keywords in category_keywords.items():
-                file.write(f"Category: {category}\n")
-                file.write(f"  Keywords: {', '.join(keywords)}\n")
