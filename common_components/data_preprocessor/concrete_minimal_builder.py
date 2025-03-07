@@ -9,9 +9,10 @@ from common_components.data_preprocessor.components.text_trimmer import TextTrim
 class MinimalPreprocessorBuilder(PreprocessorBuilder):
     """Concrete Builder implementing preprocessing steps for minimal preprocessing."""
 
-    def __init__(self, critical_columns, data, subset = None):
+    def __init__(self, critical_columns, data, subset = None, text_columns = None):
         self.critical_columns = critical_columns
         self.subset = subset if subset else critical_columns
+        self.text_columns = text_columns
         self.data = data
         self.reset()
 
@@ -29,11 +30,16 @@ class MinimalPreprocessorBuilder(PreprocessorBuilder):
         """Handles missing values in critical columns."""
         self.data = self.missing_value_handler.process(self.data)
 
+    def join_columns(self):
+        """Joins the subset columns into a new column."""
+        self.data = self.columns_joiner.process(self.data)
+
     def perform_preprocessing(self):
         """Executes the preprocessing steps."""
         self.remove_duplicates()
         self.handle_missing_values()
-        self.columns_joiner.process(self.data)
+        self.join_columns()
+        self.data.reset_index(drop=True, inplace=True)
         
     def get_result(self):
         """Returns the preprocessed data."""

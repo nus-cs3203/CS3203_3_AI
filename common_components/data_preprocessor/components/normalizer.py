@@ -28,6 +28,8 @@ class Normalizer:
             if not isinstance(text, str):
                 return text  # Return unchanged if not a string (e.g., NaN or non-text values)
             
+            if pd.isna(text) or text.lower() in ["none", "[deleted]"]:
+                return "[Unknown]"
             text = text.lower().strip()
             text = re.sub(r'[:;=xX8][-~]?[)DPO]', '<smiley>', text)  # Replace happy emoticons
             text = re.sub(r'[:;=][-~]?[\(\[]', '<sad>', text)  # Replace sad emoticons
