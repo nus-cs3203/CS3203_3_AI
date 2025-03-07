@@ -13,11 +13,10 @@ input_data = pd.read_csv( "tests/preprocessor/data/input.csv")
 EXPECTED_OUTPUT_FILES = [
     "tests/preprocessor/data/expected_minimal.csv",
     "tests/preprocessor/data/expected_general.csv",
-    "tests/preprocessor/data/expected_minimal.csv",
+    "tests/preprocessor/data/expected_advanced.csv",
 ]
 
 expected_minimal = pd.read_csv(EXPECTED_OUTPUT_FILES[0])
-
 expected_general = pd.read_csv(EXPECTED_OUTPUT_FILES[1])
 expected_advanced = pd.read_csv(EXPECTED_OUTPUT_FILES[2])
 
@@ -61,15 +60,16 @@ except AssertionError as e:
 
 # ADVANCED PREPROCESSOR TEST
 
-# builder = AdvancedPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, data=input_advanced, subset=SUBSET_COLUMNS, text_columns=TEXT_COLUMNS)
-# director = PreprocessingDirector(builder)
-# director.construct_builder()
-# output_advanced = builder.get_result()
+builder = AdvancedPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, data=input_data, subset=SUBSET_COLUMNS, text_columns=TEXT_COLUMNS)
+director = PreprocessingDirector(builder)
+director.construct_builder()
+output_advanced = builder.get_result()
 
-# # Compare processed data with expected output
-# try:
-#     pd.testing.assert_frame_equal(output_advanced, expected_advanced, check_dtype=True)
-#     print("Test passed for:", "AdvancedPreprocessorBuilder")
-# except AssertionError as e:
-#     print("Test failed for:", "AdvancedPreprocessorBuilder")
-#     print(e)
+# Compare processed data with expected output
+try:
+    output_advanced.equals(expected_advanced)
+    print("Test passed for:", "AdvancedPreprocessorBuilder")
+except AssertionError as e:
+    print("Test failed for:", "AdvancedPreprocessorBuilder")
+    print(e)
+
