@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import logging
 
@@ -44,6 +45,9 @@ class MissingValueHandler:
         before_rows = len(df)
         df = df.dropna(subset=valid_columns)
         after_rows = len(df)
+
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        df[numeric_cols] = df[numeric_cols].fillna(0)
 
         removed_rows = before_rows - after_rows
         if removed_rows > 0:

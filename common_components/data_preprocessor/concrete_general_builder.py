@@ -51,6 +51,7 @@ class GeneralPreprocessorBuilder(PreprocessorBuilder):
         self.join_columns()
         self.normalize_text()
         self.trim_text()
+        self.data.reset_index(drop=True, inplace=True)
 
     def get_result(self):
         """Returns the preprocessed data."""

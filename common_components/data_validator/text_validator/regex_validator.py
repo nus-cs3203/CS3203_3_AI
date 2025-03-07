@@ -27,15 +27,12 @@ class RegexValidator(BaseValidationHandler):
         self.logger = logger
         self.allow_nan = allow_nan
         self.log_sample = log_sample
-        self.is_valid = True
         self._next_handler: Optional[BaseValidationHandler] = None
 
     def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
         """
         Sets the next handler in the chain, only if validation has passed.
         """
-        if not self.is_valid:
-            raise ValueError("Cannot set next handler because the current validation failed.")
         self._next_handler = handler
         return handler
 
@@ -48,6 +45,7 @@ class RegexValidator(BaseValidationHandler):
         self.logger.log_dataframe(df)
         errors = []
 
+        # Iterate through each column and its corresponding pattern
         for col, regex in zip(self.columns, self.patterns):
             if col not in df.columns:
                 warning_message = f"Warning: Column '{col}' not found in DataFrame. Skipping validation."
@@ -71,19 +69,28 @@ class RegexValidator(BaseValidationHandler):
                 )
                 self.logger.log_failure(col, error_message)
                 errors.append(error_message)
-                self.is_valid = False
             else:
                 self.logger.log_success(col)
 
-        validation_result = {"success": self.is_valid, "errors": errors}
+        validation_result = {"success": not errors, "errors": errors}
 
-        if not self.is_valid:
+        # Raise error if validation fails
+        if errors:
             raise ValueError(f"Validation failed. Errors: {errors}")
-        
+
         # Pass to next handler if exists and validation passed
         if self._next_handler:
-            next_result = self._next_handler.validate(df)
+            next_result = self._validate_next(df)
             validation_result["errors"].extend(next_result.get("errors", []))
             validation_result["success"] = validation_result["success"] and next_result["success"]
 
         return validation_result
+
+    def _validate_next(self, df: pd.DataFrame) -> dict:
+        """
+        Pass the DataFrame to the next handler in the chain if it exists.
+        """
+        if self._next_handler:
+            return self._next_handler.validate(df)
+
+        return {"success": True}

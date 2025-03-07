@@ -17,15 +17,12 @@ class NotEmptyValidator(BaseValidationHandler):
         super().__init__()
         self.column_names = column_names
         self.logger = logger or ValidatorLogger()
-        self.is_valid = True
         self._next_handler: Optional[BaseValidationHandler] = None  # Only set if validation passes
 
     def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
         """
         Set the next handler in the chain only if the current validation has passed.
         """
-        if not self.is_valid:
-            raise ValueError("Cannot set next handler because the current validation failed.")
         self._next_handler = handler
         return handler
 
@@ -37,20 +34,19 @@ class NotEmptyValidator(BaseValidationHandler):
 
         missing_cols = [col for col in self.column_names if col not in df.columns]
         if missing_cols:
-            self.is_valid = False
             for col in missing_cols:
                 self.logger.log_failure(col, f"Validation failed: Column '{col}' not found in DataFrame.")
-            return {"success": False, "errors": [f"Missing columns: {missing_cols}"]}
-
+            raise ValueError("Current validation failed due to missing columns.")
+        
         # Identify invalid rows
-        invalid_mask = df[self.column_names].isna() | (df[self.column_names].astype(str).str.strip() == "")
+        invalid_mask = df[self.column_names].isna() | (df[self.column_names].applymap(str).applymap(str.strip) == "")
         invalid_rows = df[invalid_mask.any(axis=1)]
 
         if not invalid_rows.empty:
             self.is_valid = False
             error_msg = f"Validation failed: {len(invalid_rows)} rows contain empty/null values."
             self.logger.log_failure(", ".join(self.column_names), error_msg)
-            return {"success": False, "errors": [error_msg]}
+            raise ValueError("Current validation failed due to empty/null values.")
 
         # Log success for each validated column
         for col in self.column_names:
@@ -66,4 +62,4 @@ class NotEmptyValidator(BaseValidationHandler):
         if self._next_handler:
             return self._next_handler.validate(df)
 
-        return {"success": True, "data": df}
+        return {"success": True}

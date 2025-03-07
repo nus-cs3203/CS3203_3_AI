@@ -30,8 +30,6 @@ class AdvancedPreprocessorBuilder(PreprocessorBuilder):
         self.tokenizer = Tokenizer(text_columns=self.text_columns)
         self.stopword_remover = StopwordRemover(text_columns=self.text_columns)
         self.lemmatizer = Lemmatizer(text_columns=self.text_columns)
-        self.emoji_slang_handler = EmojiSlangHandler(text_columns=self.text_columns)
-        self.encoder = TextEncoder(text_columns=self.text_columns)
 
     def join_columns(self):
         """Joins text columns."""
@@ -65,10 +63,6 @@ class AdvancedPreprocessorBuilder(PreprocessorBuilder):
         """Applies lemmatization."""
         self.data = self.lemmatizer.process(self.data)
 
-    def encode_text(self):
-        """Encodes text columns."""
-        self.data = self.encoder.process(self.data)
-
     def tokenize_text(self):
         """Tokenises text columns."""
         self.data = self.tokenizer.process(self.data)
@@ -80,11 +74,10 @@ class AdvancedPreprocessorBuilder(PreprocessorBuilder):
         self.join_columns()
         self.normalize_text()
         self.trim_text()
-        self.handle_slang_and_emojis()
         self.remove_stopwords()
         self.lemmatize()
-        self.encode_text()
         self.tokenize_text()
+        self.data.reset_index(drop=True, inplace=True)
 
     def get_result(self):
         """Returns the preprocessed data."""
