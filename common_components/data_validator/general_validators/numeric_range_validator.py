@@ -2,23 +2,23 @@ import numpy as np
 import pandas as pd
 from common_components.data_validator.base_handler import BaseValidationHandler
 from common_components.data_validator.validator_logger import ValidatorLogger
-from typing import Optional
+from typing import Optional, List
 
 class NumericRangeValidator(BaseValidationHandler):
     """
-    Validates that a numeric DataFrame column is within a specified range.
+    Validates that numeric DataFrame columns are within a specified range.
     """
 
     def __init__(
         self, 
-        column_name: str, 
+        column_names: List[str], 
         logger: ValidatorLogger,
         min_value: Optional[float] = None, 
         max_value: Optional[float] = None, 
         inclusive: bool = True
     ) -> None:
         """
-        :param column_name: The column to validate.
+        :param column_names: The columns to validate.
         :param min_value: Minimum allowed value (None for no lower bound).
         :param max_value: Maximum allowed value (None for no upper bound).
         :param logger: Logger instance.
@@ -28,20 +28,17 @@ class NumericRangeValidator(BaseValidationHandler):
             raise ValueError("At least one of 'min_value' or 'max_value' must be specified.")
         
         super().__init__()
-        self.column_name = column_name
+        self.column_names = column_names
         self.min_value = min_value
         self.max_value = max_value
         self.logger = logger
         self.inclusive = inclusive
-        self.is_valid = True
         self._next_handler: Optional[BaseValidationHandler] = None
 
     def set_next(self, handler: BaseValidationHandler) -> BaseValidationHandler:
         """
         Set the next handler in the chain only if validation has passed.
         """
-        if not self.is_valid:
-            raise ValueError("Cannot set next handler because the current validation failed.")
         self._next_handler = handler
         return handler
 
@@ -50,28 +47,19 @@ class NumericRangeValidator(BaseValidationHandler):
         Validates that the column values fall within the specified numeric range.
         Logs errors but does not drop rows. Returns validation results.
         """
+        self.logger.log_dataframe(df)
         errors = []
 
-        if self.column_name not in df.columns:
-            error_message = f"Column '{self.column_name}' not found in DataFrame."
-            self.logger.log_failure(self.column_name, error_message)
-            self.is_valid = False
-            return {"success": False, "errors": [error_message]}
+        for column_name in self.column_names:
+            if column_name not in df.columns:
+                error_message = f"Column '{column_name}' not found in DataFrame."
+                self.logger.log_failure(column_name, error_message)
+                raise ValueError("Current validation failed due to missing column(s).")
 
-        # Convert column to numeric, coercing non-numeric values to NaN
-        column_data = pd.to_numeric(df[self.column_name], errors="coerce")
+            # Replace nan (not responsibility of this validator) with min_value 
+            column_data = df[column_name].replace(np.nan, self.min_value)
 
-        # Check for non-numeric values (NaNs after coercion)
-        invalid_mask = column_data.isna()
-        if invalid_mask.any():
-            error_message = f"Column '{self.column_name}' contains {invalid_mask.sum()} non-numeric values."
-            self.logger.log_failure(self.column_name, error_message)
-            errors.append(error_message)
-
-        # Validate range (only if column is numeric)
-        if errors:
-            self.is_valid = False
-        else:
+            # Validate range (only if column is numeric)
             if self.inclusive:
                 out_of_range_mask = ((self.min_value is not None) & (column_data < self.min_value)) | \
                                     ((self.max_value is not None) & (column_data > self.max_value))
@@ -80,17 +68,21 @@ class NumericRangeValidator(BaseValidationHandler):
                                     ((self.max_value is not None) & (column_data >= self.max_value))
 
             if out_of_range_mask.any():
-                error_message = f"Column '{self.column_name}' has {out_of_range_mask.sum()} out-of-range values."
-                self.logger.log_failure(self.column_name, error_message)
+                error_message = f"Column '{column_name}' has {out_of_range_mask.sum()} out-of-range values."
+                self.logger.log_failure(column_name, error_message)
                 errors.append(error_message)
-                self.is_valid = False
+                raise ValueError(error_message)
             else:
-                self.logger.log_success(self.column_name)
+                self.logger.log_success(column_name)
 
-        # Pass validation results to the next handler if valid
-        if self.is_valid and self._next_handler:
-            next_result = self._next_handler.validate(df)
-            errors.extend(next_result["errors"])
-            self.is_valid &= next_result["success"]
+        # Pass validation to the next handler if valid
+        return self._validate_next(df)
 
-        return {"success": self.is_valid, "errors": errors}
+    def _validate_next(self, df: pd.DataFrame) -> dict:
+        """
+        Pass the DataFrame to the next handler in the chain if it exists.
+        """
+        if self._next_handler:
+            return self._next_handler.validate(df)
+
+        return {"success": True}
