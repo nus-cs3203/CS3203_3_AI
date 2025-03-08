@@ -28,13 +28,12 @@ class TopicSentimentForecastDecorator(InsightDecorator):
     
     def extract_insights(self, df):
         """Processes DataFrame and appends sentiment forecasts per category."""
-        insights = self._wrapped.extract_insights(df)
-
         if self.category_col not in self.historical_data.columns:
             raise ValueError(f"Column '{self.category_col}' not found in historical_data!")
 
         sentiment_forecasts = {}
         log_lines = []
+        forecast_data = []  # List to hold forecast data for the DataFrame
 
         categories = df[self.category_col].unique()
         for category in categories:
@@ -55,12 +54,20 @@ class TopicSentimentForecastDecorator(InsightDecorator):
             log_lines.append("Sample Posts:")
             log_lines.extend([f"- {text}" for text in sample_texts])
 
+            # Append data for the DataFrame
+            forecast_data.append({
+                "category": category,
+                "sentiment_predicted": forecast_label,
+                "sentiment_score_predicted": forecast_score
+            })
+
         # Write logs in batch for efficiency
         with open(self.log_file, "w") as log_file:
             log_file.write("\n".join(log_lines))
 
-        insights["sentiment_forecasts"] = sentiment_forecasts
-        return insights
+        # Convert forecast data to DataFrame and return
+        forecast_df = pd.DataFrame(forecast_data)
+        return forecast_df
 
     def forecast_sentiment(self, category):
         """Uses Prophet to forecast sentiment for a given category."""
@@ -95,6 +102,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         
         # Extract last forecasted sentiment and confidence interval
         forecasted_sentiment = forecast["yhat"].iloc[-1]
+        forecasted_sentiment = max(-1, min(forecasted_sentiment, 1))
         conf_interval = (forecast["yhat_lower"].iloc[-1], forecast["yhat_upper"].iloc[-1])
 
         # Classify sentiment
