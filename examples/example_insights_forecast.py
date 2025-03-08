@@ -4,10 +4,10 @@ from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.category_analytics.sentiment_forecaster import TopicSentimentForecastDecorator
 
 # Sample historical sentiment data
-historical_data = pd.read_csv("files/sentiment_scored_2023_data.csv")
+historical_data = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv")
+df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
 
 # Apply decorator
 base_generator = BaseInsightGenerator()
