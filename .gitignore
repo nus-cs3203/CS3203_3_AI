@@ -95,3 +95,6 @@ results/
 # Custom files
 filtered_singapore_submissions_with_comments.csv
 command.txt
+
+# Exceptions - allow specific CSV files
+!csv_results/*.csv
