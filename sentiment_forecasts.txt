@@ -1,0 +1,6 @@
+
+Category: Education, Forecasted Score: 0.0000
+Confidence Interval: (0.0, 0.0)
+
+Category: Environment, Forecasted Score: 0.0000
+Confidence Interval: (0.0, 0.0)

@@ -9,7 +9,7 @@ test_data = {
             "source": "Reddit",
             "category": "Education",
             "date": datetime.utcfromtimestamp(1677649200).isoformat(),
-            "sentiment": -0.5,
+            "sentiment": 8,  # Use 'score' as sentiment
             "description": "The education system needs improvement",
             "url": "https://reddit.com/post1"
         },
@@ -18,7 +18,7 @@ test_data = {
             "source": "Reddit",
             "category": "Environment",
             "date": datetime.utcfromtimestamp(1677649300).isoformat(),
-            "sentiment": 0.8,
+            "sentiment": 15,  # Use 'score' as sentiment
             "description": "Today is such a beautiful day",
             "url": "https://reddit.com/post2"
         }
