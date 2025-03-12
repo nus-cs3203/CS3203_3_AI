@@ -6,7 +6,7 @@ class DistilRobertaClassifier(SentimentClassifier):
     """Concrete Strategy - Uses emotion classifier on DataFrame columns."""
     
     def __init__(self, model_name="j-hartmann/emotion-english-distilroberta-base"):
-        self.model = pipeline("text-classification", model=model_name, return_all_scores=True)
+        self.model = pipeline("text-classification", model=model_name, return_all_scores=True, truncation=True)
 
     def classify(self, df: pd.DataFrame, text_cols: list) -> pd.DataFrame:
         df = df.copy()  # Avoid modifying the original DataFrame
@@ -15,7 +15,7 @@ class DistilRobertaClassifier(SentimentClassifier):
             results = df[col].astype(str).apply(self._predict_emotion)
             
             df[col + "_emotion"] = results.apply(lambda r: r["emotion"])  # Store top emotion
-            df[col + "_confidence"] = results.apply(lambda r: r["confidence"])  # Store confidence score
+            df[col + "_score"] = results.apply(lambda r: r["confidence"])  # Store confidence score
 
         return df
     
