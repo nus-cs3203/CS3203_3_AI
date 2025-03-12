@@ -1,0 +1,27 @@
+name: Deploy RepoSense report
+
+on:
+# For active deployment on push to main branch
+  push:
+    branches:
+      - main
+
+# For scheduled deployment with Cron Jobs.
+## Examples of cron schedule expressions:
+### '0 * * * *': hourly
+### '0 0 * * *': daily
+### '0 0 1 * *': monthly
+#   schedule:
+#     - cron:  '0 0 * * *'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: reposense/reposense-action@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} # Required
+        version: 'release' # Optional | Default: release | Other: master/tag v1.6.1/etc
+        configDirectory: 'configs' # Optional | Default: configs
+        service: 'gh-pages' # Optional | Default: gh-pages | Other: surge
+        domain: '' # Optional (Required if service = surge) | Default: '' | Other: '<subDomain>.surge.sh'
