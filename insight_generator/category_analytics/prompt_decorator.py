@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class PromptGeneratorDecorator(InsightDecorator):
-    def __init__(self, wrapped, category_col="Domain Category", log_file="poll_prompts_log.txt"):
+    def __init__(self, wrapped, category_col="category", log_file="poll_prompts_log.txt"):
         """
         Generates poll prompts based on extracted insights using an LLM.
 
@@ -31,7 +31,7 @@ class PromptGeneratorDecorator(InsightDecorator):
         insights = self._wrapped.extract_insights(df)
 
         # Ensure required columns exist
-        required_cols = {"title", "selftext", self.category_col}
+        required_cols = {"title", "description", self.category_col}
         missing_cols = required_cols - set(df.columns)
         if missing_cols:
             raise ValueError(f"Missing required columns: {missing_cols}")
@@ -42,8 +42,8 @@ class PromptGeneratorDecorator(InsightDecorator):
         status_entries = []
 
         for category, group in df.groupby(self.category_col):
-            group["title_selftext"] = group["title"].fillna("") + " " + group["selftext"].fillna("")
-            combined_text = " ".join(group["title_selftext"].dropna())
+            group["title_with_desc"] = group["title"].fillna("") + " " + group["description"].fillna("")
+            combined_text = " ".join(group["title_with_desc"].dropna())
 
             if combined_text.strip():
                 poll_prompt = self.generate_poll_prompt(category, combined_text)
@@ -78,7 +78,7 @@ class PromptGeneratorDecorator(InsightDecorator):
         **Output Format:**
         ```
         Question: [A concise, relevant question based strictly on the provided discussions]
-        Question Type: [MCQ / Single answer / Scale / Open-ended]
+        Question Type: [MCQ / Open-ended]
         Answers: [Options, if applicable]
         Reason: [Why this poll is useful + trends from given data that makes this post relevant]
         ```

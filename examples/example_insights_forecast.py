@@ -1,17 +1,46 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.category_analytics.sentiment_forecaster import TopicSentimentForecastDecorator
 
-# Sample historical sentiment data
-historical_data = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
+# Load historical data
+historical_data = pd.read_csv("files/2022_2025_merged.csv")
+
+# Convert to datetime
+historical_data["date"] = pd.to_datetime(historical_data["date"], errors="coerce")
+
+# Group by week and category, then aggregate sentiment scores
+aggregated_data = historical_data.groupby([pd.Grouper(key="date", freq="m"), "domain_category"])["sentiment"].mean().reset_index()
+
+# Plot sentiment trends
+plt.figure(figsize=(12, 6))
+categories = aggregated_data["domain_category"].unique()
+for category in categories:
+    category_data = aggregated_data[aggregated_data["domain_category"] == category]
+    
+    if len(category_data) < 10:
+        continue  # Skip categories with too few data points
+
+    plt.plot(category_data["date"], category_data["sentiment"], label=category)
+
+plt.xlabel("Date")
+plt.ylabel("Sentiment Score")
+plt.title("Sentiment Trends by Category")
+plt.legend()
+plt.show()
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
+df = pd.read_csv("files/2022_2025_merged.csv")
+# Check if there is data for each category
+category_counts = df['domain_category'].value_counts()
+print(category_counts)
 
-# Apply decorator
+# Apply decorators
 base_generator = BaseInsightGenerator()
-forecast_decorator = TopicSentimentForecastDecorator(base_generator, historical_data)
-insights = forecast_decorator.extract_insights(df)
 
-print(insights)
+# Forecasted insights
+forecast_decorator = TopicSentimentForecastDecorator(base_generator)  # Pass instance, not class
+forecast_insights = forecast_decorator.extract_insights(df)
+
+print(forecast_insights)

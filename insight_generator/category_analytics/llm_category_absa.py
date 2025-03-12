@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
-    def __init__(self, wrapped, text_col=None, category_col="Domain Category", max_tokens=3000):
+    def __init__(self, wrapped, text_col=None, category_col="domain_category", max_tokens=3000):
         super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")
@@ -19,11 +19,11 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
 
     def extract_insights(self, df):
         if self.text_col is None:
-            if {"title", "selftext"}.issubset(df.columns):
-                df["title_selftext"] = df["title"].astype(str) + " " + df["selftext"].astype(str)
-                self.text_col = "title_selftext"
+            if {"title", "description"}.issubset(df.columns):
+                df["title_with_desc"] = df["title"].astype(str) + " " + df["description"].astype(str)
+                self.text_col = "title_with_desc"
             else:
-                raise KeyError("Missing required text columns: title and selftext")
+                raise KeyError("Missing required text columns: title and description")
 
         absa_data = []
         with open("category_absa_log.txt", "w", encoding="utf-8") as log_file:
@@ -40,7 +40,7 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
                 
                 absa_data.append({
                     self.category_col: category,
-                    "absa_results": category_results,
+                    "absa_result": category_results,
                     "keywords": list(keywords)
                 })
                 log_file.write(f"Category: {category}\nABSA: {category_results}\nKeywords: {list(keywords)}\n\n")
