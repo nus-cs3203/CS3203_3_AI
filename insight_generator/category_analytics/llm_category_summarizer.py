@@ -31,14 +31,15 @@ class CategorySummarizerDecorator(InsightDecorator):
         with open("category_summaries_log.txt", "w", encoding="utf-8") as log_file:
             for category, group in df.groupby(self.category_col):
                 combined_text = " ".join(group[self.text_col].dropna().astype(str))
-
+                combined_sentiment = group["sentiment"].mean()
                 if combined_text.strip():
                     summary_result = self.generate_summary(combined_text)
                     summary_data.append({
                         self.category_col: category,
                         "summary": summary_result.get("summary", "No summary available"),
                         "concerns": summary_result.get("concerns", []),
-                        "suggestions": summary_result.get("suggestions", [])
+                        "suggestions": summary_result.get("suggestions", []),
+                        "sentiment": combined_sentiment
                     })
                     log_file.write(f"Category: {category}\nSummary: {summary_result}\n\n")
 
@@ -78,6 +79,8 @@ class CategorySummarizerDecorator(InsightDecorator):
             summary = "No summary available"
             concerns = []
             suggestions = []
+
+            
             
             sections = result_text.split("\n\n")  # Split sections by double newlines
             for section in sections:
