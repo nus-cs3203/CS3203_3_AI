@@ -1,6 +1,6 @@
 import pandas as pd
 from insight_generator.base_insight import BaseInsightGenerator
-from insight_generator.llm_analysers.prompt_decorator import PromptGeneratorDecorator
+from insight_generator.category_analytics.prompt_decorator import PromptGeneratorDecorator
 
 # Sample Reddit posts
 df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(10)

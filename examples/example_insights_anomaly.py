@@ -1,6 +1,6 @@
 import pandas as pd
 from insight_generator.base_insight import BaseInsightGenerator
-from insight_generator.category_analytics.anomaly_detector import SentimentAnomalyDetectionDecorator
+from insight_generator.developer_analytics.anomaly_detector import SentimentAnomalyDetectionDecorator
 
 # Sample historical sentiment data
 historical_data = pd.read_csv("files/sentiment_scored_2023_data.csv")

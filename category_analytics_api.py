@@ -1,0 +1,121 @@
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, validator
+from typing import List
+import pandas as pd
+import requests
+from datetime import datetime
+
+# Import all necessary functions from main_pipeline
+from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
+from common_components.data_preprocessor.director import PreprocessingDirector
+from common_components.data_validator.general_validators.not_empty_validator import NotEmptyValidator
+from common_components.data_validator.text_validator.only_string_validator import OnlyStringValidator
+from common_components.data_validator.validator_logger import ValidatorLogger
+
+from insight_generator.base_insight import BaseInsightGenerator
+from insight_generator.category_analytics.sentiment_forecaster import TopicSentimentForecastDecorator
+from insight_generator.category_analytics.llm_category_absa import CategoryABSAWithLLMInsightDecorator
+from insight_generator.category_analytics.llm_category_summarizer import CategorySummarizerDecorator
+
+app = FastAPI()
+
+class DateRangeRequest(BaseModel):
+    start_date: str  # Format: "dd-mm-yyyy HH:MM:SS"
+    end_date: str    # Format: "dd-mm-yyyy HH:MM:SS"
+
+    @validator("start_date", "end_date")
+    def validate_date_format(cls, value):
+        try:
+            datetime.strptime(value, "%d-%m-%Y %H:%M:%S")
+        except ValueError:
+            raise ValueError("Incorrect date format, should be 'dd-mm-yyyy HH:MM:SS'")
+        return value
+
+def fetch_complaints(start_date: str, end_date: str):
+    """Fetch complaints from backend API."""
+    try:
+        datetime.strptime(start_date, "%d-%m-%Y %H:%M:%S")
+        datetime.strptime(end_date, "%d-%m-%Y %H:%M:%S")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format, should be 'dd-mm-yyyy HH:MM:SS'")
+
+    url = "http://localhost:8083/complaints/get_by_daterange"
+    headers = {"Content-Type": "application/json"}
+    payload = {"start_date": start_date, "end_date": end_date}
+    
+    response = requests.post(url, json=payload, headers=headers)
+    
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to fetch complaints")
+    
+    return response.json()["complaints"]  # Ensure backend response has a 'complaints' key
+
+@app.post("/generate_category_analytics")
+async def generate_category_analytics(request: DateRangeRequest):
+    try:
+        # Fetch complaints from backend
+        complaints = fetch_complaints(request.start_date, request.end_date)
+        if not complaints:
+            return {"category_analytics": []}  # Return empty if no complaints
+
+        # Convert to DataFrame
+        df = pd.DataFrame(complaints)
+        df["title_with_desc"] = df["title"] + " " + df["description"]
+        if ("category" in df.columns):
+            df.rename(columns={"category": "domain_category"}, inplace=True)
+
+        # Define critical and text columns
+        CRITICAL_COLUMNS = ["title_with_desc", "sentiment"]
+        TEXT_COLUMNS = ["title_with_desc"]
+
+        # Preprocessing
+        builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df, subset=TEXT_COLUMNS)
+        director = PreprocessingDirector(builder)
+        director.construct_builder()
+        df = builder.get_result()
+
+        # Validation
+        logger = ValidatorLogger()
+        validator_chain = (
+            NotEmptyValidator(CRITICAL_COLUMNS, logger)
+            .set_next(OnlyStringValidator(TEXT_COLUMNS, logger))
+        )
+        validator_chain.validate(df)
+
+        # Apply insight decorators
+        base_generator = BaseInsightGenerator()
+        forecast_insights = TopicSentimentForecastDecorator(base_generator).extract_insights(df)
+        absa_insights = CategoryABSAWithLLMInsightDecorator(base_generator).extract_insights(df)
+        summary_insights = CategorySummarizerDecorator(base_generator).extract_insights(df)
+
+        # Merge insights
+        insights = absa_insights.merge(forecast_insights, on='domain_category', how='outer').merge(summary_insights, on='domain_category', how='outer')
+
+        # Format response
+        categories_analysis = []
+        for _, row in insights.iterrows():
+            category_analysis = {
+                "summary": row.get("summary", ""),
+                "keywords": row.get("keywords", []),
+                "concerns": row.get("concerns", []),
+                "suggestions": row.get("suggestions", []),
+                "sentiment": float(row["sentiment"]),
+                "forecasted_sentiment": row.get("forecasted_sentiment", 0.0),
+                "absa_result": row.get("absa_result", [])
+            }
+            categories_analysis.append(category_analysis)
+
+        return {"category_analytics": categories_analysis}
+
+    except Exception as e:
+        import traceback
+        error_detail = {
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+        print("Error occurred:", error_detail)
+        raise HTTPException(status_code=500, detail=error_detail)
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
