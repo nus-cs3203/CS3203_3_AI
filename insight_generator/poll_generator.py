@@ -2,19 +2,16 @@ import os
 import google.generativeai as genai
 import pandas as pd
 from dotenv import load_dotenv
-from insight_generator.base_decorator import InsightDecorator
 
-class PromptGeneratorDecorator(InsightDecorator):
-    def __init__(self, wrapped, category_col="category", log_file="poll_prompts_log.txt"):
+class PromptGeneratorDecorator():
+    def __init__(self, category_col="domain_category", log_file="poll_prompts_log.txt"):
         """
         Generates poll prompts based on extracted insights using an LLM.
 
         Args:
-        - wrapped: Base Insight Generator
         - category_col: Column containing categories.
         - log_file: File to log generated poll prompts.
         """
-        super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")
 
@@ -28,7 +25,6 @@ class PromptGeneratorDecorator(InsightDecorator):
 
     def extract_insights(self, df):
         """Processes DataFrame and generates poll prompts per category."""
-        insights = self._wrapped.extract_insights(df)
 
         # Ensure required columns exist
         required_cols = {"title", "description", self.category_col}
@@ -37,9 +33,7 @@ class PromptGeneratorDecorator(InsightDecorator):
             raise ValueError(f"Missing required columns: {missing_cols}")
 
         # Group posts by category and generate poll prompts
-        polls_by_category = {}
-        log_entries = []
-        status_entries = []
+        polls_data = []
 
         for category, group in df.groupby(self.category_col):
             group["title_with_desc"] = group["title"].fillna("") + " " + group["description"].fillna("")
@@ -47,23 +41,15 @@ class PromptGeneratorDecorator(InsightDecorator):
 
             if combined_text.strip():
                 poll_prompt = self.generate_poll_prompt(category, combined_text)
-                polls_by_category[category] = poll_prompt
-                log_entries.append(f"Category: {category}\nPoll Prompt: {poll_prompt}\n\n")
-                status_entries.append(f"{category}: Poll Generated")
-            else:
-                status_entries.append(f"{category}: No Poll Generated")
+                polls_data.append({
+                    "category": category,
+                    "question": poll_prompt.get("question", ""),
+                    "question_type": poll_prompt.get("question_type", ""),
+                    "options": poll_prompt.get("options", []),
+                    "reasoning": poll_prompt.get("reasoning", "")
+                })
 
-        # Write to log file
-        if log_entries:
-            with open(self.log_file, "a", encoding="utf-8") as log_file:
-                log_file.writelines(log_entries)
-
-        # Print summary of poll generation status
-        print("\nPoll Generation Status:")
-        for status in status_entries:
-            print(status)
-
-        insights["polls_by_category"] = polls_by_category
+        insights = pd.DataFrame(polls_data)
         return insights
     
     def generate_poll_prompt(self, category, text):
@@ -71,17 +57,15 @@ class PromptGeneratorDecorator(InsightDecorator):
         user_prompt = f"""
         You are a Reddit poll generator for discussions in the category: **{category}**.
 
-        Based **only** on the following Reddit discussions, generate **one** poll question:
+        Based **only** on the following Reddit discussions, generate **two** poll questions:
 
         "{text}"
 
-        **Output Format:**
-        ```
-        Question: [A concise, relevant question based strictly on the provided discussions]
-        Question Type: [MCQ / Open-ended]
-        Answers: [Options, if applicable]
-        Reason: [Why this poll is useful + trends from given data that makes this post relevant]
-        ```
+        **Output Format (each in new line, without any extra formatting or markdown like ```):**
+        [A concise, relevant question based strictly on the provided discussions]
+        [MCQ / Open-ended]
+        [Options, if applicable]
+        [Why this poll is useful + trends from given data that makes this post relevant]
 
         **Rules:**
         - Stick strictly to the category and the given text.
@@ -93,6 +77,27 @@ class PromptGeneratorDecorator(InsightDecorator):
 
         try:
             response = self.model.generate_content(user_prompt)
-            return response.text.strip() if response else "No poll generated."
+            if response:
+                # Parse the response text to extract the required fields
+                lines = [line.strip() for line in response.text.strip().split("\n") if line.strip() and not line.startswith("```")]
+                
+                return {
+                    "question": lines[0] if len(lines) > 0 else "",
+                    "question_type": lines[1] if len(lines) > 1 else "",
+                    "options": lines[2].split(",") if len(lines) > 2 else [],
+                    "reasoning": lines[3] if len(lines) > 3 else ""
+                }
+            else:
+                return {
+                    "question": "No poll generated.",
+                    "question_type": "",
+                    "options": [],
+                    "reasoning": ""
+                }
         except Exception as e:
-            return f"Poll generation failed: {str(e)}"
+            return {
+                "question": f"Poll generation failed: {str(e)}",
+                "question_type": "",
+                "options": [],
+                "reasoning": ""
+            }

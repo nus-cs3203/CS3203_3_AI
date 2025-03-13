@@ -1,13 +1,11 @@
 import pandas as pd
-from insight_generator.base_insight import BaseInsightGenerator
-from insight_generator.category_analytics.prompt_decorator import PromptGeneratorDecorator
+from insight_generator.poll_generator import PromptGeneratorDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(10)
+df = pd.read_csv("files/2022_2025_merged.csv")
 
 # Apply decorator
-base_generator = BaseInsightGenerator()
-prompt_decorator = PromptGeneratorDecorator(base_generator)
+prompt_decorator = PromptGeneratorDecorator()
 insights = prompt_decorator.extract_insights(df)
-
-print(insights)
+print(insights.head(5))
+insights.to_csv("files/poll_prompts_20225.csv", index=False)

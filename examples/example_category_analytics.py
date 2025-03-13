@@ -5,8 +5,9 @@ from insight_generator.category_analytics.llm_category_absa import CategoryABSAW
 from insight_generator.category_analytics.llm_category_summarizer import CategorySummarizerDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/2022_2025_merged.csv").tail(100)
+df = pd.read_csv("files/2022_2025_merged.csv")
 df.dropna(subset=["title"], inplace=True)
+df = df.head(100)
 
 
 # Apply decorators
