@@ -3,7 +3,7 @@ from insight_generator.insight_interface import InsightGenerator
 class BaseInsightGenerator(InsightGenerator):
     def extract_insights(self, post):
         return {
-            "name": post["Intent Category"],
+            "name": post["domain_category"],
             "summary": post.get("summary", ""),
             "keywords": post.get("keywords", []),
             "concerns": post.get("concerns", []),
