@@ -1,11 +1,28 @@
 import pandas as pd
+from datetime import datetime
+import os
+
+def standardize_date(date_str):
+    try:
+        if str(date_str).isdigit():
+            return datetime.fromtimestamp(int(date_str)).strftime('%Y-%m-%d %H:%M:%S')
+        return pd.to_datetime(date_str).strftime('%Y-%m-%d %H:%M:%S')
+    except:
+        return None
 
 def post_process_data(input_csv=None, output_csv=None, df=None):
     if input_csv is not None:
-        # Read the CSV file
+        if not os.path.exists(input_csv):
+            raise FileNotFoundError("The input file does not exist")
+        if os.path.getsize(input_csv) == 0:
+            raise ValueError("The input file is empty")
         df = pd.read_csv(input_csv)
     elif df is None:
         raise ValueError("Either input_csv or df must be provided")
+    
+    # Standardize date format if a date column exists
+    if 'date' in df.columns:
+        df['date'] = df['date'].apply(standardize_date)
     
     # Define the list of valid domain categories
     valid_categories = [
@@ -20,8 +37,14 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
         lambda x: x if x in valid_categories else "Others"
     )
     
+    # Filter out entries where intent_category is 'No'
+    if 'Intent Category' in df.columns:
+        df = df[df['Intent Category'] == 'Yes']
+    
+    # Reset index after filtering
+    df = df.reset_index(drop=True)
+    
     if output_csv:
-        # Save the processed DataFrame to a new CSV file
         df.to_csv(output_csv, index=False)
         print(f"Post-processing complete. Results saved to {output_csv}")
     
