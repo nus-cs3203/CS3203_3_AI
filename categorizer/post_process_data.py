@@ -71,7 +71,8 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     df['confidence'] = df['Confidence Score']  # Include confidence score
     
     # Select and reorder columns to match the schema, excluding non-existent columns
-    output_columns = ['id', 'title', 'description', 'category', 'date', 'sentiment_by_vader', 'sentiment', 'importance', 'url', 'source', 'confidence']
+    output_columns = ['id', 'title', 'description', 'category', 
+                      'sentiment', 'confidence', 'importance', 'sentiment_by_vader', 'url', 'source','date']
     output_df = df[output_columns]
 
     if output_csv:
