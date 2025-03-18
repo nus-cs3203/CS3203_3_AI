@@ -52,17 +52,27 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     # Reset index after filtering
     df = df.reset_index(drop=True)
     
+    # Add new columns for sentiment and importance
+    df['Sentiment Score'] = df['Sentiment Score']
+    df['Importance Level'] = df['Importance Level']
+
+    # Remove duplicate complaints with the same title
+    df = df.drop_duplicates(subset='title', keep='first')
+
     # Ensure the output matches the schema
     df['id'] = df['id']  # Use 'id' from the API response
     df['category'] = df['Domain Category']
     df['date'] = df['date']
-    df['sentiment'] = df['title_with_desc_score']
+    df['sentiment_by_vader'] = df['title_with_desc_score']
+    df['sentiment'] = df['Sentiment Score']
+    df['importance'] = df['Importance Level']
     df['source'] = "Reddit"
     df['description'] = df['selftext']
     df['confidence'] = df['Confidence Score']  # Include confidence score
     
-    # Select and reorder columns to match the schema
-    output_df = df[['id', 'title', 'description', 'category', 'date', 'sentiment', 'url', 'source', 'confidence']]
+    # Select and reorder columns to match the schema, excluding non-existent columns
+    output_columns = ['id', 'title', 'description', 'category', 'date', 'sentiment_by_vader', 'sentiment', 'importance', 'url', 'source', 'confidence']
+    output_df = df[output_columns]
 
     if output_csv:
         output_df.to_csv(output_csv, index=False)

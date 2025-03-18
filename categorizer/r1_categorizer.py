@@ -46,18 +46,20 @@ def process_batch(batch_texts, categories=None):
 
             Always format your response as follows for each text:
             
-            1. "Yes/No", "Domain Category", Confidence Score
-            2. "Yes/No", "Domain Category", Confidence Score
-            3. "Yes/No", "Domain Category", Confidence Score
+            1. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
+            2. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
+            3. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
             ...
-            {num_entries - 1}. "Yes/No", "Domain Category", Confidence Score
-            {num_entries}. "Yes/No", "Domain Category", Confidence Score
+            {num_entries - 1}. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
+            {num_entries}. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
 
             The first entry indicates whether the text is a useful complaint that may be potentially beneficial to the government.
             The second entry indicates the domain category of the complaint, it must be one of the following categories:
             {categories_str}
-            The third entry is a confidence score between 0 and 1 indicating the confidence level of whether it is a complaint.
+            The third entry is a confidence score between 0 and 1 indicating the confidence level of whether it is a complaint that may be potentially beneficial to the government.
             1 means that it is definitely a complaint, 0 means that it is definitely not a complaint.
+            The fourth entry is the sentiment score ranging from -1 to 1, where -1 indicates a negative sentiment, 0 is neutral, and 1 is positive.
+            The fifth entry is the importance level, meaning its potential impact on the government, and the urgency level, ranging from 0 to 1, where 1 indicates the highest importance.
             There are {num_entries} input contents, so you should return {num_entries} rows of output. There should be no space between each row, and
             each response starts with a new line.
         """
@@ -73,32 +75,34 @@ def process_batch(batch_texts, categories=None):
         temperature=0.0
     )
     
-    # Parse the response to include confidence scores
+    # Parse the response to include confidence scores, sentiment scores, and importance levels
     categories_with_confidence = []
     for line in completion.choices[0].message.content.strip().split('\n'):
         if line.strip():
             parts = line.split(',')
-            if len(parts) == 3:
+            if len(parts) == 5:
                 try:
-                    # Extract the confidence score
+                    # Extract the confidence score, sentiment score, and importance level
                     confidence = float(parts[2].strip())
+                    sentiment = float(parts[3].strip())
+                    importance = float(parts[4].strip())
                     # Remove any numbering from the first part
                     intent = parts[0].strip().split(' ', 1)[-1]
-                    categories_with_confidence.append((intent, parts[1].strip(), confidence))
+                    categories_with_confidence.append((intent, parts[1].strip(), confidence, sentiment, importance))
                 except ValueError:
-                    print(f"Warning: Could not parse confidence score in line: {line}")
-                    categories_with_confidence.append((parts[0].strip(), parts[1].strip(), 0.0))  # Default confidence
+                    print(f"Warning: Could not parse scores in line: {line}")
+                    categories_with_confidence.append((parts[0].strip(), parts[1].strip(), 0.0, 0.0, 0.0))  # Default scores
             else:
                 print(f"Warning: Unexpected format in line: {line}")
-                categories_with_confidence.append(("Unknown", "Unknown", 0.0))  # Default values for incorrect format
+                categories_with_confidence.append(("Unknown", "Unknown", 0.0, 0.0, 0.0))  # Default values for incorrect format
     
     # Validate response length
     if len(categories_with_confidence) != len(batch_texts):
         print(f"Warning: Expected {len(batch_texts)} responses, but got {len(categories_with_confidence)}")
         # Fill all entries with dummy data if there's a mismatch
-        categories_with_confidence = [("Unknown", "Unknown", 0.0)] * len(batch_texts)
+        categories_with_confidence = [("Unknown", "Unknown", 0.0, 0.0, 0.0)] * len(batch_texts)
     
-    # Return parsed categories with confidence scores
+    # Return parsed categories with confidence scores, sentiment scores, and importance levels
     return categories_with_confidence
 
 # Add a function to estimate time remaining for API calls
@@ -126,7 +130,7 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
         raise ValueError("Either a DataFrame or an input CSV file must be provided.")
     
     # Limit to the first 100 lines
-    df = df.head(100)
+    # df = df.head(100)
     
     # Count and print the number of completely empty rows
     empty_rows_count = df.isnull().all(axis=1).sum()
@@ -141,9 +145,11 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     intent_categories = []
     domain_categories = []
     confidence_scores = []
+    sentiment_scores = []
+    importance_levels = []
     
     # Process in batches using ThreadPoolExecutor
-    batch_size = 40
+    batch_size = 50
     total_batches = (len(df) + batch_size - 1) // batch_size  # Calculate total number of batches
     with ThreadPoolExecutor() as executor:
         futures = []
@@ -153,17 +159,23 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
         
         for index, future in enumerate(futures):
             categories = future.result()
-            for intent_category, domain_category, confidence in categories:
+            for intent_category, domain_category, confidence, sentiment, importance in categories:
                 intent_categories.append(intent_category)
                 domain_categories.append(domain_category)
                 confidence_scores.append(confidence)
-    
-
+                sentiment_scores.append(sentiment)
+                importance_levels.append(importance)
+            
+            # Print a message every 200 posts processed
+            if (index + 1) * batch_size % 200 == 0:
+                print(f"Processed {(index + 1) * batch_size} posts")
     
     # Add categories to the DataFrame
     df['Intent Category'] = intent_categories
     df['Domain Category'] = domain_categories
     df['Confidence Score'] = confidence_scores
+    df['Sentiment Score'] = sentiment_scores
+    df['Importance Level'] = importance_levels
     
     # Apply the cleaning function to 'Intent Category' and 'Domain Category'
     if 'Intent Category' in df.columns:
