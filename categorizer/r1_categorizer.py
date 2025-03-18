@@ -46,16 +46,18 @@ def process_batch(batch_texts, categories=None):
 
             Always format your response as follows for each text:
             
-            1. "Yes/No", "Domain Category"
-            2. "Yes/No", "Domain Category"
-            3. "Yes/No", "Domain Category"
+            1. "Yes/No", "Domain Category", Confidence Score
+            2. "Yes/No", "Domain Category", Confidence Score
+            3. "Yes/No", "Domain Category", Confidence Score
             ...
-            {num_entries - 1}. "Yes/No", "Domain Category"
-            {num_entries}. "Yes/No", "Domain Category"
+            {num_entries - 1}. "Yes/No", "Domain Category", Confidence Score
+            {num_entries}. "Yes/No", "Domain Category", Confidence Score
 
             The first entry indicates whether the text is a useful complaint that may be potentially beneficial to the government.
             The second entry indicates the domain category of the complaint, it must be one of the following categories:
             {categories_str}
+            The third entry is a confidence score between 0 and 1 indicating the confidence level of whether it is a complaint.
+            1 means that it is definitely a complaint, 0 means that it is definitely not a complaint.
             There are {num_entries} input contents, so you should return {num_entries} rows of output. There should be no space between each row, and
             each response starts with a new line.
         """
@@ -71,18 +73,33 @@ def process_batch(batch_texts, categories=None):
         temperature=0.0
     )
     
-    # Parse the response
-    response_text = completion.choices[0].message.content
-    categories = [line for line in response_text.strip().split('\n') if line.strip()]
+    # Parse the response to include confidence scores
+    categories_with_confidence = []
+    for line in completion.choices[0].message.content.strip().split('\n'):
+        if line.strip():
+            parts = line.split(',')
+            if len(parts) == 3:
+                try:
+                    # Extract the confidence score
+                    confidence = float(parts[2].strip())
+                    # Remove any numbering from the first part
+                    intent = parts[0].strip().split(' ', 1)[-1]
+                    categories_with_confidence.append((intent, parts[1].strip(), confidence))
+                except ValueError:
+                    print(f"Warning: Could not parse confidence score in line: {line}")
+                    categories_with_confidence.append((parts[0].strip(), parts[1].strip(), 0.0))  # Default confidence
+            else:
+                print(f"Warning: Unexpected format in line: {line}")
+                categories_with_confidence.append(("Unknown", "Unknown", 0.0))  # Default values for incorrect format
     
     # Validate response length
-    if len(categories) != len(batch_texts):
-        print(f"Warning: Expected {len(batch_texts)} responses, but got {len(categories)}")
+    if len(categories_with_confidence) != len(batch_texts):
+        print(f"Warning: Expected {len(batch_texts)} responses, but got {len(categories_with_confidence)}")
         # Fill all entries with dummy data if there's a mismatch
-        categories = ['"Unknown", "Unknown"'] * len(batch_texts)
+        categories_with_confidence = [("Unknown", "Unknown", 0.0)] * len(batch_texts)
     
-    # Return parsed categories
-    return categories
+    # Return parsed categories with confidence scores
+    return categories_with_confidence
 
 # Add a function to estimate time remaining for API calls
 def estimate_time_remaining_for_api(api_start_time, current_batch, total_batches):
@@ -92,6 +109,10 @@ def estimate_time_remaining_for_api(api_start_time, current_batch, total_batches
     estimated_total_time = (elapsed_time / current_batch) * total_batches
     remaining_time = estimated_total_time - elapsed_time
     return time.strftime("%H:%M:%S", time.gmtime(remaining_time))
+
+# Function to remove leading and trailing quotation marks
+def remove_quotes(text):
+    return text.strip('"')
 
 def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=None):
     # Start timing for the entire process
@@ -119,10 +140,10 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     # Initialize lists to store categories
     intent_categories = []
     domain_categories = []
-    explanations = []
+    confidence_scores = []
     
     # Process in batches using ThreadPoolExecutor
-    batch_size = 10
+    batch_size = 40
     total_batches = (len(df) + batch_size - 1) // batch_size  # Calculate total number of batches
     with ThreadPoolExecutor() as executor:
         futures = []
@@ -132,22 +153,24 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
         
         for index, future in enumerate(futures):
             categories = future.result()
-            for category in categories:
-                # Remove numbering and split by comma
-                parts = category.split('. ', 1)[-1].split(',')
-                if len(parts) >= 2:
-                    intent_categories.append(parts[0].strip('" '))
-                    domain_categories.append(parts[1].strip('" '))
-                else:
-                    # Handle unexpected format by appending default values
-                    print(f"Unexpected format in category: {category}")
-                    intent_categories.append("Unknown")
-                    domain_categories.append("Unknown")
+            for intent_category, domain_category, confidence in categories:
+                intent_categories.append(intent_category)
+                domain_categories.append(domain_category)
+                confidence_scores.append(confidence)
+    
+
     
     # Add categories to the DataFrame
     df['Intent Category'] = intent_categories
     df['Domain Category'] = domain_categories
-    df['Explanation'] = explanations
+    df['Confidence Score'] = confidence_scores
+    
+    # Apply the cleaning function to 'Intent Category' and 'Domain Category'
+    if 'Intent Category' in df.columns:
+        df['Intent Category'] = df['Intent Category'].apply(remove_quotes)
+
+    if 'Domain Category' in df.columns:
+        df['Domain Category'] = df['Domain Category'].apply(remove_quotes)
     
     # Write the results to the output CSV if provided
     if output_csv is not None:
@@ -158,6 +181,3 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     total_time = end_time - start_time
     print(f"Total time taken: {total_time:.2f} seconds")
     return df
-
-# Example usage
-# categorize_complaints(input_csv='csv_results/all_complaints_2022_2025_strict_cleaned.csv', output_csv='csv_results/all_complaints_2022_2025_stricter_100.csv') 

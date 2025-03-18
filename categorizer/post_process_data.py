@@ -23,13 +23,21 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     # Standardize date format if a date column exists
     if 'date' in df.columns:
         df['date'] = df['date'].apply(standardize_date)
+
+    # Function to clean category names by removing part after a slash
+    def clean_category(category):
+        primary_category = category.split('/')[0].strip()
+        return primary_category.title()
+
+    # Apply the cleaning function to 'Domain Category'
+    df['Domain Category'] = df['Domain Category'].apply(clean_category)
     
     # Define the list of valid domain categories
     valid_categories = [
-        "Housing", "Healthcare", "Transportation", "Public Safety", 
-        "Transport", "Education", "Environment", "Employment", 
-        "Public Health", "Legal", "Economy", "Politics", "Technology", 
-        "Infrastructure"
+        "Housing", "Healthcare", "Public Safety", "Transport",
+        "Education", "Environment", "Employment", "Public Health",
+        "Legal", "Economy", "Politics", "Technology",
+        "Infrastructure", "Others"
     ]
     
     # Replace domain categories not in the valid list with "Others"
@@ -44,11 +52,23 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     # Reset index after filtering
     df = df.reset_index(drop=True)
     
+    # Ensure the output matches the schema
+    df['id'] = df['id']  # Use 'id' from the API response
+    df['category'] = df['Domain Category']
+    df['date'] = df['date']
+    df['sentiment'] = df['title_with_desc_score']
+    df['source'] = "Reddit"
+    df['description'] = df['selftext']
+    df['confidence'] = df['Confidence Score']  # Include confidence score
+    
+    # Select and reorder columns to match the schema
+    output_df = df[['id', 'title', 'description', 'category', 'date', 'sentiment', 'url', 'source', 'confidence']]
+
     if output_csv:
-        df.to_csv(output_csv, index=False)
+        output_df.to_csv(output_csv, index=False)
         print(f"Post-processing complete. Results saved to {output_csv}")
     
-    return df
+    return output_df
 
 # Example usage
 # post_process_data(input_csv='data/2023_categorized_chunked2.csv', output_csv='data/2023_post_processed.csv')
