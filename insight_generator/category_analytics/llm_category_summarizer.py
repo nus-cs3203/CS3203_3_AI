@@ -43,15 +43,24 @@ class CategorySummarizerDecorator(InsightDecorator):
                     })
                     log_file.write(f"Category: {category}\nSummary: {summary_result}\n\n")
 
-        return pd.DataFrame(summary_data)
+        res = pd.DataFrame(summary_data)
+        res.dropna(subset=["summary", "concerns", "suggestions"], inplace=True)
+        res.drop_duplicates(subset=["summary", "concerns", "suggestions"], inplace=True)
+        return res
 
     def generate_summary(self, text):
         user_prompt = f"""
         You are analyzing Reddit posts related to a specific topic. Your task is to extract meaningful insights.
 
         **Rules to follow:**
-        - DO NOT ask for additional input. If the text is unclear or insufficient, return: "Insufficient data to summarize."
-        - Focus on **summarizing trends, concerns, and suggestions**.
+        - DO NOT ask for additional input.
+        - DO NOT include the user prompt in the response.
+        - DO NOT include the Reddit posts in the response.
+        - This is based on the Singapore context so please ensure the output is relevant to the region.
+        - Ensure the output is concise and insightful.
+        - Focus on summarizing trends, concerns, and suggestions.
+        - Suggestions must be actionable and relevant to the context.
+
         - Output must be structured as follows:
 
         Summary:
@@ -69,6 +78,23 @@ class CategorySummarizerDecorator(InsightDecorator):
         {text}
 
         Generate a concise yet insightful summary based on the above content.
+
+        Sample Output:
+
+        Summary:
+
+        The discussions mainly revolve around the impact of the pandemic on the economy and healthcare system.
+        
+        Concerns:
+        - Young adults are facing challenges in finding employment.
+        - The healthcare system is overwhelmed due to the rising number of cases.
+        - Mental health issues are on the rise among the population.
+
+        Suggestions:
+        - Implement measures to support job creation for young adults.
+        - Enhance the healthcare infrastructure to cope with the increasing cases.
+        - Provide mental health support services to address the rising concerns.
+
         """
         
         try:
