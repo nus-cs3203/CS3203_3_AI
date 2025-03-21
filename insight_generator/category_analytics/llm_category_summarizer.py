@@ -3,6 +3,11 @@ import google.generativeai as genai
 import pandas as pd
 from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
+import logging
+
+# Configure logging
+logging.basicConfig(filename='category_summarizer.log', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
 
 class CategorySummarizerDecorator(InsightDecorator):
     def __init__(self, wrapped, text_col=None, category_col="domain_category"):
@@ -20,6 +25,7 @@ class CategorySummarizerDecorator(InsightDecorator):
         self.category_col = category_col
 
     def extract_insights(self, df):
+        logging.info("Starting category summarization.")
         if self.text_col is None:
             if {"title", "description"}.issubset(df.columns):
                 df["title_with_desc"] = df["title"].astype(str) + " " + df["description"].astype(str)
@@ -28,27 +34,31 @@ class CategorySummarizerDecorator(InsightDecorator):
                 raise KeyError("Missing required text columns: title and description")
 
         summary_data = []
-        with open("category_summaries_log.txt", "w", encoding="utf-8") as log_file:
-            for category, group in df.groupby(self.category_col):
-                combined_text = " ".join(group[self.text_col].dropna().astype(str))
-                combined_sentiment = group["sentiment"].mean()
-                if combined_text.strip():
-                    summary_result = self.generate_summary(combined_text)
-                    summary_data.append({
-                        self.category_col: category,
-                        "summary": summary_result.get("summary", "No summary available"),
-                        "concerns": summary_result.get("concerns", []),
-                        "suggestions": summary_result.get("suggestions", []),
-                        "sentiment": combined_sentiment
-                    })
-                    log_file.write(f"Category: {category}\nSummary: {summary_result}\n\n")
+        for category, group in df.groupby(self.category_col):
+            logging.info(f"Processing category: {category}")
+            try:
+                combined_sentiment = group["sentiment"].mean() if "sentiment" in group.columns else None
+                summary_result = self.generate_summary(group)  # Pass the DataFrame group
+                summary_data.append({
+                    self.category_col: category,
+                    "summary": summary_result.get("summary", "No summary available"),
+                    "concerns": summary_result.get("concerns", []),
+                    "suggestions": summary_result.get("suggestions", []),
+                    "sentiment": combined_sentiment
+                })
+            except Exception as e:
+                logging.error(f"Error processing category '{category}': {e}")
 
         res = pd.DataFrame(summary_data)
         res.dropna(subset=["summary", "concerns", "suggestions"], inplace=True)
         res.drop_duplicates(subset=["summary", "concerns", "suggestions"], inplace=True)
+        logging.info("Finished category summarization.")
         return res
 
-    def generate_summary(self, text):
+    def generate_summary(self, group):
+        """Generates a summary for a given category, now accepting a DataFrame."""
+        logging.info("Generating summary using LLM")
+        dataframe_string = group.to_string(index=False)
         user_prompt = f"""
         You are analyzing Reddit posts related to a specific topic. Your task is to extract meaningful insights.
 
@@ -60,6 +70,7 @@ class CategorySummarizerDecorator(InsightDecorator):
         - Ensure the output is concise and insightful.
         - Focus on summarizing trends, concerns, and suggestions.
         - Suggestions must be actionable and relevant to the context.
+        - Consider all columns in the table when generating the summary, concerns, and suggestions.
 
         - Output must be structured as follows:
 
@@ -74,8 +85,10 @@ class CategorySummarizerDecorator(InsightDecorator):
         - [Summarized suggestion]
         - [Summarized suggestion]
 
-        **Reddit Posts:**
-        {text}
+        **Reddit Posts (provided as a table):**
+        ```
+        {dataframe_string}
+        ```
 
         Generate a concise yet insightful summary based on the above content.
 
@@ -119,4 +132,5 @@ class CategorySummarizerDecorator(InsightDecorator):
             
             return {"summary": summary, "concerns": concerns, "suggestions": suggestions}
         except Exception as e:
+            logging.error(f"Summary generation failed: {str(e)}")
             return {"summary": "Summary generation failed", "concerns": [], "suggestions": []}
