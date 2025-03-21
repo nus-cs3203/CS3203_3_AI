@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
-    def __init__(self, wrapped, text_col=None, category_col="domain_category", max_tokens=3000):
+    def __init__(self, wrapped, text_col=None, category_col="category", max_tokens=3000):
         super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")
@@ -44,8 +44,13 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
                     "keywords": list(keywords)
                 })
                 log_file.write(f"Category: {category}\nABSA: {category_results}\nKeywords: {list(keywords)}\n\n")
-
-        return pd.DataFrame(absa_data)
+        
+        res = pd.DataFrame(absa_data)
+        res.dropna(subset=["absa_result", "keywords"], inplace=True)
+        res["absa_result"] = res["absa_result"].apply(lambda x: x[:10] if len(x) > 10 else x)
+        res["keywords"] = res["keywords"].apply(lambda x: x[:5] if len(x) > 5 else x)
+        res.drop_duplicates(subset=[self.category_col], inplace=True)
+        return res
 
     def perform_llm_absa(self, text):
         text_chunks = self.chunk_text(text, self.max_tokens)
@@ -54,9 +59,11 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
         
         for chunk in text_chunks:
             user_prompt = f"""
-            Extract exactly 5 key aspects and their sentiments from the text.
+            First extract 5 keywords. 
+            Then, extract exactly 10 key aspects and their sentiments from the text.
             
             **Output Format (strictly follow this format):**
+            Keywords 1, Keywords 2, Keywords 3, Keywords 4, Keywords 5
             <Aspect>, positive/neutral/negative
             <Aspect>, positive/neutral/negative
             <Aspect>, positive/neutral/negative
@@ -65,24 +72,49 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
             
             **Instructions:**
             - DO NOT ask for additional input.
+            - Aspects should be high-level concepts, not specific entities (e.g., "food quality" instead of "pizza").
+            - Do not have duplicate aspects.
+            - Aspects should have atleast 2 words.
+            - There should be exactly 10 aspects.
+            - There should be exactly 5 keywords.
+            - Keywords should be single words and important to the text.
             - Do not include any additional information.
             - Focus on extracting key aspects and their sentiments
             - Skip erraneous or missing categories (or where ABSA failed)
             - This is from Singaporean Reddit threads. Please consider the context.
 
+            Sample Response:
+            Toyoto, Tesla, Electric, Car, Battery
+            Car Price, positive
+            Car Performance, positive
+            Vehicle Design, neutral
+            Battery Life, negative
+            Modern Features, positive
+            License Accessibility, neutral
+            Car Maintenance, negative
+            Safety Features, positive
+            Brand Reputation, positive
+            Easy Charging, neutral
+            Accessibility Friendliness, negative
             **Text:**
             {chunk}
             """
             try:
                 response = self.model.generate_content(user_prompt)
                 result_text = response.text.strip() if response and hasattr(response, "text") else ""
-                lines = result_text.splitlines()
-                for line in lines:
-                    if "," in line:
-                        aspect_sentiment = line.strip()
-                        all_results.append(aspect_sentiment)
-                        aspect = aspect_sentiment.split(",")[0].strip()
-                        keywords.add(aspect)
+                lines = result_text.splitlines()                
+                if lines:
+                    keyword_line = lines[0]
+                    keyword_list = keyword_line.replace("List of 5 keywords:","").strip().split(",")
+                    for k in keyword_list:
+                        keywords.add(k.strip())
+                    
+                    for line in lines[1:]:
+                        if "," in line:
+                            aspect_sentiment = line.strip()
+                            all_results.append(aspect_sentiment)
+                            aspect = aspect_sentiment.split(",")[0].strip()
+                            
             except Exception as e:
                 all_results.append(f"ABSA failed: {str(e)}")
         
