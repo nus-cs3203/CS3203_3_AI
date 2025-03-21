@@ -36,6 +36,8 @@ class PromptGeneratorDecorator():
         polls_data = []
 
         for category, group in df.groupby(self.category_col):
+            if(len(group) < 10):
+                continue # Skip categories with less than 10 posts
             group["title_with_desc"] = group["title"].fillna("") + " " + group["description"].fillna("")
             combined_text = " ".join(group["title_with_desc"].dropna())
 
@@ -50,6 +52,8 @@ class PromptGeneratorDecorator():
                 })
 
         insights = pd.DataFrame(polls_data)
+        insights.dropna(subset=["question", "question_type", "options", "reasoning"], inplace=True)
+        insights.drop_duplicates(subset=["question", "question_type", "options", "reasoning"], inplace=True)
         return insights
     
     def generate_poll_prompt(self, category, text):
@@ -57,7 +61,7 @@ class PromptGeneratorDecorator():
         user_prompt = f"""
         You are a Reddit poll generator for discussions in the category: **{category}**.
 
-        Based **only** on the following Reddit discussions, generate **two** poll questions:
+        Based **only** on the following Reddit discussions, generate **one** poll question for category **{category}**:
 
         "{text}"
 
@@ -69,10 +73,17 @@ class PromptGeneratorDecorator():
 
         **Rules:**
         - Stick strictly to the category and the given text.
+        - Generate a single poll question.
         - Keep the prompt relevant to the Singapore context
         - Derive prompts from the insights gathered from given text
         - Each statement should stand on its own (i.e. do not refer specific posts or make it too narrow)
         - Avoid unnecessary explanations.
+
+        Sample Output:
+        What is the most popular food in Singapore?
+        MCQ
+        Chicken Rice, Laksa, Hainanese Curry Rice, Nasi Lemak
+        This poll is useful to understand the most popular food choices in Singapore. The given discussions show a trend towards local cuisine, making this post relevant.
         """
 
         try:
