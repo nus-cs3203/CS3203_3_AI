@@ -6,7 +6,7 @@ from common_components.data_validator.general_validators.not_empty_validator imp
 from common_components.data_validator.text_validator.length_validator import LengthValidator
 from common_components.data_validator.text_validator.only_string_validator import OnlyStringValidator
 from common_components.data_validator.validator_logger import ValidatorLogger
-from categorizer.deepseek_categorizer_chunked import categorize_complaints
+from categorizer.r1_categorizer import categorize_complaints
 from categorizer.post_process_data import post_process_data
 from sentiment_analyser.context import SentimentAnalysisContext
 from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
@@ -57,4 +57,4 @@ for name, classifier in classifiers:
 print("\n===== Final DataFrame Processed Successfully =====")
 print(df.head())
 print(df.columns)
-df.to_csv("final_processed_data.csv", index=False)
+df.to_csv("csv_results/final_processed_data.csv", index=False)
