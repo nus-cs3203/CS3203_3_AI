@@ -106,7 +106,7 @@ async def process_complaints(request: DateRangeRequest):
         # Sentiment Analysis
         classifiers = [
             # ("BERT", BERTClassifier()),
-            ("VADER", VaderSentimentClassifier()),
+            ("VADER", VaderSentimentClassifier())
             # ("DistilRoberta Emotion", DistilRobertaClassifier()),
             # ("Roberta Emotion", RobertaClassifier()),
         ]
@@ -118,19 +118,21 @@ async def process_complaints(request: DateRangeRequest):
 
         # Debugging line to print the DataFrame after sentiment analysis
         print("DataFrame after sentiment analysis:", df)
-        output_csv = "csv_results/sentiment_analysis_result_before_post_processing.csv"
-        df.to_csv(output_csv, index=False)
+        # output_csv = "csv_results/sentiment_analysis_result_before_post_processing.csv"
+        # df.to_csv(output_csv, index=False)
         # Post-processing
         df = post_process_data(df=df)
 
         # Debugging line to print the DataFrame after post-processing
         print("DataFrame after post-processing:", df)
 
-        # Return the processed DataFrame as CSV
-        output_csv = "csv_results/sentiment_analysis_result.csv"
-        df.to_csv(output_csv, index=False)
-        return {"message": "Sentiment analysis completed successfully.", "csv_path": output_csv}
-
+        # # Return the processed DataFrame as CSV
+        # output_csv = "csv_results/sentiment_analysis_result.csv"
+        # df.to_csv(output_csv, index=False)
+        # return {"message": "Sentiment analysis completed successfully.", "csv_path": output_csv}
+        # Convert the DataFrame to a list of dictionaries
+        data = df.to_dict(orient="records")
+        return {"message": "Sentiment analysis completed successfully.", "data": data}
     except Exception as e:
         import traceback
         error_detail = {

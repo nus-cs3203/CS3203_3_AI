@@ -1,0 +1,31 @@
+ # Ignore Python cache and virtual environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+
+# Ignore version control directories
+.git/
+.github/
+.idea/
+
+# Ignore unnecessary system files
+.DS_Store
+
+# Ignore test and example directories
+tests/
+examples/
+
+# Ignore configuration and log directories
+configs/
+analysis_logs/
+
+# Ignore other unnecessary directories
+csv_results/
+last_round_files/
+files/
+
+# Ignore any other files that are not needed for the application
+*.log
+*.tmp
