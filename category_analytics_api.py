@@ -39,33 +39,57 @@ def fetch_complaints(start_date: str, end_date: str):
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid date format, should be 'dd-mm-yyyy HH:MM:SS'")
 
-    url = "http://localhost:8083/complaints/get_by_daterange"
+    url = "https://cs32033backend-management-production.up.railway.app/complaints/get_by_daterange"
     headers = {"Content-Type": "application/json"}
     payload = {"start_date": start_date, "end_date": end_date}
-    
+    print("Waiting for response")
     response = requests.post(url, json=payload, headers=headers)
-    
+    print(response)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch complaints")
     
-    return response.json()["complaints"]  # Ensure backend response has a 'complaints' key
+    response_data = response.json()
+    if not response_data.get("success", False):
+        raise HTTPException(status_code=500, detail=f"Backend request failed: {response_data.get('message', 'Unknown error')}")
+    
+    print(response_data["documents"])
+    return response_data["documents"]
 
 @app.post("/generate_category_analytics")
-async def generate_category_analytics(request: DateRangeRequest):
+async def generate_category_analytics(start_date: str, end_date: str):
+    """Generate category analytics for the given date range."""
+    try:
+        datetime.strptime(start_date, "%d-%m-%Y %H:%M:%S")
+        datetime.strptime(end_date, "%d-%m-%Y %H:%M:%S")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format, should be 'dd-mm-yyyy HH:MM:SS'")
     try:
         # Fetch complaints from backend
-        complaints = fetch_complaints(request.start_date, request.end_date)
+        complaints = fetch_complaints(start_date, end_date)
         if not complaints:
             return {"category_analytics": []}  # Return empty if no complaints
 
         # Convert to DataFrame
         df = pd.DataFrame(complaints)
-        df["title_with_desc"] = df["title"] + " " + df["description"]
-        if ("category" in df.columns):
-            df.rename(columns={"category": "domain_category"}, inplace=True)
+        # Adjust to match the new data structure
 
+        if "domain_category" in df.columns:
+            df.rename(columns={"domain_category": "category"}, inplace=True)
+        
+        # Check if title and description columns are present
+        if "selftext" in df.columns:
+            df["description"] = df["selftext"]
+        if "title" in df.columns and "description" in df.columns:
+            df["title_with_desc"] = df["title"] + " " + df["description"]
+        elif "title" in df.columns:
+            df["title_with_desc"] = df["title"]
+        elif "description" in df.columns:
+            df["title_with_desc"] = df["description"]
+        else:
+            raise HTTPException(status_code=400, detail="No title or description found in the data.")
+        
         # Define critical and text columns
-        CRITICAL_COLUMNS = ["title_with_desc", "sentiment"]
+        CRITICAL_COLUMNS = ["title_with_desc"]
         TEXT_COLUMNS = ["title_with_desc"]
 
         # Preprocessing
@@ -89,7 +113,7 @@ async def generate_category_analytics(request: DateRangeRequest):
         summary_insights = CategorySummarizerDecorator(base_generator).extract_insights(df)
 
         # Merge insights
-        insights = absa_insights.merge(forecast_insights, on='domain_category', how='outer').merge(summary_insights, on='domain_category', how='outer')
+        insights = absa_insights.merge(forecast_insights, on='category', how='outer').merge(summary_insights, on='category', how='outer')
 
         # Format response
         categories_analysis = []

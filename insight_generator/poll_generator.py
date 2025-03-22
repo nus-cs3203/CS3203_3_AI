@@ -51,8 +51,7 @@ class PollGenerator():
             })
 
         insights = pd.DataFrame(polls_data)
-        insights.dropna(subset=["question", "question_type", "options", "reasoning"], inplace=True)
-        insights.drop_duplicates(subset=["question"], inplace=True)
+        insights.dropna(inplace=True)
         return insights
 
     def generate_poll_prompt(self, category, group):

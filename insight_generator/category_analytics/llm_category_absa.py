@@ -45,10 +45,9 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
                 logging.error(f"Error processing category '{category}': {e}")
 
         res = pd.DataFrame(absa_data)
-        res.dropna(subset=["absa_result", "keywords"], inplace=True)
+        res.dropna(inplace=True)
         res["absa_result"] = res["absa_result"].apply(lambda x: x[:10] if len(x) > 10 else x)
         res["keywords"] = res["keywords"].apply(lambda x: x[:5] if len(x) > 5 else x)
-        res.drop_duplicates(subset=[self.category_col], inplace=True)
         logging.info("Finished ABSA extraction.")
         return res
 

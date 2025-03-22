@@ -10,7 +10,7 @@ logging.basicConfig(filename='category_summarizer.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 class CategorySummarizerDecorator(InsightDecorator):
-    def __init__(self, wrapped, text_col=None, category_col="domain_category"):
+    def __init__(self, wrapped, text_col=None, category_col="category"):
         super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")
@@ -50,8 +50,7 @@ class CategorySummarizerDecorator(InsightDecorator):
                 logging.error(f"Error processing category '{category}': {e}")
 
         res = pd.DataFrame(summary_data)
-        res.dropna(subset=["summary", "concerns", "suggestions"], inplace=True)
-        res.drop_duplicates(subset=["summary", "concerns", "suggestions"], inplace=True)
+        res.dropna(inplace=True)
         logging.info("Finished category summarization.")
         return res
 
