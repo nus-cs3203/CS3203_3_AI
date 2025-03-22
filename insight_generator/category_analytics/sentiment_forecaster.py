@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class TopicSentimentForecastDecorator(InsightDecorator):
     def __init__(self, wrapped, historical_data=None, log_file="sentiment_forecasts.txt",
                  time_col="date", sentiment_col="sentiment",
-                 category_col="domain_category", forecast_months=1):
+                 category_col="category", forecast_months=1):
         super().__init__(wrapped)
         self.log_file = log_file
         self.time_col = time_col
@@ -34,7 +34,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
             try:
                 forecast_score, conf_interval = self.forecast_sentiment(df, category)
                 sentiment_forecasts.append({
-                    "domain_category": category,
+                    "category": category,
                     "forecasted_sentiment": forecast_score
                 })
 
@@ -43,7 +43,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
             except Exception as e:
                 logger.error(f"Error forecasting sentiment for category {category}: {e}")
                 sentiment_forecasts.append({
-                    "domain_category": category,
+                    "category": category,
                     "forecasted_sentiment": 0.0
                 })
                 log_lines.append(f"\nCategory: {category}, Error: {e}")
