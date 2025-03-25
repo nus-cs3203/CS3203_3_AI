@@ -1,10 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel, validator
-from typing import List
+from typing import List, Dict, Any
 import pandas as pd
 import requests
 from datetime import datetime
 import os
+import uuid
+import json
+from pathlib import Path
 
 # Import necessary functions
 from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
@@ -21,6 +24,11 @@ from sentiment_analyser.polarity.bert import BERTClassifier
 from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 
 app = FastAPI()
+
+# Store for task results (In a production environment, this should be a database)
+TASK_RESULTS = {}
+TASKS_DIR = Path("task_results")
+TASKS_DIR.mkdir(exist_ok=True)
 
 class DateRangeRequest(BaseModel):
     start_date: str  # Format: "dd-mm-yyyy HH:MM:SS"
@@ -45,17 +53,21 @@ def fetch_complaints(start_date: str, end_date: str):
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch complaints")
     
-    print("API Response:", response.json())  # Debugging line to print the entire response
+    print("API Response:", response.json())  # Debug line to print the entire response
     # Ensure backend response has a 'documents' key
     return response.json()["documents"]
 
-@app.post("/process_complaints")
-async def process_complaints(request: DateRangeRequest):
+async def process_complaints_background(start_date: str, end_date: str, task_id: str):
+    """Process complaints in the background."""
     try:
         # Fetch complaints from backend
-        complaints = fetch_complaints(request.start_date, request.end_date)
+        complaints = fetch_complaints(start_date, end_date)
         if not complaints:
-            return {"message": "No complaints found for the given date range."}
+            TASK_RESULTS[task_id] = {
+                "status": "completed",
+                "result": {"message": "No complaints found for the given date range."}
+            }
+            return
 
         # Convert to DataFrame
         df = pd.DataFrame(complaints)
@@ -65,7 +77,7 @@ async def process_complaints(request: DateRangeRequest):
         CRITICAL_COLUMNS = ["title_with_desc"]
         TEXT_COLUMNS = ["title_with_desc", "comments"]
 
-        # Debugging line to print the DataFrame after fetching data
+        # Debug line to print the DataFrame after fetching data
         print("DataFrame after fetching data:", df)
 
         # Preprocessing
@@ -74,7 +86,7 @@ async def process_complaints(request: DateRangeRequest):
         director.construct_builder()
         df = builder.get_result()
 
-        # Debugging line to print the DataFrame after preprocessing
+        # Debug line to print the DataFrame after preprocessing
         print("DataFrame after preprocessing:", df)
 
         # Validation
@@ -87,7 +99,7 @@ async def process_complaints(request: DateRangeRequest):
         if not validation_result["success"]:
             raise ValueError(f"Validation failed: {validation_result['errors']}")
 
-        # Debugging line to print the DataFrame after validation
+        # Debug line to print the DataFrame after validation
         print("DataFrame after validation:", df)
 
         # Categorization
@@ -100,7 +112,7 @@ async def process_complaints(request: DateRangeRequest):
         
         df = categorize_complaints(df=df, categories=categories)
 
-        # Debugging line to print the DataFrame after categorization
+        # Debug line to print the DataFrame after categorization
         print("DataFrame after categorization:", df)
 
         # Sentiment Analysis
@@ -116,23 +128,28 @@ async def process_complaints(request: DateRangeRequest):
             context = SentimentAnalysisContext(classifier)
             df = context.analyze(df, text_cols=["title_with_desc"])
 
-        # Debugging line to print the DataFrame after sentiment analysis
+        # Debug line to print the DataFrame after sentiment analysis
         print("DataFrame after sentiment analysis:", df)
-        # output_csv = "csv_results/sentiment_analysis_result_before_post_processing.csv"
-        # df.to_csv(output_csv, index=False)
+        
         # Post-processing
         df = post_process_data(df=df)
 
-        # Debugging line to print the DataFrame after post-processing
+        # Debug line to print the DataFrame after post-processing
         print("DataFrame after post-processing:", df)
 
-        # # Return the processed DataFrame as CSV
-        # output_csv = "csv_results/sentiment_analysis_result.csv"
-        # df.to_csv(output_csv, index=False)
-        # return {"message": "Sentiment analysis completed successfully.", "csv_path": output_csv}
         # Convert the DataFrame to a list of dictionaries
         data = df.to_dict(orient="records")
-        return {"message": "Sentiment analysis completed successfully.", "data": data}
+        
+        # Save result with data
+        with open(TASKS_DIR / f"{task_id}.json", "w") as f:
+            json.dump({
+                "status": "completed", 
+                "result": {
+                    "message": "Sentiment analysis completed successfully.",
+                    "data": data
+                }
+            }, f)
+        
     except Exception as e:
         import traceback
         error_detail = {
@@ -140,12 +157,53 @@ async def process_complaints(request: DateRangeRequest):
             "traceback": traceback.format_exc()
         }
         print("Error occurred:", error_detail)
-        raise HTTPException(status_code=500, detail=error_detail)
+        TASK_RESULTS[task_id] = {
+            "status": "failed",
+            "error": error_detail
+        }
+
+@app.post("/process_complaints")
+async def process_complaints(request: DateRangeRequest, background_tasks: BackgroundTasks):
+    """
+    Start the sentiment analysis process in the background.
+    Returns a task ID that can be used to check the status.
+    """
+    task_id = str(uuid.uuid4())
+    TASK_RESULTS[task_id] = {"status": "processing"}
+    
+    # Add task to background tasks
+    background_tasks.add_task(process_complaints_background, request.start_date, request.end_date, task_id)
+    
+    return {
+        "message": "Processing started. You can check the status using the task_id.",
+        "task_id": task_id
+    }
+
+@app.get("/task_status/{task_id}")
+async def get_task_status(task_id: str):
+    """Get the status of a processing task."""
+    task_file = TASKS_DIR / f"{task_id}.json"
+
+    # ✅ Check local file first (Heroku dynos may restart, in-memory data could be lost)
+    if task_file.exists():
+        with open(task_file, "r") as f:
+            file_result = json.load(f)
+        return file_result.get("result", {"status": file_result.get("status", "unknown")})
+
+    # If not found in file, check in-memory storage (normal case when no restart)
+    if task_id in TASK_RESULTS:
+        task_result = TASK_RESULTS[task_id]
+
+        if task_result["status"] == "completed":
+            return task_result["result"]
+        elif task_result["status"] == "failed":
+            raise HTTPException(status_code=500, detail=task_result["error"])
+        else:
+            return {"status": "processing"}
+
+    # Finally, if not found anywhere
+    raise HTTPException(status_code=404, detail="Task not found")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
-
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

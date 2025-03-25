@@ -122,15 +122,14 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     # Start timing for the entire process
     start_time = time.time()
     
-    # Read the CSV file if df is not provided
+    # First, apply news filtering if the input is a CSV file
     if df is None and input_csv is not None:
-        df = pd.read_csv(input_csv, usecols=['title'])  # Adjusted to only use 'title' if 'selftext' is not available
-
-    if df is None:
+        from news_filter import filter_news_posts
+        df = filter_news_posts(input_csv=input_csv)
+    elif df is None:
         raise ValueError("Either a DataFrame or an input CSV file must be provided.")
     
-    # Limit to the first 100 lines
-    # df = df.head(100)
+    print(f"Starting complaint categorization on {len(df)} non-news posts")
     
     # Count and print the number of completely empty rows
     empty_rows_count = df.isnull().all(axis=1).sum()
@@ -138,8 +137,14 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     
     print(f"Number of rows after preprocessing: {len(df)}")
     
-    # Use only 'title' for combined_text if 'selftext' is not available
-    df['combined_text'] = df['title'].fillna('')  # Use title directly if selftext is not available
+    # Combine title and selftext if available
+    if 'selftext' in df.columns:
+        df['combined_text'] = df.apply(
+            lambda row: f"{row['title']} {row['selftext']}" if pd.notna(row['selftext']) else row['title'],
+            axis=1
+        )
+    else:
+        df['combined_text'] = df['title']
     
     # Initialize lists to store categories
     intent_categories = []
