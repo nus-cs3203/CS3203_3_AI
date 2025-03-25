@@ -13,7 +13,7 @@ class CustomSentimentClassifier(SentimentClassifier):
         self.classifier = pipeline("sentiment-analysis", model="common_components/singlish_classifier_2", truncation=True, max_length=512)
         
     def classify(self, df: pd.DataFrame, text_cols: list) -> pd.DataFrame:
-        """Applies sentiment analysis to specified columns in a Pandas DataFrame."""
+        """Applies sentiment analysis to specified columns in a DataFrame."""
         df = df.copy()
         
         for col in text_cols:
@@ -33,7 +33,7 @@ class CustomSentimentClassifier(SentimentClassifier):
             return "neutral"
     
     def _analyze_text_classifier(self, text: str) -> dict:
-        """Helper function to classify sentiment of a single text input using a custom classifier."""
+        """Classifies sentiment of a single text input."""
         result = self.classifier(text)[0]
         sentiment_score = result["score"] if result["label"] == "positive" else -result["score"]
         
