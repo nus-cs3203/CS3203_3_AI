@@ -3,7 +3,7 @@ from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.post_analytics.sentiment_discrepancy_detector import SentimentDiscrepancyDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv")
+df = pd.read_csv("files/all_complaints_2022_2025.csv")
 
 # Apply detector
 base_generator = BaseInsightGenerator()

@@ -31,7 +31,7 @@ plt.legend()
 plt.show()
 
 # Sample Reddit posts
-df = pd.read_csv("files/2022_2025_merged.csv")
+df = pd.read_csv("files/all_complaints_2022_2025.csv")
 # Check if there is data for each category
 category_counts = df['category'].value_counts()
 print(category_counts)

@@ -2,7 +2,7 @@ import pandas as pd
 from insight_generator.poll_generator import PromptGeneratorDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/2022_2025_merged.csv")
+df = pd.read_csv("files/all_complaints_2022_2025.csv")
 
 # Apply decorator
 prompt_decorator = PromptGeneratorDecorator()

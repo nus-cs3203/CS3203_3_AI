@@ -3,7 +3,7 @@ from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.category_analytics.llm_category_summarizer import CategorySummarizerDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
+df = pd.read_csv("files/all_complaints_2022_2025.csv").head(100)
 
 # Apply decorator
 base_generator = BaseInsightGenerator()

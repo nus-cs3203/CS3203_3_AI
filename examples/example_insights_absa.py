@@ -4,7 +4,7 @@ from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.category_analytics.sentiment_forecaster import TopicSentimentForecastDecorator
 from insight_generator.category_analytics.llm_category_absa import CategoryABSAWithLLMInsightDecorator
 # Sample Reddit posts
-df = pd.read_csv("csv_results/all_complaints_2022_2025.csv").head(10)
+df = pd.read_csv("files/all_complaints_2022_2025.csv").head(10)
 df.dropna(subset=["title"], inplace=True)
 
 # Apply decorator

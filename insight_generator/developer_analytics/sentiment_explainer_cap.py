@@ -11,7 +11,7 @@ def sentiment_to_label(sentiment):
     return mapping.get(sentiment, "unknown")
 
 class TopAdverseSentimentsDecoratorCAP(InsightDecorator):
-    def __init__(self, wrapped, sentiment_col="sentiment_title_selftext_polarity",
+    def __init__(self, wrapped, sentiment_col="title_with_desc_score",
                  category_col="category", text_col="description",
                  top_k=5, log_file="top_adverse_sentiments.txt"):
         """

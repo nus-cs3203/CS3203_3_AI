@@ -3,7 +3,7 @@ from insight_generator.base_insight import BaseInsightGenerator
 from insight_generator.developer_analytics.trend_detector import KeywordsTrendDecorator
 
 # Sample Reddit posts
-df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(1000)
+df = pd.read_csv("files/all_complaints_2022_2025.csv").head(1000)
 
 # Apply decorator
 base_generator = BaseInsightGenerator()
