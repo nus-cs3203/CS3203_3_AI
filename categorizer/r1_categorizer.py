@@ -32,36 +32,27 @@ def process_batch(batch_texts, categories=None):
     user_instruction = {
         "role": "user", 
         "content": f"""
-            You will be given Reddit posts from r/Singapore. Your job is to classify whether the post describes a complaint that is relevant to government authorities.
+    You will be given the title of a Reddit post. Your job is to classify whether the post describes a complaint that is relevant to government authorities.
 
-            A post should ONLY be classified as a relevant complaint if it meets ALL these criteria:
-            1. Explicitly expresses dissatisfaction or criticism about a system, policy, or public service
-            2. The issue is under government control or regulation
-            3. Suggests or implies a need for government action or policy change
-            4. Addresses systemic or policy-level issues, not individual cases
+Guidelines:
+- A complaint is a statement that something is unsatisfactory or unacceptable, where the person is expressing some dissatisfaction or encouraging some form of action to be taken.
+- A relevant complaint should be an opinion that the government authorities can act on to improve the country. If the complaint is about a particular brand or product, it is not relevant to the authority. The complaint should be related to a high-level issue, such as transport or healthcare that the government is responsible for.
+- Questions that are simply seeking discussions are not complaints.
 
-            Do NOT classify as complaints if the post is:
-            1. Merely asking questions or seeking information
-            2. Requesting personal advice or help
-            3. General discussion or opinion polls
-            4. Sharing news or information
-            5. Reporting individual incidents without policy implications
-            6. Expressing gratitude or positive feedback
+Output:
+Output true if it is a relevant complaint, else output false.
 
-            Examples of TRUE (relevant complaints):
-            - "Why can't Singapore ban single use plastics?" (Environmental policy criticism)
-            - "Healthcare waiting times are unacceptably long" (Healthcare system issue)
-            - "Public transport fares keep increasing but service declining" (Transport policy issue)
-            - "HDB prices are becoming impossible for young couples" (Housing policy issue)
-            - "Government's vaccination policies are too restrictive" (Healthcare policy issue)
+Examples:
+- Protect The Unvax Singaporeans From Losing Jobs -> true (Encouraging job security within the country)
+- How do I get user flair in this sub? -> false (Unrelated to problems in the country))
+-  Why are central 24/7 clinics so infamously bad? What are your negative or even positive experiences with them? -> true (Mentioned about clinics being bad)
+-  Should Smoking At Home Be Banned?  -> false (General discussion)
+- Singpass app keeps crashing -> true (Dissatisfaction at the app)
+-  Singapore's toxic overwork culture has got to go -> true (Dissatisfaction at the culture)
+-  NS missed out my enlistment. Need help -> false (This is asking for help and not complaining about a problem) 
+- PLEASE BE CAREFUL OF THIS NEW SCAM! -> false (This is not a complaint, it is just advice given) 
+- What's going to happen to all the folk involved in the Safe Entry business?  -> false (This is just a question asking for input, and it is not expressing any dissatisfaction)
 
-            Examples of FALSE (not complaints):
-            - "What documents do I need for passport renewal?" (Information seeking)
-            - "Where can I report a noisy neighbor?" (Help seeking)
-            - "Should we ban smoking in HDB?" (Discussion question)
-            - "New COVID-19 cases reported today" (News sharing)
-            - "Anyone else experiencing SingPass issues?" (Technical query)
-            - "Thanks to all healthcare workers" (Appreciation post)
 
             When in Doubt:  
             - Be very strict - only classify as complaint if it clearly criticizes policy or system
@@ -169,7 +160,14 @@ def estimate_time_remaining_for_api(api_start_time, current_batch, total_batches
 def remove_quotes(text):
     return text.strip('"')
 
-def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=None):
+def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=None, batch_size=50, is_second_round=False):
+    """
+    Parameters batch_size and is_second_round control the batch processing size and verification round
+    """
+    # Use smaller batch size for second round verification
+    if is_second_round:
+        batch_size = 10
+    
     # Start timing for the entire process
     start_time = time.time()
     
@@ -205,8 +203,7 @@ def categorize_complaints(df=None, categories=None, input_csv=None, output_csv=N
     importance_levels = []
     
     # Process in batches using ThreadPoolExecutor
-    batch_size = 50
-    total_batches = (len(df) + batch_size - 1) // batch_size  # Calculate total number of batches
+    total_batches = (len(df) + batch_size - 1) // batch_size
     with ThreadPoolExecutor() as executor:
         futures = []
         for i in range(0, len(df), batch_size):
