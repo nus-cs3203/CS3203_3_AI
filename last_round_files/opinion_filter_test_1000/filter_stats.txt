@@ -1,0 +1,5 @@
+Initial posts: 200
+Deleted/removed posts: 28
+Media source posts: 56
+Posts for opinion analysis: 116
+Media source percentage: 32.56%
