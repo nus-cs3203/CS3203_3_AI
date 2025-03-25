@@ -28,7 +28,7 @@ summary_insights = summary_decorator.extract_insights(df)
 print(summary_insights.head(5))
 
 # Combine insights
-insights = absa_insights.merge(forecast_insights, on='domain_category', how='outer').merge(summary_insights, on='domain_category', how='outer')
+insights = absa_insights.merge(forecast_insights, on='category', how='outer').merge(summary_insights, on='category', how='outer')
 
 # Extract insights
 print(insights.head(5))

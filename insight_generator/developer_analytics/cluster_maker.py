@@ -7,7 +7,7 @@ from insight_generator.insight_interface import InsightGenerator
 
 class SentimentClusteringDecorator(InsightDecorator):
     def __init__(self, wrapped: InsightGenerator, 
-                 category_col="Domain Category", 
+                 category_col="category", 
                  sentiment_cols=None, 
                  n_clusters=3, 
                  log_file="sentiment_clusters.txt"):

@@ -11,13 +11,13 @@ historical_data = pd.read_csv("files/2022_2025_merged.csv")
 historical_data["date"] = pd.to_datetime(historical_data["date"], errors="coerce")
 
 # Group by week and category, then aggregate sentiment scores
-aggregated_data = historical_data.groupby([pd.Grouper(key="date", freq="m"), "domain_category"])["sentiment"].mean().reset_index()
+aggregated_data = historical_data.groupby([pd.Grouper(key="date", freq="m"), "category"])["sentiment"].mean().reset_index()
 
 # Plot sentiment trends
 plt.figure(figsize=(12, 6))
-categories = aggregated_data["domain_category"].unique()
+categories = aggregated_data["category"].unique()
 for category in categories:
-    category_data = aggregated_data[aggregated_data["domain_category"] == category]
+    category_data = aggregated_data[aggregated_data["category"] == category]
     
     if len(category_data) < 10:
         continue  # Skip categories with too few data points
@@ -33,7 +33,7 @@ plt.show()
 # Sample Reddit posts
 df = pd.read_csv("files/2022_2025_merged.csv")
 # Check if there is data for each category
-category_counts = df['domain_category'].value_counts()
+category_counts = df['category'].value_counts()
 print(category_counts)
 
 # Apply decorators

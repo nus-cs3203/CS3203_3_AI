@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
-    def __init__(self, wrapped, text_col=None, category_col="Domain Category", max_tokens=3000):
+    def __init__(self, wrapped, text_col=None, category_col="category", max_tokens=3000):
         super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")

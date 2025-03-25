@@ -12,7 +12,7 @@ def sentiment_to_label(sentiment):
 
 class TopAdverseSentimentsDecoratorCAP(InsightDecorator):
     def __init__(self, wrapped, sentiment_col="sentiment_title_selftext_polarity",
-                 category_col="Domain Category", text_col="selftext",
+                 category_col="category", text_col="selftext",
                  top_k=5, log_file="top_adverse_sentiments.txt"):
         """
         Identifies top adverse sentiments (5 most positive & 5 most negative per category)
