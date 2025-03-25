@@ -21,11 +21,11 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
         insights = self._wrapped.extract_insights(df)
 
         if self.text_col is None:
-            if {"title", "selftext"}.issubset(df.columns):
-                df["title_selftext"] = df["title"].astype(str) + " " + df["selftext"].astype(str)
-                self.text_col = "title_selftext"
+            if {"title", "description"}.issubset(df.columns):
+                df["title_with_description"] = df["title"].astype(str) + " " + df["description"].astype(str)
+                self.text_col = "title_with_description"
             else:
-                raise KeyError("Missing required text columns: title and selftext")
+                raise KeyError("Missing required text columns: title and description")
 
         absa_data = []
         with open("category_absa_log.txt", "w", encoding="utf-8") as log_file:

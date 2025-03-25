@@ -23,8 +23,8 @@ class SentimentClusteringDecorator(InsightDecorator):
         super().__init__(wrapped)
         self.category_col = category_col
         self.sentiment_cols = sentiment_cols if sentiment_cols else [
-            "sentiment_title_selftext_polarity", 
-            "sentiment_comments_polarity"
+            "title_with_desc_score", 
+            "comments_score"
         ]
         self.n_clusters = n_clusters
         self.log_file = log_file

@@ -4,8 +4,8 @@ from insight_generator.insight_interface import InsightGenerator
 
 class SentimentDiscrepancyDecorator(InsightDecorator):
     def __init__(self, wrapped: InsightGenerator, 
-                 score_col_1='sentiment_title_selftext_polarity', 
-                 score_col_2='sentiment_comments_polarity', 
+                 score_col_1='title_with_desc_score', 
+                 score_col_2='comments_score', 
                  log_file="sentiment_discrepancies.txt",
                  thresholds=(0.3, 0.5, 0.7)):
         """

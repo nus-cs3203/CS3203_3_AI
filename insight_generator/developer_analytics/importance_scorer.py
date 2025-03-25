@@ -23,7 +23,7 @@ class ImportanceScorerDecorator(InsightDecorator):
         """Enhances insights by assigning importance scores to each post."""
         insights = self._wrapped.extract_insights(df)
 
-        required_columns = {"ups", "downs", "num_comments", "sentiment_title_selftext_polarity", "sentiment_comments_polarity"}
+        required_columns = {"ups", "downs", "num_comments", "title_with_desc_score", "comments_score"}
         missing_columns = required_columns - set(df.columns)
         if missing_columns:
             raise KeyError(f"Missing required columns: {missing_columns}")
@@ -32,8 +32,8 @@ class ImportanceScorerDecorator(InsightDecorator):
         df["ups"] = df["ups"].fillna(0)
         df["downs"] = df["downs"].fillna(0)
         df["num_comments"] = df["num_comments"].fillna(0)
-        df["sentiment_title_selftext_polarity"] = df["sentiment_title_selftext_polarity"].fillna(0.0)
-        df["sentiment_comments_polarity"] = df["sentiment_comments_polarity"].fillna(0.0)
+        df["title_with_desc_score"] = df["title_with_desc_score"].fillna(0.0)
+        df["comments_score"] = df["comments_score"].fillna(0.0)
 
         df["importance_score"] = self.calculate_importance_score(df)
 
@@ -48,7 +48,7 @@ class ImportanceScorerDecorator(InsightDecorator):
     def calculate_importance_score(self, df):
         """Computes the importance score using engagement metrics and sentiment analysis."""
         sentiment_factor = (
-            df["sentiment_title_selftext_polarity"].abs() + df["sentiment_comments_polarity"].abs()
+            df["title_with_desc_score"].abs() + df["comments_score"].abs()
         )
 
         importance_score = (
