@@ -276,8 +276,8 @@ if __name__ == "__main__":
     # Create output directory
     os.makedirs(output_folder, exist_ok=True)
     
-    # Read first 200 rows of data
-    df = pd.read_csv(input_file, nrows=200)
+    # Read first 1000 rows of data
+    df = pd.read_csv(input_file, nrows=1000)
     
     # Run the complete filtering process
     filtered_df = filter_for_opinions(

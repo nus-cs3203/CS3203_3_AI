@@ -32,17 +32,41 @@ def process_batch(batch_texts, categories=None):
     user_instruction = {
         "role": "user", 
         "content": f"""
-            Here are reddit posts from r/Singapore, and we want to determine whether it is a useful complaint that may be potentially beneficial 
-            to the government. A useful complaint should highlight a specific issue that requires government intervention or policy change.
-            Please be very strict about identifying useful complaints. Don't include any posts that are not useful to the government. 
-            For example, "Condos are too expensive" suggests a need for action on housing affordability.
-            "Why is the road so crowded" suggests a need for action on traffic congestion.
-            "The public healthcare wait times are too long" suggests a need for improvements in healthcare services.
-            "There are not enough public parks in the city" suggests a need for more recreational spaces.
-            
-            In contrast, posts like "I hate rainy days in Singapore!" or "Why can't weekends be longer?" 
-            "The coffee at my local cafe is too bitter" or "I wish my favorite TV show aired more often" 
-            Although these are negative statements, they are not useful complaints for the government.
+            You will be given Reddit posts from r/Singapore. Your job is to classify whether the post describes a complaint that is relevant to government authorities.
+
+            A post should ONLY be classified as a relevant complaint if it meets ALL these criteria:
+            1. Explicitly expresses dissatisfaction or criticism about a system, policy, or public service
+            2. The issue is under government control or regulation
+            3. Suggests or implies a need for government action or policy change
+            4. Addresses systemic or policy-level issues, not individual cases
+
+            Do NOT classify as complaints if the post is:
+            1. Merely asking questions or seeking information
+            2. Requesting personal advice or help
+            3. General discussion or opinion polls
+            4. Sharing news or information
+            5. Reporting individual incidents without policy implications
+            6. Expressing gratitude or positive feedback
+
+            Examples of TRUE (relevant complaints):
+            - "Why can't Singapore ban single use plastics?" (Environmental policy criticism)
+            - "Healthcare waiting times are unacceptably long" (Healthcare system issue)
+            - "Public transport fares keep increasing but service declining" (Transport policy issue)
+            - "HDB prices are becoming impossible for young couples" (Housing policy issue)
+            - "Government's vaccination policies are too restrictive" (Healthcare policy issue)
+
+            Examples of FALSE (not complaints):
+            - "What documents do I need for passport renewal?" (Information seeking)
+            - "Where can I report a noisy neighbor?" (Help seeking)
+            - "Should we ban smoking in HDB?" (Discussion question)
+            - "New COVID-19 cases reported today" (News sharing)
+            - "Anyone else experiencing SingPass issues?" (Technical query)
+            - "Thanks to all healthcare workers" (Appreciation post)
+
+            When in Doubt:  
+            - Be very strict - only classify as complaint if it clearly criticizes policy or system
+            - If it's just a question or discussion, classify as "No"
+            - Individual problems without policy implications should be "No"
 
             Always format your response as follows for each text:
             
@@ -53,6 +77,20 @@ def process_batch(batch_texts, categories=None):
             {num_entries - 1}. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
             {num_entries}. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
 
+            IMPORTANT FORMAT RULES:
+            1. Each response must be on a single line
+            2. Exactly 5 components separated by commas
+            3. No explanations or additional text between responses
+            4. Values must be numbers between -1 and 1
+            5. Category must be exactly one of: {categories_str}
+            6. Yes/No must be in quotes
+            7. Category must be in quotes
+            
+            Example format:
+            1. "Yes", "Transport", 0.95, -0.8, 0.7
+            2. "No", "Others", 0.8, -0.2, 0.3
+
+            There are {num_entries} input contents, so you should return {num_entries} rows of output. 
             The first entry indicates whether the text is a useful complaint that may be potentially beneficial to the government.
             The second entry indicates the domain category of the complaint, it must be one of the following categories:
             {categories_str}
@@ -60,8 +98,8 @@ def process_batch(batch_texts, categories=None):
             1 means that it is definitely a complaint, 0 means that it is definitely not a complaint.
             The fourth entry is the sentiment score ranging from -1 to 1, where -1 indicates a negative sentiment, 0 is neutral, and 1 is positive.
             The fifth entry is the importance level, meaning its potential impact on the government, and the urgency level, ranging from 0 to 1, where 1 indicates the highest importance.
-            There are {num_entries} input contents, so you should return {num_entries} rows of output. There should be no space between each row, and
-            each response starts with a new line.
+
+
         """
     }
     
@@ -75,35 +113,48 @@ def process_batch(batch_texts, categories=None):
         temperature=0.0
     )
     
-    # Parse the response to include confidence scores, sentiment scores, and importance levels
-    categories_with_confidence = []
-    for line in completion.choices[0].message.content.strip().split('\n'):
-        if line.strip():
-            parts = line.split(',')
-            if len(parts) == 5:
-                try:
-                    # Extract the confidence score, sentiment score, and importance level
-                    confidence = float(parts[2].strip())
-                    sentiment = float(parts[3].strip())
-                    importance = float(parts[4].strip())
-                    # Remove any numbering from the first part
-                    intent = parts[0].strip().split(' ', 1)[-1]
-                    categories_with_confidence.append((intent, parts[1].strip(), confidence, sentiment, importance))
-                except ValueError:
-                    print(f"Warning: Could not parse scores in line: {line}")
-                    categories_with_confidence.append((parts[0].strip(), parts[1].strip(), 0.0, 0.0, 0.0))  # Default scores
+    # Parse the response
+    results = []
+    lines = completion.choices[0].message.content.strip().split('\n')
+    
+    for line in lines:
+        line = line.strip()
+        # Skip empty lines and explanatory text
+        if not line or line.startswith('Let me') or line.startswith('Entries') or 'But need to' in line:
+            continue
+            
+        try:
+            # Remove any numbering at the start
+            if '. ' in line:
+                line = line.split('. ', 1)[1]
+                
+            # Split by comma and clean up each part
+            parts = [part.strip().strip('"') for part in line.split(',')]
+            
+            if len(parts) == 5:  # Only process lines with correct format
+                intent = parts[0].lower()
+                domain = parts[1]
+                confidence = float(parts[2])
+                sentiment = float(parts[3])
+                importance = float(parts[4])
+                
+                results.append((intent, domain, confidence, sentiment, importance))
             else:
-                print(f"Warning: Unexpected format in line: {line}")
-                categories_with_confidence.append(("Unknown", "Unknown", 0.0, 0.0, 0.0))  # Default values for incorrect format
+                print(f"Skipping malformed line: {line}")
+                
+        except (ValueError, IndexError) as e:
+            print(f"Error processing line: {line}")
+            continue
     
-    # Validate response length
-    if len(categories_with_confidence) != len(batch_texts):
-        print(f"Warning: Expected {len(batch_texts)} responses, but got {len(categories_with_confidence)}")
-        # Fill all entries with dummy data if there's a mismatch
-        categories_with_confidence = [("Unknown", "Unknown", 0.0, 0.0, 0.0)] * len(batch_texts)
+    # If we didn't get enough valid results, pad with default values
+    while len(results) < len(batch_texts):
+        results.append(('no', 'Others', 0.0, 0.0, 0.0))
     
-    # Return parsed categories with confidence scores, sentiment scores, and importance levels
-    return categories_with_confidence
+    # If we got too many results, truncate
+    if len(results) > len(batch_texts):
+        results = results[:len(batch_texts)]
+    
+    return results
 
 # Add a function to estimate time remaining for API calls
 def estimate_time_remaining_for_api(api_start_time, current_batch, total_batches):
