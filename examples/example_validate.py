@@ -5,21 +5,17 @@ from common_components.data_validator.text_validator.only_string_validator impor
 from common_components.data_validator.text_validator.regex_validator import RegexValidator
 from common_components.data_validator.validator_logger import ValidatorLogger
 
-# Initialize logger
-logger = ValidatorLogger()
+logger = ValidatorLogger()  # Initialize logger
 
-# Load CSV file into DataFrame
-df = pd.read_csv("files/sentiment_scored_2023_data.csv")
+df = pd.read_csv("files/sentiment_scored_2023_data.csv")  # Load CSV into DataFrame
 
-# Create validators and chain them
+# Create and chain validators
 validator_chain = (
-    NotEmptyValidator(["title", "selftext"], logger)  # Removed "column" if unnecessary
-    .set_next(OnlyStringValidator(["title", "selftext"], logger=logger))  
-    .set_next(LengthValidator({"selftext": (5, 100)}, logger=logger))  
+    NotEmptyValidator(["title", "selftext"], logger)
+    .set_next(OnlyStringValidator(["title", "selftext"], logger=logger))
+    .set_next(LengthValidator({"selftext": (5, 100)}, logger=logger))
 )
 
-# Validate the DataFrame
-result = validator_chain.validate(df)
+result = validator_chain.validate(df)  # Validate DataFrame
 
-# Print validation result
-print(result)
+print(result)  # Print result

@@ -1,5 +1,4 @@
 import pandas as pd
-
 from sentiment_analyser.context import SentimentAnalysisContext
 from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
 from sentiment_analyser.emotion.roberta import RobertaClassifier
@@ -12,8 +11,7 @@ from sentiment_analyser.polarity.vader import VaderSentimentClassifier
 df = pd.read_csv("files/filtered_complaints.csv").sample(1000, random_state=1)
 df["title_with_desc"] = df["title"] + " " + df["description"]
 
-
-# List of classifiers to test
+# Classifiers to test
 classifiers = [
     #("BERT", BERTClassifier()),
     ("VADER", VaderSentimentClassifier()),
@@ -23,7 +21,7 @@ classifiers = [
     #("Roberta Emotion", RobertaClassifier()),
 ]
 
-# Run polarity classifiers one by one with clear output
+# Run classifiers
 for name, classifier in classifiers:
     print(f"\n===== Running {name} Sentiment Analysis =====")
     context = SentimentAnalysisContext(classifier)
@@ -36,13 +34,9 @@ for name, classifier in classifiers:
         "title_with_desc_emotion",
         "title_with_desc_confidence"
     ]
-
-    # Filter only the existing columns
     existing_columns = [col for col in columns_to_print if col in df.columns]
-
-    # Print only if there are valid columns
     if existing_columns:
         print(df[existing_columns])
 
-# Save the results
+# Save results
 df.to_csv("files/sentiment_results_singlish_robust.csv", index=False)

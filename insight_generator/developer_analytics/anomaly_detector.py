@@ -6,7 +6,7 @@ import scipy.stats as stats
 class SentimentAnomalyDetectionDecorator(InsightDecorator):
     def __init__(self, wrapped_insight_generator, historical_data, 
                  log_file="sentiment_anomalies.txt",
-                 time_col="date", sentiment_col="sentiment_title_with_description_score",
+                 time_col="date", sentiment_col="sentiment_title_with_desc_score",
                  category_col="category", z_threshold=2.0):
         """
         Detects anomalies in sentiment trends by identifying sudden spikes or drops.
