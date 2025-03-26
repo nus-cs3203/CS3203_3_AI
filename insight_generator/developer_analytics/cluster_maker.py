@@ -8,8 +8,8 @@ from insight_generator.insight_interface import InsightGenerator
 class SentimentClusteringDecorator(InsightDecorator):
     def __init__(self, wrapped: InsightGenerator, 
                  category_col="category", 
-                 sentiment_cols=None, 
-                 n_clusters=3, 
+                 sentiment_cols=["sentiment"], 
+                 n_clusters=10, 
                  log_file="sentiment_clusters.txt"):
         """
         A decorator for clustering sentiment scores within categories.
@@ -35,11 +35,11 @@ class SentimentClusteringDecorator(InsightDecorator):
         Extracts insights, including clustering sentiment scores within categories.
 
         :param df: A pandas DataFrame containing sentiment data.
-        :return: A dictionary of insights, including sentiment clusters.
+        :return: A pandas DataFrame with categories and their corresponding clusters.
         """
         # Extract base insights from the wrapped generator
-        insights = self._wrapped.extract_insights(df)
-        category_clusters = defaultdict(lambda: defaultdict(list))
+        self._wrapped.extract_insights(df)
+        category_clusters = []
 
         with open(self.log_file, "w") as log_file:
             # Group data by category and perform clustering for each group
@@ -63,19 +63,22 @@ class SentimentClusteringDecorator(InsightDecorator):
                 category_group = category_group.copy()
                 category_group["cluster"] = labels
 
-                # Organize post IDs by category and cluster
+                # Organize post IDs by cluster
+                clusters = [[] for _ in range(self.n_clusters)]
                 for idx, row in category_group.iterrows():
                     post_id = str(idx)  # Use the index as the post ID
                     cluster_label = int(row["cluster"])
-                    category_clusters[category][cluster_label].append(post_id)
+                    clusters[cluster_label].append(post_id)
 
-            # Write clustering results to the log file
-            for category, clusters in category_clusters.items():
+                # Append category and clusters to the result
+                category_clusters.append({"category": category, "clusters": clusters})
+
+                # Write clustering results to the log file
                 log_file.write(f"Category: {category}\n")
-                for cluster_label, post_ids in clusters.items():
+                for cluster_label, post_ids in enumerate(clusters):
                     log_file.write(f"  Cluster {cluster_label}: {', '.join(post_ids)}\n")
                 log_file.write("\n")
 
-        # Add sentiment clusters to the insights dictionary
-        insights["sentiment_clusters"] = category_clusters
-        return insights
+        # Convert the result to a DataFrame
+        result_df = pd.DataFrame(category_clusters)
+        return result_df

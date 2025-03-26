@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 
 class ImportanceScorerDecorator(InsightDecorator):
-    def __init__(self, wrapped, upvote_weight=1.0, comment_weight=2.0, sentiment_weight=1.5):
+    def __init__(self, wrapped, upvote_weight=1.0, comment_weight=2.0, sentiment_weight=1.5, sentiment_col_1="title_with_desc_score", sentiment_col_2="comments_score"):
         """
         Initializes the ImportanceScorerDecorator.
 
@@ -21,6 +21,8 @@ class ImportanceScorerDecorator(InsightDecorator):
         self.upvote_weight = upvote_weight
         self.comment_weight = comment_weight
         self.sentiment_weight = sentiment_weight
+        self.sentiment_col_1 = sentiment_col_1
+        self.sentiment_col_2 = sentiment_col_2
 
     def extract_insights(self, df):
         """
@@ -38,7 +40,7 @@ class ImportanceScorerDecorator(InsightDecorator):
         insights = self._wrapped.extract_insights(df)
 
         # Ensure required columns are present in the DataFrame
-        required_columns = {"ups", "downs", "num_comments", "title_with_desc_score", "comments_score"}
+        required_columns = {"ups", "downs", "num_comments", self.sentiment_col_1, self.sentiment_col_2}
         missing_columns = required_columns - set(df.columns)
         if missing_columns:
             raise KeyError(f"Missing required columns: {missing_columns}")
@@ -47,8 +49,8 @@ class ImportanceScorerDecorator(InsightDecorator):
         df["ups"] = df["ups"].fillna(0)
         df["downs"] = df["downs"].fillna(0)
         df["num_comments"] = df["num_comments"].fillna(0)
-        df["title_with_desc_score"] = df["title_with_desc_score"].fillna(0.0)
-        df["comments_score"] = df["comments_score"].fillna(0.0)
+        df[self.sentiment_col_1] = df[self.sentiment_col_1].fillna(0.0)
+        df[self.sentiment_col_2] = df[self.sentiment_col_2].fillna(0.0)
 
         # Calculate importance scores
         df["importance_score"] = self.calculate_importance_score(df)
@@ -74,7 +76,7 @@ class ImportanceScorerDecorator(InsightDecorator):
         """
         # Calculate the sentiment factor as the sum of absolute sentiment scores
         sentiment_factor = (
-            df["title_with_desc_score"].abs() + df["comments_score"].abs()
+            df[self.sentiment_col_1].abs() + df[self.sentiment_col_2].abs()
         )
 
         # Compute the importance score using the weighted sum of metrics
