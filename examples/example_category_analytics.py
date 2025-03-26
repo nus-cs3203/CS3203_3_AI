@@ -5,7 +5,7 @@ from insight_generator.category_analytics.llm_category_absa import CategoryABSAW
 from insight_generator.category_analytics.llm_category_summarizer import CategorySummarizerDecorator
 
 # Load and preprocess data
-df = pd.read_csv("files/all_complaints_2022_2025.csv")
+df = pd.read_csv("files/all_complaints_2022_2025.csv").head(100)
 df.dropna(subset=["title"], inplace=True)
 df = df.head(100)
 
