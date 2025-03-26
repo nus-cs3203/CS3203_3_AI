@@ -6,12 +6,9 @@ import re
 from sentiment_analyser.strategy import SentimentClassifier
 
 class VaderSentimentClassifier(SentimentClassifier):
-    """Concrete Strategy - Uses VADER (or a custom lexicon) for sentiment classification on DataFrame columns."""
+    """Uses VADER (or a custom lexicon) for sentiment classification on DataFrame columns."""
 
     def __init__(self, lexicon_file="files/singlish_lexicon_cleaned.csv"):
-        """
-        Initializes the VaderSentimentClassifier with optional custom lexicon.
-        """
         self.lexicon_file = lexicon_file
         self.model = SentimentIntensityAnalyzer()
         
@@ -20,7 +17,7 @@ class VaderSentimentClassifier(SentimentClassifier):
             self.model.lexicon.update(lexicon_dict)
 
     def _load_custom_lexicon(self, lexicon_file):
-        """Loads a custom lexicon without modifying sentiment scores."""
+        """Loads a custom lexicon."""
         lexicon_df = pd.read_csv(lexicon_file)
         required_columns = ["singlish", "sentiment_score"]
         if not all(col in lexicon_df.columns for col in required_columns):
@@ -29,7 +26,7 @@ class VaderSentimentClassifier(SentimentClassifier):
         return {row["singlish"]: row["sentiment_score"] for _, row in lexicon_df.iterrows()}
 
     def classify(self, df: pd.DataFrame, text_cols: list) -> pd.DataFrame:
-        """Applies sentiment analysis to specified columns in a Pandas DataFrame."""
+        """Applies sentiment analysis to specified DataFrame columns."""
         df = df.copy()
         
         for col in text_cols:
@@ -40,11 +37,9 @@ class VaderSentimentClassifier(SentimentClassifier):
         return df
     
     def _analyze_text(self, text: str) -> dict:
-        """Basic sentiment analysis without weighted modifications."""
+        """Performs sentiment analysis."""
         text = self._adjust_negations(text)
-        
         scores = self.model.polarity_scores(text)
-        
         sentiment_score = scores["compound"]
         
         if sentiment_score >= 0.1:
@@ -57,7 +52,7 @@ class VaderSentimentClassifier(SentimentClassifier):
         return {"label": label, "score": sentiment_score}
     
     def _adjust_negations(self, text: str) -> str:
-        """Handle negations without modifying intensity."""
+        """Handles negations."""
         negations = ["not", "isn't", "wasn't", "can't", "couldn't"]
         for neg in negations:
             text = re.sub(rf"\b{neg} ([a-zA-Z]+)\b", r"less \1", text, flags=re.IGNORECASE)

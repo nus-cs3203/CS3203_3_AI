@@ -18,7 +18,7 @@ class AdvancedSentimentClassifier(SentimentClassifier):
             self.model.lexicon.update(lexicon_dict)
 
     def _load_custom_lexicon(self, lexicon_file):
-        """Loads a custom lexicon without modifying sentiment scores."""
+        """Loads a custom lexicon."""
         lexicon_df = pd.read_csv(lexicon_file)
         required_columns = ["singlish", "sentiment_score"]
         if not all(col in lexicon_df.columns for col in required_columns):
@@ -27,7 +27,7 @@ class AdvancedSentimentClassifier(SentimentClassifier):
         return {row["singlish"]: row["sentiment_score"] for _, row in lexicon_df.iterrows()}
 
     def classify(self, df: pd.DataFrame, text_cols: list) -> pd.DataFrame:
-        """Applies sentiment analysis to specified columns in a Pandas DataFrame."""
+        """Applies sentiment analysis to specified columns in a DataFrame."""
         df = df.copy()
         
         for col in text_cols:
@@ -48,9 +48,8 @@ class AdvancedSentimentClassifier(SentimentClassifier):
             return "neutral"
 
     def _analyze_text_vader(self, text: str) -> dict:
-        """Helper function to classify sentiment of a single text input using VADER."""
+        """Classifies sentiment using VADER."""
         text = self._adjust_negations(text)
-        
         scores = self.model.polarity_scores(text)
         sentiment_score = scores["compound"]
         
@@ -64,14 +63,14 @@ class AdvancedSentimentClassifier(SentimentClassifier):
         return {"label": label, "score": sentiment_score}
     
     def _analyze_text_classifier(self, text: str) -> dict:
-        """Helper function to classify sentiment of a single text input using a custom classifier."""
+        """Classifies sentiment using a custom classifier."""
         result = self.classifier(text)[0]
         sentiment_score = result["score"] if result["label"] == "positive" else -result["score"]
         
         return {"label": result["label"], "score": sentiment_score}
 
     def _adjust_negations(self, text: str) -> str:
-        """Handle negations without modifying intensity."""
+        """Handles negations."""
         negations = ["not", "isn't", "wasn't", "can't", "couldn't"]
         for neg in negations:
             text = re.sub(rf"\b{neg} ([a-zA-Z]+)\b", r"less \1", text, flags=re.IGNORECASE)

@@ -10,7 +10,28 @@ logging.basicConfig(filename='category_summarizer.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 class CategorySummarizerDecorator(InsightDecorator):
+    """
+    A decorator class for summarizing insights from a DataFrame grouped by categories.
+    This class uses a generative AI model to generate summaries, concerns, and suggestions
+    for each category in the DataFrame.
+
+    Attributes:
+        wrapped (InsightDecorator): The wrapped object to decorate.
+        text_col (str): The column containing text data to summarize. If None, it will be inferred.
+        category_col (str): The column containing category labels. Defaults to "category".
+    """
     def __init__(self, wrapped, text_col=None, category_col="category"):
+        """
+        Initializes the CategorySummarizerDecorator.
+
+        Args:
+            wrapped (InsightDecorator): The wrapped object to decorate.
+            text_col (str, optional): The column containing text data to summarize. Defaults to None.
+            category_col (str, optional): The column containing category labels. Defaults to "category".
+
+        Raises:
+            ValueError: If the GOOGLE_API_KEY is missing in the environment variables.
+        """
         super().__init__(wrapped)
         load_dotenv()
         self.api_key = os.getenv("GOOGLE_API_KEY")
@@ -25,6 +46,18 @@ class CategorySummarizerDecorator(InsightDecorator):
         self.category_col = category_col
 
     def extract_insights(self, df):
+        """
+        Extracts insights from the DataFrame by summarizing text data for each category.
+
+        Args:
+            df (pd.DataFrame): The input DataFrame containing text and category data.
+
+        Returns:
+            pd.DataFrame: A DataFrame containing summaries, concerns, suggestions, and sentiment for each category.
+
+        Raises:
+            KeyError: If required text columns ('title' and 'description') are missing.
+        """
         logging.info("Starting category summarization.")
         if self.text_col is None:
             if {"title", "description"}.issubset(df.columns):
@@ -55,7 +88,22 @@ class CategorySummarizerDecorator(InsightDecorator):
         return res
 
     def generate_summary(self, group):
-        """Generates a summary for a given category, now accepting a DataFrame."""
+        """
+        Generates a summary for a given category using the generative AI model.
+
+        Args:
+            group (pd.DataFrame): A DataFrame containing data for a specific category.
+
+        Returns:
+            dict: A dictionary containing the summary, concerns, and suggestions.
+
+        Example Output:
+            {
+                "summary": "The discussions mainly revolve around the impact of the pandemic.",
+                "concerns": ["Young adults are facing challenges in finding employment."],
+                "suggestions": ["Implement measures to support job creation for young adults."]
+            }
+        """
         logging.info("Generating summary using LLM")
         dataframe_string = group.to_string(index=False)
         user_prompt = f"""
@@ -118,8 +166,6 @@ class CategorySummarizerDecorator(InsightDecorator):
             concerns = []
             suggestions = []
 
-            
-            
             sections = result_text.split("\n\n")  # Split sections by double newlines
             for section in sections:
                 if section.startswith("Summary:"):

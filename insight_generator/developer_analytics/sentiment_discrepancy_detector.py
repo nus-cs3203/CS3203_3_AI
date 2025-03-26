@@ -4,19 +4,19 @@ from insight_generator.insight_interface import InsightGenerator
 
 class SentimentDiscrepancyDecorator(InsightDecorator):
     def __init__(self, wrapped: InsightGenerator, 
-                 score_col_1='sentiment_title_selftext_polarity', 
-                 score_col_2='sentiment_comments_polarity', 
+                 score_col_1='sentiment', 
+                 score_col_2='comments_sentiment', 
                  log_file="sentiment_discrepancies.txt",
                  thresholds=(0.3, 0.5, 0.7)):
         """
-        Decorator to detect sentiment discrepancies between two sentiment score columns.
-        Logs discrepancies classified as LOW, MED, HIGH based on threshold.
-        
+        A decorator class to detect and log sentiment discrepancies between two sentiment score columns.
+        Discrepancies are categorized into levels (LOW, MED, HIGH) based on defined thresholds.
+
         :param wrapped: The wrapped InsightGenerator instance.
-        :param score_col_1: First sentiment score column.
-        :param score_col_2: Second sentiment score column.
-        :param log_file: File to log detected discrepancies.
-        :param thresholds: Tuple defining LOW, MED, HIGH discrepancy levels.
+        :param score_col_1: Name of the first sentiment score column.
+        :param score_col_2: Name of the second sentiment score column.
+        :param log_file: Path to the file where discrepancies will be logged.
+        :param thresholds: Tuple defining thresholds for LOW, MED, and HIGH discrepancy levels.
         """
         super().__init__(wrapped)
         self.score_col_1 = score_col_1
@@ -26,13 +26,14 @@ class SentimentDiscrepancyDecorator(InsightDecorator):
     
     def extract_insights(self, df: pd.DataFrame):
         """
-        Extracts insights including sentiment discrepancy detection.
-        :param df: DataFrame containing sentiment data
-        :return: Insights with sentiment discrepancy results
+        Extracts insights and detects sentiment discrepancies in the provided DataFrame.
+
+        :param df: DataFrame containing sentiment score data.
+        :return: A dictionary of insights, including sentiment discrepancy results.
         """
         insights = self._wrapped.extract_insights(df)
 
-        # Open log file once for efficiency
+        # Open log file for writing detected discrepancies
         with open(self.log_file, "w") as log_file:
             discrepancies = {}
 
@@ -51,20 +52,19 @@ class SentimentDiscrepancyDecorator(InsightDecorator):
 
     def detect_discrepancy(self, row):
         """
-        Detects sentiment discrepancies for a given row.
-        :param row: A single row from the DataFrame
-        :return: Discrepancy level (LOW, MED, HIGH) and difference
+        Detects sentiment discrepancies for a single row in the DataFrame.
+
+        :param row: A single row from the DataFrame.
+        :return: A tuple containing the discrepancy level (LOW, MED, HIGH) and the absolute difference.
         """
         score_1 = row.get(self.score_col_1, 0)
         score_2 = row.get(self.score_col_2, 0)
         diff = abs(score_1 - score_2)
 
-        # Classify discrepancy level
+        # Classify discrepancy level based on thresholds
         if diff >= self.thresholds[2]:
             return "HIGH", diff
         elif diff >= self.thresholds[1]:
-            return "MED", diff
-        elif diff >= self.thresholds[0]:
             return "LOW", diff
         else:
             return None, diff
