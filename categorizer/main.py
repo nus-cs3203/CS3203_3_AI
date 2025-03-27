@@ -13,7 +13,16 @@ def process_posts(input_file, output_folder, num_rows=200):
     os.makedirs(os.path.join(output_folder, "complaint_categorizer_results"), exist_ok=True)
     
     print("Step 1: Reading and filtering news posts...")
-    df = pd.read_csv(input_file, nrows=num_rows)
+    # Get total number of rows
+    total_rows = sum(1 for _ in open(input_file)) - 1  # -1 for header
+    
+    # Calculate how many rows to skip
+    skip_rows = max(0, total_rows - num_rows)
+    
+    # Read the last num_rows rows
+    df = pd.read_csv(input_file, skiprows=range(1, skip_rows + 1) if skip_rows > 0 else None)
+    
+    print(f"Processing the last {num_rows} rows from total {total_rows} rows")
     df.to_csv(os.path.join(output_folder, "1_initial_posts.csv"), index=False)
     
     # First filter: news filter
@@ -100,10 +109,17 @@ Please verify if this is truly a government-relevant complaint that requires pol
 
 if __name__ == "__main__":
     input_file = "last_round_files/all_posts_2022_2025.csv"
-    output_folder = "last_round_files/processed_posts_2000"
+    output_folder = "last_round_files/processed_posts_3000_last"
     
+    # Get total number of rows in the file
+    total_rows = sum(1 for _ in open(input_file)) - 1  # -1 for header
+    
+    # Calculate how many rows to skip to get the last 3000 rows
+    skip_rows = max(0, total_rows - 3000)
+    
+    # Read the last 3000 rows
     df_final = process_posts(
         input_file=input_file,
         output_folder=output_folder,
-        num_rows=2000
+        num_rows=3000
     ) 
