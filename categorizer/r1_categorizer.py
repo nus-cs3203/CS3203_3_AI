@@ -37,7 +37,8 @@ def process_batch(batch_texts, categories=None):
 Guidelines:
 - A complaint is a statement that something is unsatisfactory or unacceptable, where the person is expressing some dissatisfaction or encouraging some form of action to be taken.
 - A relevant complaint should be an opinion that the government authorities can act on to improve the country. If the complaint is about a particular brand or product, it is not relevant to the authority. The complaint should be related to a high-level issue, such as transport or healthcare that the government is responsible for.
-- Questions that are simply seeking discussions are not complaints.
+- Questions that are simply seeking discussions are not complaints
+- Exclude neutral reports and factual reporting without expressing dissatisfaction
 
 Output:
 Output true if it is a relevant complaint, else output false.
@@ -69,13 +70,14 @@ Examples:
             {num_entries}. "Yes/No", "Domain Category", Confidence Score, Sentiment Score, Importance Level
 
             IMPORTANT FORMAT RULES:
-            1. Each response must be on a single line
-            2. Exactly 5 components separated by commas
-            3. No explanations or additional text between responses
-            4. Values must be numbers between -1 and 1
-            5. Category must be exactly one of: {categories_str}
-            6. Yes/No must be in quotes
-            7. Category must be in quotes
+            1. Each response MUST start with the line number followed by a dot and a space (e.g. "1. ", "2. ", "3. ")
+            2. Each response must be on a single line
+            3. Exactly 5 components separated by commas
+            4. No explanations or additional text between responses
+            5. Values must be numbers between -1 and 1
+            6. Category must be exactly one of: {categories_str}
+            7. Yes/No must be in quotes
+            8. Category must be in quotes
             
             Example format:
             1. "Yes", "Transport", 0.95, -0.8, 0.7
@@ -98,8 +100,8 @@ Examples:
     
     # Make an API request for the current batch 
     completion = client.chat.completions.create(
-        #model="deepseek-r1-250120",
-        model='deepseek-v3-250324',
+        model="deepseek-r1-250120",
+        #model='deepseek-v3-250324',
         messages=messages,
         stream=False,
         temperature=0.0

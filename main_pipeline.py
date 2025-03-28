@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+from categorizer.data_preprocessing import preprocess_data 
 
 from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
@@ -22,18 +23,22 @@ def process_pipeline(input_file, output_folder):
     """
     # Create output directory and subdirectories
     os.makedirs(output_folder, exist_ok=True)
+    os.makedirs(os.path.join(output_folder, "preprocessing"), exist_ok=True)
     os.makedirs(os.path.join(output_folder, "news_filter_results"), exist_ok=True)
     os.makedirs(os.path.join(output_folder, "complaint_categorizer_results"), exist_ok=True)
     
     # Load dataset
     print("Loading dataset...")
-    df = pd.read_csv(input_file).head(1000)
-    df.to_csv(os.path.join(output_folder, "1_initial_posts.csv"), index=False)
+    df = pd.read_csv(input_file).head(200)
+    
+    # Step 0: Preprocessing
+    print("\nStep 0: Data Preprocessing...")
+    df_preprocessed = preprocess_data(df, os.path.join(output_folder, "preprocessing"))
     
     # Step 1: News and Opinion Filtering
     print("\nStep 1: Filtering news posts and identifying opinions...")
     df_filtered = filter_for_opinions(
-        df=df,
+        df=df_preprocessed,
         output_folder=os.path.join(output_folder, "news_filter_results")
     )
     df_filtered.to_csv(os.path.join(output_folder, "2_after_news_filter.csv"), index=False)
@@ -54,25 +59,12 @@ def process_pipeline(input_file, output_folder):
     print(f"\nFound {len(df_first_round_complaints)} complaints in first round")
     df_first_round_complaints.to_csv(os.path.join(output_folder, "3_first_round_complaints.csv"), index=False)
     
-    # Prepare context for second round
-    df_first_round_complaints['combined_text'] = df_first_round_complaints.apply(
-        lambda row: f"""Original post: {row['combined_text']}
-First round analysis:
-- Category: {row['Domain Category']}
-- Confidence: {row['Confidence Score']}
-- Sentiment: {row['Sentiment Score']}
-- Importance: {row['Importance Level']}
-
-Please verify if this is truly a government-relevant complaint that requires policy action.""",
-        axis=1
-    )
-    
-    # Step 3: Second Round Verification
+    # Step 3: Second Round Verification 
     print("\nStep 3: Second round verification...")
     df_verified = categorize_complaints(
         df=df_first_round_complaints,
         output_csv=os.path.join(output_folder, "complaint_categorizer_results/second_round_verified.csv"),
-        is_second_round=True
+        is_second_round=True 
     )
     
     # Final filtering

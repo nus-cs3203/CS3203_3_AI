@@ -15,6 +15,7 @@ def process_opinion_batch(batch_texts):
         "content": "You are a helpful assistant identifying personal opinions and emotional expressions in Reddit posts."
     }
     
+    #("batch_texts is:", batch_texts)
     num_entries = len(batch_texts)
     
     user_instruction = {
@@ -43,36 +44,68 @@ def process_opinion_batch(batch_texts):
             - Anyone knows the opening hours of this shop?
             - What documents needed for passport renewal
             
-            Format your response as follows for each text, one per line:
+            Format your response as follows for each text:
             1. true/false
             2. true/false
+            3. true/false
             ...
 
-            There are {num_entries} input contents, so you should return {num_entries} lines.
+            IMPORTANT FORMAT RULES:
+            1. Each response MUST start with the line number followed by a dot and a space (e.g. "1. ", "2. ", "3. ")
+            2. After the number, only write "true" or "false" (lowercase)
+            3. No extra spaces or characters
+            4. One response per line
+            5. All {num_entries} responses must be numbered sequentially
+
+            Example of CORRECT format:
+            1. true
+            2. false
+            3. true
+            4. false
+
+            Example of INCORRECT format:
+            true
+            false
+            true
+            false
+            
+            There are {num_entries} input contents, so you should return exactly {num_entries} numbered responses.
             """.format(num_entries=num_entries)
     }
     
-    messages = [system_message, user_instruction] + [{"role": "user", "content": text} for text in batch_texts]
-    
-    completion = client.chat.completions.create(
-        #model="deepseek-r1-250120",
-        model='deepseek-v3-250324',
-        messages=messages,
-        stream=False,
-        temperature=0.0
-    )
-    
-    # Parse the response
-    results = []
-    for line in completion.choices[0].message.content.strip().split('\n'):
-        if line.strip():
-            # Remove any numbering and get just the true/false value
-            has_opinion = line.strip().split('.')[-1].strip().lower() == 'true'
-            results.append(has_opinion)
-    
-    # Validate response length
-    if len(results) != len(batch_texts):
-        print(f"Warning: Expected {len(batch_texts)} responses, but got {len(results)}")
+    try:
+        messages = [system_message, user_instruction] + [{"role": "user", "content": text} for text in batch_texts]
+        
+        completion = client.chat.completions.create(
+            model="deepseek-r1-250120",
+            messages=messages,
+            stream=False,
+            temperature=0.0
+        )
+        
+        # Parse the response
+        results = []
+        response_content = completion.choices[0].message.content.strip()
+        
+        for line in response_content.split('\n'):
+            if line.strip():
+                # 更健壮的解析方式
+                parts = line.strip().split('.')
+                if len(parts) > 1:
+                    value = parts[-1].strip().lower()
+                    has_opinion = value == 'true'
+                    results.append(has_opinion)
+        
+        if len(results) != len(batch_texts):
+            print(f"\nWarning: Expected {len(batch_texts)} responses, but got {len(results)}")
+            print("\nActual LLM Response:")
+            print("----------------------------------------")
+            print(response_content)
+            print("----------------------------------------")
+            results = [False] * len(batch_texts)
+            
+    except Exception as e:
+        print(f"Error in API call: {str(e)}")
         results = [False] * len(batch_texts)
     
     return results
@@ -182,64 +215,76 @@ def filter_for_opinions(df=None, input_csv=None, output_folder=None):
     initial_count = len(df)
     print(f"Initial number of rows: {initial_count}")
     
-    # First preprocessing: Remove deleted/removed posts
-    deleted_patterns = ['[deleted by user]', '[deleted]', '[removed]']
-    mask_deleted = ~df['title'].isin(deleted_patterns)
-    df_filtered = df[mask_deleted].copy()
+    # Since we have already removed deleted/removed posts in preprocessing, we don't need this step anymore
+    # Remove the following code:
+    # deleted_patterns = ['[deleted by user]', '[deleted]', '[removed]']
+    # mask_deleted = ~df['title'].isin(deleted_patterns)
+    # df_filtered = df[mask_deleted].copy()
+    # deleted_count = initial_count - len(df_filtered)
     
-    deleted_count = initial_count - len(df_filtered)
-    print(f"Removed {deleted_count} deleted/removed posts")
-    print(f"Remaining posts after removing deleted content: {len(df_filtered)}")
+    # Use input DataFrame directly
+    df_filtered = df.copy()
     
-    # Second filter: Remove posts from media websites
+    # Keep URL filtering as it's specific to this function
     if 'url' in df_filtered.columns:
         df_filtered['is_media_url'] = df_filtered['url'].apply(is_media_source_url)
         media_posts = df_filtered['is_media_url'].sum()
         print(f"Found {media_posts} posts from media websites (filtered out)")
         
         # Save media source posts for verification
-        df_filtered[df_filtered['is_media_url']].to_csv(os.path.join(output_folder, "media_source_posts.csv"), index=False)
+        if output_folder is not None:
+            df_filtered[df_filtered['is_media_url']].to_csv(os.path.join(output_folder, "media_source_posts.csv"), index=False)
         
         # Keep non-media posts
         df_filtered = df_filtered[~df_filtered['is_media_url']].copy()
-        df_filtered.to_csv(os.path.join(output_folder, "posts_for_analysis.csv"), index=False)
+        
+        # Save after URL filtering
+        if output_folder is not None:
+            df_filtered.to_csv(os.path.join(output_folder, "posts_after_url_filter.csv"), index=False)
         
         print(f"Remaining posts after URL filtering: {len(df_filtered)}")
         
         # Save statistics
-        stats = {
-            'Initial posts': initial_count,
-            'Deleted/removed posts': deleted_count,
-            'Media source posts': media_posts,
-            'Posts for opinion analysis': len(df_filtered),
-            'Media source percentage': f"{(media_posts/(initial_count-deleted_count))*100:.2f}%"
-        }
-        
-        with open(os.path.join(output_folder, "filter_stats.txt"), 'w') as f:
-            for key, value in stats.items():
-                f.write(f"{key}: {value}\n")
+        if output_folder is not None:
+            stats = {
+                'Initial posts': initial_count,
+                'Posts after URL filtering': len(df_filtered),
+                'Media source posts': media_posts,
+                'Media source percentage': f"{(media_posts/initial_count)*100:.2f}%"
+            }
+            
+            with open(os.path.join(output_folder, "url_filter_stats.txt"), 'w') as f:
+                for key, value in stats.items():
+                    f.write(f"{key}: {value}\n")
     else:
         print("No URL column found in the CSV file")
-        
-    # Combine title and selftext for content analysis
-    if 'selftext' in df_filtered.columns:
-        df_filtered['combined_text'] = df_filtered.apply(
-            lambda row: f"{row['title']} {row['selftext']}" if pd.notna(row['selftext']) else row['title'],
-            axis=1
-        )
-    else:
+    
+    # Remove title and selftext combination code as it's done in preprocessing
+    # Remove the following code:
+    # if 'selftext' in df_filtered.columns:
+    #    df_filtered['combined_text'] = df_filtered.apply(
+    #        lambda row: f"{row['title']} {row['selftext']}" if pd.notna(row['selftext']) else row['title'],
+    #        axis=1
+    #    )
+    # else:
+    #    df_filtered['combined_text'] = df_filtered['title']
+    
+    # Ensure 'combined_text' column exists
+    if 'combined_text' not in df_filtered.columns:
+        print("Warning: 'combined_text' column not found, using 'title' as fallback")
         df_filtered['combined_text'] = df_filtered['title']
     
     # Process posts in batches using ThreadPoolExecutor
-    batch_size = 50
+    batch_size = 50  # Reduced batch size for better stability
     has_opinion_list = []
     
     print("Starting opinion analysis for remaining posts...")
     with ThreadPoolExecutor() as executor:
         futures = []
         for i in range(0, len(df_filtered), batch_size):
-            batch_texts = df_filtered['combined_text'][i:i+batch_size]
-            futures.append(executor.submit(process_opinion_batch, batch_texts))
+            batch_texts = df_filtered['combined_text'][i:i+batch_size].reset_index(drop=True)
+            numbered_batch = [f"{idx+1}. {text}" for idx, text in enumerate(batch_texts)]
+            futures.append(executor.submit(process_opinion_batch, numbered_batch))
         
         for index, future in enumerate(futures):
             batch_results = future.result()
