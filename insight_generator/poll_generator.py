@@ -3,8 +3,8 @@ import google.generativeai as genai
 import pandas as pd
 from dotenv import load_dotenv
 
-class PromptGeneratorDecorator():
-    def __init__(self, category_col="domain_category", log_file="poll_prompts_log.txt"):
+class PollGenerator():
+    def __init__(self, category_col="category", log_file="poll_prompts_log.txt"):
         """
         Generates poll prompts based on extracted insights using an LLM.
 
@@ -36,43 +36,61 @@ class PromptGeneratorDecorator():
         polls_data = []
 
         for category, group in df.groupby(self.category_col):
-            group["title_with_desc"] = group["title"].fillna("") + " " + group["description"].fillna("")
-            combined_text = " ".join(group["title_with_desc"].dropna())
+            if len(group) < 10:
+                print(f"Skipping category '{category}' because it has fewer than 10 posts.")
+                continue  # Skip categories with less than 10 posts
 
-            if combined_text.strip():
-                poll_prompt = self.generate_poll_prompt(category, combined_text)
-                polls_data.append({
-                    "category": category,
-                    "question": poll_prompt.get("question", ""),
-                    "question_type": poll_prompt.get("question_type", ""),
-                    "options": poll_prompt.get("options", []),
-                    "reasoning": poll_prompt.get("reasoning", "")
-                })
+            # Pass the group DataFrame to generate_poll_prompt
+            poll_prompt = self.generate_poll_prompt(category, group)
+            polls_data.append({
+                "category": category,
+                "question": poll_prompt.get("question", ""),
+                "question_type": poll_prompt.get("question_type", ""),
+                "options": poll_prompt.get("options", []),
+                "reasoning": poll_prompt.get("reasoning", "")
+            })
 
         insights = pd.DataFrame(polls_data)
+        insights.dropna(inplace=True)
         return insights
-    
-    def generate_poll_prompt(self, category, text):
-        """Uses Gemini API to generate a poll prompt for a given category."""
+
+    def generate_poll_prompt(self, category, group):
+        """Uses Gemini API to generate a poll prompt for a given category, now with DataFrame input."""
+        # Convert the DataFrame to a string representation for the LLM
+        dataframe_string = group.to_string(index=False)
+
         user_prompt = f"""
         You are a Reddit poll generator for discussions in the category: **{category}**.
 
-        Based **only** on the following Reddit discussions, generate **two** poll questions:
+        Based **only** on the following Reddit discussions (provided as a table), generate **one** poll question for category **{category}**:
 
-        "{text}"
+        ```
+        {dataframe_string}
+        ```
 
         **Output Format (each in new line, without any extra formatting or markdown like ```):**
         [A concise, relevant question based strictly on the provided discussions]
         [MCQ / Open-ended]
-        [Options, if applicable]
+        [Options, if applicable, separated by semicolons]
         [Why this poll is useful + trends from given data that makes this post relevant]
 
         **Rules:**
-        - Stick strictly to the category and the given text.
+        - Stick strictly to the category and the given data.
+        - Generate a single poll question.
         - Keep the prompt relevant to the Singapore context
-        - Derive prompts from the insights gathered from given text
+        - Derive prompts from the insights gathered from given data
+        - Reasoning should be based on the trends observed in the data
+        - Reasoning should be atleast 10 words long
+        - MCQ options should be descriptive and relevant to the category
         - Each statement should stand on its own (i.e. do not refer specific posts or make it too narrow)
         - Avoid unnecessary explanations.
+        - Consider all columns in the table when generating the poll.
+
+        Sample Output:
+        What is the most popular food in Singapore?
+        MCQ
+        Chicken Rice; Laksa; Hainanese Curry Rice; Nasi Lemak
+        This poll is useful to understand the most popular food choices in Singapore. The given discussions show a trend towards local cuisine, making this post relevant.
         """
 
         try:
@@ -80,11 +98,11 @@ class PromptGeneratorDecorator():
             if response:
                 # Parse the response text to extract the required fields
                 lines = [line.strip() for line in response.text.strip().split("\n") if line.strip() and not line.startswith("```")]
-                
+
                 return {
                     "question": lines[0] if len(lines) > 0 else "",
                     "question_type": lines[1] if len(lines) > 1 else "",
-                    "options": lines[2].split(",") if len(lines) > 2 else [],
+                    "options": lines[2].split(";") if len(lines) > 2 else [],
                     "reasoning": lines[3] if len(lines) > 3 else ""
                 }
             else:

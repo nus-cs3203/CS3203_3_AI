@@ -4,7 +4,7 @@ import pytextrank
 
 class KeywordsTrendDecorator(InsightDecorator):
     def __init__(self, wrapped_insight_generator, log_file="topic_trends.txt", 
-                 text_col="title", category_col="Domain Category", time_col="created_utc", id_col=None):
+                 text_col="title", category_col="category", time_col="created_utc", id_col=None):
         """
         Extracts salient words per category.
         

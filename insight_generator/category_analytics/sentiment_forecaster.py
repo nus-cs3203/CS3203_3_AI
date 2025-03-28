@@ -8,9 +8,25 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class TopicSentimentForecastDecorator(InsightDecorator):
+    """
+    A decorator class for forecasting sentiment scores for different categories
+    using historical data and the Prophet model.
+    """
     def __init__(self, wrapped, historical_data=None, log_file="sentiment_forecasts.txt",
                  time_col="date", sentiment_col="sentiment",
-                 category_col="domain_category", forecast_months=1):
+                 category_col="category", forecast_months=1):
+        """
+        Initialize the decorator with configuration parameters.
+
+        Args:
+            wrapped: The wrapped object to decorate.
+            historical_data (pd.DataFrame, optional): Historical data for training. Defaults to None.
+            log_file (str): Path to the log file for saving forecast logs. Defaults to "sentiment_forecasts.txt".
+            time_col (str): Column name for time data. Defaults to "date".
+            sentiment_col (str): Column name for sentiment scores. Defaults to "sentiment".
+            category_col (str): Column name for categories. Defaults to "category".
+            forecast_months (int): Number of months to forecast. Defaults to 1.
+        """
         super().__init__(wrapped)
         self.log_file = log_file
         self.time_col = time_col
@@ -22,6 +38,15 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         self.historical_data = historical_data if historical_data is not None else pd.read_csv("files/historical_data_for_training.csv")
     
     def extract_insights(self, df):
+        """
+        Extract insights by forecasting sentiment scores for each category.
+
+        Args:
+            df (pd.DataFrame): Input dataframe containing category and sentiment data.
+
+        Returns:
+            pd.DataFrame: A dataframe containing forecasted sentiment scores for each category.
+        """
         if self.category_col not in df.columns:
             raise ValueError(f"Column '{self.category_col}' not found in input dataframe!")
 
@@ -34,7 +59,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
             try:
                 forecast_score, conf_interval = self.forecast_sentiment(df, category)
                 sentiment_forecasts.append({
-                    "domain_category": category,
+                    "category": category,
                     "forecasted_sentiment": forecast_score
                 })
 
@@ -43,7 +68,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
             except Exception as e:
                 logger.error(f"Error forecasting sentiment for category {category}: {e}")
                 sentiment_forecasts.append({
-                    "domain_category": category,
+                    "category": category,
                     "forecasted_sentiment": 0.0
                 })
                 log_lines.append(f"\nCategory: {category}, Error: {e}")
@@ -55,6 +80,16 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         return pd.DataFrame(sentiment_forecasts)
     
     def forecast_sentiment(self, df, category):
+        """
+        Forecast the sentiment score for a specific category using the Prophet model.
+
+        Args:
+            df (pd.DataFrame): Input dataframe containing category and sentiment data.
+            category (str): The category for which to forecast sentiment.
+
+        Returns:
+            tuple: A tuple containing the forecasted sentiment score and confidence interval.
+        """
         # Filter the dataframe for the specific category
         # Ensure category comparison is case-insensitive and strips any leading/trailing spaces
         category_data = df[df[self.category_col].str.strip().str.lower() == str(category).strip().lower()].copy()
@@ -94,7 +129,7 @@ class TopicSentimentForecastDecorator(InsightDecorator):
 
         # Ensure there are at least 2 data points
         if len(category_data) < 2:
-            logger.warning(f"Not enough data for category: {category} (less than 10 data points)")
+            logger.warning(f"Not enough data for category: {category} (less than 2 data points)")
             return 0.0, (0.0, 0.0)
 
         # Resample data to monthly frequency
