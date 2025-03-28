@@ -1,9 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel, validator
 from typing import List
 import pandas as pd
 import requests
 from datetime import datetime
+import uuid
+import json
+from pathlib import Path
 
 # Import all necessary functions from main_pipeline
 from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
@@ -18,6 +21,11 @@ from insight_generator.category_analytics.llm_category_absa import CategoryABSAW
 from insight_generator.category_analytics.llm_category_summarizer import CategorySummarizerDecorator
 
 app = FastAPI()
+
+# Add storage for task results
+TASK_RESULTS = {}
+TASKS_DIR = Path("category_analytics_results")
+TASKS_DIR.mkdir(exist_ok=True)
 
 class DateRangeRequest(BaseModel):
     start_date: str  # Format: "dd-mm-yyyy HH:MM:SS"
@@ -55,19 +63,17 @@ def fetch_complaints(start_date: str, end_date: str):
     print(response_data["documents"])
     return response_data["documents"]
 
-@app.post("/generate_category_analytics")
-async def generate_category_analytics(start_date: str, end_date: str):
-    """Generate category analytics for the given date range."""
-    try:
-        datetime.strptime(start_date, "%d-%m-%Y %H:%M:%S")
-        datetime.strptime(end_date, "%d-%m-%Y %H:%M:%S")
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid date format, should be 'dd-mm-yyyy HH:MM:SS'")
+async def generate_category_analytics_background(start_date: str, end_date: str, task_id: str):
+    """Process category analytics in the background."""
     try:
         # Fetch complaints from backend
         complaints = fetch_complaints(start_date, end_date)
         if not complaints:
-            return {"category_analytics": []}  # Return empty if no complaints
+            TASK_RESULTS[task_id] = {
+                "status": "completed",
+                "result": {"category_analytics": []}
+            }
+            return
 
         # Convert to DataFrame
         df = pd.DataFrame(complaints)
@@ -129,7 +135,12 @@ async def generate_category_analytics(start_date: str, end_date: str):
             }
             categories_analysis.append(category_analysis)
 
-        return {"category_analytics": categories_analysis}
+        # Save results to file
+        with open(TASKS_DIR / f"{task_id}.json", "w") as f:
+            json.dump({
+                "status": "completed",
+                "result": {"category_analytics": categories_analysis}
+            }, f)
 
     except Exception as e:
         import traceback
@@ -138,7 +149,56 @@ async def generate_category_analytics(start_date: str, end_date: str):
             "traceback": traceback.format_exc()
         }
         print("Error occurred:", error_detail)
-        raise HTTPException(status_code=500, detail=error_detail)
+        TASK_RESULTS[task_id] = {
+            "status": "failed",
+            "error": error_detail
+        }
+
+@app.post("/generate_category_analytics")
+async def generate_category_analytics(request: DateRangeRequest, background_tasks: BackgroundTasks):
+    """
+    Start the category analytics process in the background.
+    Returns a task ID that can be used to check the status.
+    """
+    task_id = str(uuid.uuid4())
+    TASK_RESULTS[task_id] = {"status": "processing"}
+    
+    # Add task to background tasks
+    background_tasks.add_task(
+        generate_category_analytics_background, 
+        request.start_date, 
+        request.end_date, 
+        task_id
+    )
+    
+    return {
+        "message": "Processing started. You can check the status using the task_id.",
+        "task_id": task_id
+    }
+
+@app.get("/category_analytics_status/{task_id}")
+async def get_category_analytics_status(task_id: str):
+    """Get the status of a category analytics processing task."""
+    task_file = TASKS_DIR / f"{task_id}.json"
+
+    # Check local file first
+    if task_file.exists():
+        with open(task_file, "r") as f:
+            file_result = json.load(f)
+        return file_result.get("result", {"status": file_result.get("status", "unknown")})
+
+    # Check in-memory storage
+    if task_id in TASK_RESULTS:
+        task_result = TASK_RESULTS[task_id]
+
+        if task_result["status"] == "completed":
+            return task_result["result"]
+        elif task_result["status"] == "failed":
+            raise HTTPException(status_code=500, detail=task_result["error"])
+        else:
+            return {"status": "processing"}
+
+    raise HTTPException(status_code=404, detail="Task not found")
 
 if __name__ == "__main__":
     import uvicorn
