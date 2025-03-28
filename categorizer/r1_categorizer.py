@@ -98,7 +98,8 @@ Examples:
     
     # Make an API request for the current batch 
     completion = client.chat.completions.create(
-        model="deepseek-r1-250120",
+        #model="deepseek-r1-250120",
+        model='deepseek-v3-250324',
         messages=messages,
         stream=False,
         temperature=0.0

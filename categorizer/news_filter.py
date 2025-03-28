@@ -55,7 +55,8 @@ def process_opinion_batch(batch_texts):
     messages = [system_message, user_instruction] + [{"role": "user", "content": text} for text in batch_texts]
     
     completion = client.chat.completions.create(
-        model="deepseek-r1-250120",
+        #model="deepseek-r1-250120",
+        model='deepseek-v3-250324',
         messages=messages,
         stream=False,
         temperature=0.0
@@ -267,17 +268,17 @@ def filter_for_opinions(df=None, input_csv=None, output_folder=None):
     end_time = time.time()
     print(f"Total time taken: {(end_time - start_time):.2f} seconds")
     return df_final
-
+ 
 if __name__ == "__main__":
     # Set input and output paths
     input_file = "last_round_files/all_posts_2022_2025.csv"
-    output_folder = "last_round_files/opinion_filter_test_1000"
+    output_folder = "last_round_files/processed_posts_all"
     
     # Create output directory
     os.makedirs(output_folder, exist_ok=True)
     
-    # Read first 1000 rows of data
-    df = pd.read_csv(input_file, nrows=1000)
+    # Read all data
+    df = pd.read_csv(input_file)
     
     # Run the complete filtering process
     filtered_df = filter_for_opinions(

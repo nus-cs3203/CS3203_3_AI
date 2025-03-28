@@ -109,7 +109,7 @@ Please verify if this is truly a government-relevant complaint that requires pol
 
 if __name__ == "__main__":
     input_file = "last_round_files/all_posts_2022_2025.csv"
-    output_folder = "last_round_files/processed_posts_3000_last"
+    output_folder = "last_round_files/processed_posts_3000_last3"
     
     # Get total number of rows in the file
     total_rows = sum(1 for _ in open(input_file)) - 1  # -1 for header
