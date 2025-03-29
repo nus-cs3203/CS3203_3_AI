@@ -1,0 +1,20 @@
+Processing Statistics:
+
+Initial posts:
+5000
+
+Posts after news filter:
+1023
+
+Posts with relevant complaints:
+111
+
+Domain categories distribution:
+{'Public Health': 22, 'Healthcare': 13, 'Housing': 11, 'Economy': 10, 'Environment': 9, 'Legal': 8, 'Politics': 8, 'Employment': 8, 'Transport': 7, 'Technology': 6, 'Public Safety': 5, 'Education': 2, 'Infrastructure': 2}
+
+Average sentiment score:
+-0.19345063538611926
+
+Average importance level:
+0.23411534701857284
+
