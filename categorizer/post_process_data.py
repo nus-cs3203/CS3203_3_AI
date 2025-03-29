@@ -47,7 +47,7 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     
     # Filter out entries where intent_category is 'No'
     if 'Intent Category' in df.columns:
-        df = df[df['Intent Category'] == 'Yes']
+        df = df[df['Intent Category'] == 'yes']
     
     # Reset index after filtering
     df = df.reset_index(drop=True)
@@ -60,10 +60,10 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     df = df.drop_duplicates(subset='title', keep='first')
 
     # Ensure the output matches the schema
-    df['id'] = df['id']  # Use 'id' from the API response
+    df['id'] = df['name']  # Use 'id' from the API response
     df['category'] = df['Domain Category']
     df['date'] = df['date']
-    df['sentiment_by_vader'] = df['title_with_desc_score']
+    df['sentiment_by_vader'] = df['combined_text_score']
     df['sentiment'] = df['Sentiment Score']
     df['importance'] = df['Importance Level']
     df['source'] = "Reddit"
