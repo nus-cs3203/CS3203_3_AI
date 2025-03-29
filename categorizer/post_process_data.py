@@ -30,7 +30,8 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
         return primary_category.title()
 
     # Apply the cleaning function to 'Domain Category'
-    df['Domain Category'] = df['Domain Category'].apply(clean_category)
+    if 'Domain Category' in df.columns:
+        df['Domain Category'] = df['Domain Category'].apply(clean_category)
     
     # Define the list of valid domain categories
     valid_categories = [
@@ -41,38 +42,54 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     ]
     
     # Replace domain categories not in the valid list with "Others"
-    df['Domain Category'] = df['Domain Category'].apply(
-        lambda x: x if x in valid_categories else "Others"
-    )
+    if 'Domain Category' in df.columns:
+        df['Domain Category'] = df['Domain Category'].apply(
+            lambda x: x if x in valid_categories else "Others"
+        )
     
     # Filter out entries where intent_category is 'No'
     if 'Intent Category' in df.columns:
-        df = df[df['Intent Category'] == 'yes']
+        df = df[df['Intent Category'].str.lower() == 'yes']
     
     # Reset index after filtering
     df = df.reset_index(drop=True)
     
-    # Add new columns for sentiment and importance
-    df['Sentiment Score'] = df['Sentiment Score']
-    df['Importance Level'] = df['Importance Level']
-
     # Remove duplicate complaints with the same title
-    df = df.drop_duplicates(subset='title', keep='first')
+    if 'title' in df.columns:
+        df = df.drop_duplicates(subset='title', keep='first')
 
-    # Ensure the output matches the schema
-    df['id'] = df['name']  # Use 'id' from the API response
-    df['category'] = df['Domain Category']
-    df['date'] = df['date']
+    # Handle id field: use name if available, otherwise use id
+    if 'name' in df.columns:
+        df['id'] = df['name']
+    # else keep existing id if it exists
+
+    # Handle description field: use selftext if available
+    if 'selftext' in df.columns:
+        df['description'] = df['selftext']
+    # else keep existing description if it exists
+
+    # Handle category field: use Domain Category if available
+    if 'Domain Category' in df.columns:
+        df['category'] = df['Domain Category']
+    # else keep existing category if it exists
+
+    # Map other fields
     df['sentiment_by_vader'] = df['combined_text_score']
-    df['sentiment'] = df['Sentiment Score']
-    df['importance'] = df['Importance Level']
+    df['sentiment'] = df.get('Sentiment Score', 0.0)
+    df['importance'] = df.get('Importance Level', 0.0)
     df['source'] = "Reddit"
-    df['description'] = df['selftext']
-    df['confidence'] = df['Confidence Score']  # Include confidence score
+    df['confidence'] = df.get('Confidence Score', 0.0)
     
-    # Select and reorder columns to match the schema, excluding non-existent columns
+    # Select and reorder columns to match the schema
     output_columns = ['id', 'title', 'description', 'category', 
-                      'sentiment', 'confidence', 'importance', 'sentiment_by_vader', 'url', 'source','date']
+                     'sentiment', 'confidence', 'importance', 
+                     'sentiment_by_vader', 'url', 'source', 'date']
+    
+    # Ensure all required columns exist
+    for col in output_columns:
+        if col not in df.columns:
+            df[col] = '' if col not in ['sentiment', 'confidence', 'importance', 'sentiment_by_vader'] else 0.0
+    
     output_df = df[output_columns]
 
     if output_csv:
