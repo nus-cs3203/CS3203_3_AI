@@ -29,7 +29,7 @@ def process_pipeline(input_file, output_folder):
     
     # Load dataset
     print("Loading dataset...")
-    df = pd.read_csv(input_file).head(200)
+    df = pd.read_csv(input_file)
     
     # Step 0: Preprocessing
     print("\nStep 0: Data Preprocessing...")

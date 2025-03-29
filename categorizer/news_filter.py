@@ -89,7 +89,7 @@ def process_opinion_batch(batch_texts):
         
         for line in response_content.split('\n'):
             if line.strip():
-                # 更健壮的解析方式
+                # More robust parsing method
                 parts = line.strip().split('.')
                 if len(parts) > 1:
                     value = parts[-1].strip().lower()
@@ -98,6 +98,10 @@ def process_opinion_batch(batch_texts):
         
         if len(results) != len(batch_texts):
             print(f"\nWarning: Expected {len(batch_texts)} responses, but got {len(results)}")
+            print("\nActual messages sent to LLM:")
+            print("----------------------------------------")
+            print(messages)  
+            print("----------------------------------------")
             print("\nActual LLM Response:")
             print("----------------------------------------")
             print(response_content)
@@ -215,13 +219,6 @@ def filter_for_opinions(df=None, input_csv=None, output_folder=None):
     initial_count = len(df)
     print(f"Initial number of rows: {initial_count}")
     
-    # Since we have already removed deleted/removed posts in preprocessing, we don't need this step anymore
-    # Remove the following code:
-    # deleted_patterns = ['[deleted by user]', '[deleted]', '[removed]']
-    # mask_deleted = ~df['title'].isin(deleted_patterns)
-    # df_filtered = df[mask_deleted].copy()
-    # deleted_count = initial_count - len(df_filtered)
-    
     # Use input DataFrame directly
     df_filtered = df.copy()
     
@@ -275,7 +272,7 @@ def filter_for_opinions(df=None, input_csv=None, output_folder=None):
         df_filtered['combined_text'] = df_filtered['title']
     
     # Process posts in batches using ThreadPoolExecutor
-    batch_size = 50  # Reduced batch size for better stability
+    batch_size = 100
     has_opinion_list = []
     
     print("Starting opinion analysis for remaining posts...")
