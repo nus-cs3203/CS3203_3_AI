@@ -25,7 +25,8 @@ analysis_logs/
 csv_results/
 last_round_files/
 files/
-
+pipeline_results/
+task_results/
 # Ignore any other files that are not needed for the application
 *.log
 *.tmp

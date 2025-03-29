@@ -52,7 +52,7 @@ def fetch_complaints(start_date: str, end_date: str):
     payload = {"start_date": start_date, "end_date": end_date}
     print("Waiting for response")
     response = requests.post(url, json=payload, headers=headers)
-    print(response)
+    # print(response)
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch complaints")
     
