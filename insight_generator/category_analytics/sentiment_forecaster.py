@@ -35,7 +35,11 @@ class TopicSentimentForecastDecorator(InsightDecorator):
         self.forecast_months = forecast_months  # Forecast next month
         
         # Load historical data if not provided
-        self.historical_data = historical_data if historical_data is not None else pd.read_csv("files/historical_data_for_training.csv")
+        try:
+            self.historical_data = historical_data if historical_data is not None else pd.read_csv("historical_data_for_training.csv")
+        except FileNotFoundError:
+            logger.warning("Historical data file not found. Using empty DataFrame instead.")
+            self.historical_data = pd.DataFrame(columns=["date", "category", "sentiment"])
     
     def extract_insights(self, df):
         """
