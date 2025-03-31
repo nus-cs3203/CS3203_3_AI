@@ -1,0 +1,15 @@
+category,forecast_stable,valid_data_handling
+Legal,True,True
+Education,True,True
+Public Health,True,True
+Environment,True,True
+Healthcare,True,True
+Public Safety,True,True
+Employment,True,True
+Politics,True,True
+Transport,True,True
+Infrastructure,True,True
+Housing,True,True
+Economy,True,True
+Technology,True,True
+Others,True,True

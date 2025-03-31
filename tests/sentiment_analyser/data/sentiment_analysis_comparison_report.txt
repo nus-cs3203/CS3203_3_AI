@@ -1,0 +1,3 @@
+===== Sentiment Score Comparison Report =====
+Custom Agreement on Sentiment Scores: 1.00
+VADER Agreement on Sentiment Scores: 1.00
