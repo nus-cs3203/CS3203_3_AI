@@ -92,6 +92,10 @@ def post_process_data(input_csv=None, output_csv=None, df=None):
     
     output_df = df[output_columns]
 
+    for col in df.select_dtypes(include=['float']).columns:
+        df[col] = df[col].fillna(0.0) 
+        df[col] = df[col].replace([float('inf'), float('-inf')], 0.0)  
+
     if output_csv:
         output_df.to_csv(output_csv, index=False)
         print(f"Post-processing complete. Results saved to {output_csv}")

@@ -51,10 +51,7 @@ def fetch_complaints(start_date: str, end_date: str):
 async def process_complaints_background(start_date: str, end_date: str, task_id: str):
     """Process complaints in the background."""
     try:
-        print("\n" + "="*50)
-        print(f"🚀 Starting to process complaints for task {task_id}")
-        print(f"📅 Date range: {start_date} to {end_date}")
-        print("="*50 + "\n")
+        print(f"\nStarting to process complaints for task {task_id}...")
         
         # Fetch complaints from backend
         complaints = fetch_complaints(start_date, end_date)
@@ -63,14 +60,11 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
                 "status": "completed",
                 "result": {"message": "No complaints found for the given date range."}
             }
-            print("\n" + "="*50)
-            print(f"⚠️ No complaints found for task {task_id}")
-            print("="*50 + "\n")
+            print(f"No complaints found for task {task_id}")
             return
 
         # Convert to DataFrame
         df = pd.DataFrame(complaints)
-        print(f"📊 Found {len(df)} complaints to process")
         
         # Create temporary file and directory for processing
         with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as temp_input:
@@ -86,15 +80,11 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
         # Convert the results to a list of dictionaries for the API response
         if df_final is not None and not df_final.empty:
             data = df_final.to_dict(orient="records")
-            print("\n" + "="*50)
-            print(f"✨ Processing completed successfully for task {task_id}!")
-            print(f"📝 Processed {len(data)} complaints")
-            print("="*50 + "\n")
+            print(f"\n✨ Processing completed successfully for task {task_id}!")
+            print(f"Processed {len(data)} complaints.")
         else:
             data = []
-            print("\n" + "="*50)
-            print(f"⚠️ No complaints were processed for task {task_id}")
-            print("="*50 + "\n")
+            print(f"\n⚠️ No complaints were processed for task {task_id}")
         
         # Save result with data
         with open(TASKS_DIR / f"{task_id}.json", "w") as f:
@@ -115,10 +105,8 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
             "error": str(e),
             "traceback": traceback.format_exc()
         }
-        print("\n" + "="*50)
-        print(f"❌ Processing failed for task {task_id}")
-        print(f"🔥 Error: {str(e)}")
-        print("="*50 + "\n")
+        print(f"\n❌ Processing failed for task {task_id}")
+        print(f"Error: {str(e)}")
         TASK_RESULTS[task_id] = {
             "status": "failed",
             "error": error_detail
