@@ -1,0 +1,53 @@
+===== Sentiment Trends by Category =====
+Custom Sentiment Trend by Category:
+category
+Economy          -0.875924
+Education        -0.555299
+Employment       -0.647061
+Environment      -0.854543
+Healthcare       -0.575858
+Housing          -0.977885
+Infrastructure    0.206654
+Legal            -0.611365
+Politics         -0.987888
+Public Health    -0.867563
+Public Safety    -0.788597
+Technology       -0.831463
+Transport        -0.755714
+Name: title_with_desc_score, dtype: float64
+
+VADER Sentiment Trend by Category:
+category
+Economy           0.008200
+Education         0.250120
+Employment        0.128408
+Environment       0.027433
+Healthcare        0.171671
+Housing           0.026125
+Infrastructure   -0.258867
+Legal             0.025457
+Politics          0.200950
+Public Health     0.146800
+Public Safety    -0.075077
+Technology        0.556200
+Transport         0.007913
+Name: title_with_desc_score, dtype: float64
+
+===== Sentiment Trends Over Time =====
+Custom Sentiment Trend Over Time:
+date
+2024-11-29   -0.892042
+2024-11-30   -0.778672
+2024-12-01   -0.689496
+2024-12-02   -0.776418
+2024-12-03   -0.615322
+Name: title_with_desc_score, dtype: float64
+
+VADER Sentiment Trend Over Time:
+date
+2024-11-29    0.178629
+2024-11-30    0.095495
+2024-12-01   -0.053493
+2024-12-02   -0.040687
+2024-12-03    0.095207
+Name: title_with_desc_score, dtype: float64
