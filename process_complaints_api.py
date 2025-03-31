@@ -8,20 +8,11 @@ import os
 import uuid
 import json
 from pathlib import Path
+import io
+import tempfile
 
-# Import necessary functions
-from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
-from common_components.data_preprocessor.director import PreprocessingDirector
-from common_components.data_validator.general_validators.not_empty_validator import NotEmptyValidator
-from common_components.data_validator.text_validator.only_string_validator import OnlyStringValidator
-from common_components.data_validator.validator_logger import ValidatorLogger
-from categorizer.post_process_data import post_process_data
-from categorizer.r1_categorizer import categorize_complaints  
-from sentiment_analyser.context import SentimentAnalysisContext
-from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
-from sentiment_analyser.emotion.roberta import RobertaClassifier
-from sentiment_analyser.polarity.bert import BERTClassifier
-from sentiment_analyser.polarity.vader import VaderSentimentClassifier
+# Import the main pipeline function
+from main_pipeline import process_pipeline
 
 app = FastAPI()
 
@@ -53,13 +44,15 @@ def fetch_complaints(start_date: str, end_date: str):
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail="Failed to fetch complaints")
     
-    print("API Response:", response.json())  # Debug line to print the entire response
+    #print("API Response:", response.json())  # Debug line to print the entire response
     # Ensure backend response has a 'documents' key
     return response.json()["documents"]
 
 async def process_complaints_background(start_date: str, end_date: str, task_id: str):
     """Process complaints in the background."""
     try:
+        print(f"\nStarting to process complaints for task {task_id}...")
+        
         # Fetch complaints from backend
         complaints = fetch_complaints(start_date, end_date)
         if not complaints:
@@ -67,78 +60,31 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
                 "status": "completed",
                 "result": {"message": "No complaints found for the given date range."}
             }
+            print(f"No complaints found for task {task_id}")
             return
 
         # Convert to DataFrame
         df = pd.DataFrame(complaints)
-        df["title_with_desc"] = df["title"] + " " + df["selftext"]
-
-        # Define critical and text columns
-        CRITICAL_COLUMNS = ["title_with_desc"]
-        TEXT_COLUMNS = ["title_with_desc", "comments"]
-
-        # Debug line to print the DataFrame after fetching data
-        print("DataFrame after fetching data:", df)
-
-        # Preprocessing
-        builder = GeneralPreprocessorBuilder(critical_columns=CRITICAL_COLUMNS, text_columns=TEXT_COLUMNS, data=df)
-        director = PreprocessingDirector(builder)
-        director.construct_builder()
-        df = builder.get_result()
-
-        # Debug line to print the DataFrame after preprocessing
-        print("DataFrame after preprocessing:", df)
-
-        # Validation
-        logger = ValidatorLogger()
-        validator_chain = (
-            NotEmptyValidator(CRITICAL_COLUMNS, logger)
-            .set_next(OnlyStringValidator(TEXT_COLUMNS, logger))
-        )
-        validation_result = validator_chain.validate(df)
-        if not validation_result["success"]:
-            raise ValueError(f"Validation failed: {validation_result['errors']}")
-
-        # Debug line to print the DataFrame after validation
-        print("DataFrame after validation:", df)
-
-        # Categorization
-        categories = [
-            "Housing", "Healthcare", "Public Safety", "Transport",
-            "Education", "Environment", "Employment", "Public Health",
-            "Legal", "Economy", "Politics", "Technology",
-            "Infrastructure", "Others"
-        ]
         
-        df = categorize_complaints(df=df, categories=categories)
-
-        # Debug line to print the DataFrame after categorization
-        print("DataFrame after categorization:", df)
-
-        # Sentiment Analysis
-        classifiers = [
-            # ("BERT", BERTClassifier()),
-            ("VADER", VaderSentimentClassifier())
-            # ("DistilRoberta Emotion", DistilRobertaClassifier()),
-            # ("Roberta Emotion", RobertaClassifier()),
-        ]
-
-        for name, classifier in classifiers:
-            print(f"\n===== Running {name} Sentiment Analysis =====")
-            context = SentimentAnalysisContext(classifier)
-            df = context.analyze(df, text_cols=["title_with_desc"])
-
-        # Debug line to print the DataFrame after sentiment analysis
-        print("DataFrame after sentiment analysis:", df)
+        # Create temporary file and directory for processing
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as temp_input:
+            temp_input_path = temp_input.name
+            df.to_csv(temp_input_path, index=False)
         
-        # Post-processing
-        df = post_process_data(df=df)
-
-        # Debug line to print the DataFrame after post-processing
-        print("DataFrame after post-processing:", df)
-
-        # Convert the DataFrame to a list of dictionaries
-        data = df.to_dict(orient="records")
+        # Create task-specific output directory
+        output_folder = TASKS_DIR / f"pipeline_results_{task_id}"
+        
+        # Run the main pipeline
+        df_final = process_pipeline(temp_input_path, output_folder)
+        
+        # Convert the results to a list of dictionaries for the API response
+        if df_final is not None and not df_final.empty:
+            data = df_final.to_dict(orient="records")
+            print(f"\n✨ Processing completed successfully for task {task_id}!")
+            print(f"Processed {len(data)} complaints.")
+        else:
+            data = []
+            print(f"\n⚠️ No complaints were processed for task {task_id}")
         
         # Save result with data
         with open(TASKS_DIR / f"{task_id}.json", "w") as f:
@@ -149,6 +95,9 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
                     "data": data
                 }
             }, f)
+            
+        # Clean up temporary file
+        os.unlink(temp_input_path)
         
     except Exception as e:
         import traceback
@@ -156,7 +105,8 @@ async def process_complaints_background(start_date: str, end_date: str, task_id:
             "error": str(e),
             "traceback": traceback.format_exc()
         }
-        print("Error occurred:", error_detail)
+        print(f"\n❌ Processing failed for task {task_id}")
+        print(f"Error: {str(e)}")
         TASK_RESULTS[task_id] = {
             "status": "failed",
             "error": error_detail
@@ -170,6 +120,9 @@ async def process_complaints(request: DateRangeRequest, background_tasks: Backgr
     """
     task_id = str(uuid.uuid4())
     TASK_RESULTS[task_id] = {"status": "processing"}
+    
+    print(f"Starting complaint processing for date range: {request.start_date} to {request.end_date}")
+    print(f"Task ID: {task_id}")
     
     # Add task to background tasks
     background_tasks.add_task(process_complaints_background, request.start_date, request.end_date, task_id)

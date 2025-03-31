@@ -77,16 +77,18 @@ def process_pipeline(input_file, output_folder):
     print("\nStep 4: Running sentiment analysis...")
     classifiers = [
         #("BERT", BERTClassifier()),
-        ("VADER", VaderSentimentClassifier()),
+        #("VADER", VaderSentimentClassifier()),
         #("DistilRoberta Emotion", DistilRobertaClassifier()),
         #("Roberta Emotion", RobertaClassifier()),
     ]
     
-    for name, classifier in classifiers:
-        print(f"\n===== Running {name} Sentiment Analysis =====")
-        context = SentimentAnalysisContext(classifier)
-        df_final = context.analyze(df_final, text_cols=["combined_text"])
-        df_final.to_csv(os.path.join(output_folder, f"5_{name}_sentiment_analysis.csv"), index=False)
+    # Skip sentiment analysis for now
+    df_final['combined_text_score'] = 0.0  # Add default sentiment value
+    # for name, classifier in classifiers:
+    #     print(f"\n===== Running {name} Sentiment Analysis =====")
+    #     context = SentimentAnalysisContext(classifier)
+    #     df_final = context.analyze(df_final, text_cols=["combined_text"])
+    #     df_final.to_csv(os.path.join(output_folder, f"5_{name}_sentiment_analysis.csv"), index=False)
     
     # Step 5: Post-processing
     print("\nStep 5: Post-processing data...")
