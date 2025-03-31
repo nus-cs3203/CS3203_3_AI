@@ -5,8 +5,8 @@ from insight_generator.category_analytics.llm_category_absa import CategoryABSAW
 import matplotlib.pyplot as plt
 
 # Load original and modified datasets
-original_df = pd.read_csv("tests/category_analytics/files/raw_data_for_post_train.csv")
-modified_df = pd.read_csv("tests/category_analytics/files/modified_invariance_test.csv")
+original_df = pd.read_csv("tests/category_analytics/data/raw_data_for_post_train.csv")
+modified_df = pd.read_csv("tests/category_analytics/data/modified_invariance_test.csv")
 
 # Initialize summarizer
 base_generator = BaseInsightGenerator()
@@ -45,11 +45,11 @@ merged_df["semantic_similarity_absa_result"] = merged_df.apply(
 )
 
 # Save results
-merged_df.to_csv("tests/category_analytics/files/semantic_similarity_results_absa.csv", index=False)
+merged_df.to_csv("tests/category_analytics/data/semantic_similarity_results_absa.csv", index=False)
 print("Semantic similarity results saved.")
 
 # Load results for plotting
-sem_res = pd.read_csv("tests/category_analytics/files/semantic_similarity_results_absa.csv")
+sem_res = pd.read_csv("tests/category_analytics/data/semantic_similarity_results_absa.csv")
 
 # Set a threshold value
 threshold = 0.7

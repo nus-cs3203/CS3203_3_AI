@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Load data
-original_df = pd.read_csv("tests/category_analytics/files/raw_invariance_test_forecast.csv")
-modified_df = pd.read_csv("tests/category_analytics/files/modified_invariance_test_forecast.csv")
+original_df = pd.read_csv("tests/category_analytics/data/raw_invariance_test_forecast.csv")
+modified_df = pd.read_csv("tests/category_analytics/data/modified_invariance_test_forecast.csv")
 
 # Define tolerance levels
 TOLERANCE = 0.1  # Allowable deviation in forecasted sentiment scores
@@ -61,7 +61,7 @@ for _, row in merged_df.iterrows():
 
 # Convert results to DataFrame and save
 results_df = pd.DataFrame(results)
-results_df.to_csv("tests/category_analytics/files/invariance_test_results_forecast.csv", index=False)
+results_df.to_csv("tests/category_analytics/data/invariance_test_results_forecast.csv", index=False)
 
 logger.info("Invariance test completed. Results saved to invariance_test_results.csv")
 
