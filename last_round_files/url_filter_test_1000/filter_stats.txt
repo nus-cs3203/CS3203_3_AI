@@ -1,4 +1,0 @@
-Initial posts: 200
-News posts: 56
-Non-news posts: 144
-News percentage: 28.00%
