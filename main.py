@@ -1,7 +1,7 @@
 from fastapi import FastAPI, BackgroundTasks
-from process_complaints_api import process_complaints, get_task_status, DateRangeRequest as ProcessDateRangeRequest
-from category_analytics_api import generate_category_analytics, get_category_analytics_status, DateRangeRequest
-from insight_generator.poll_generator_api import generate_poll_prompts, poll_generation_status, DateRangeRequest as PollDateRangeRequest
+from api.process_complaints_api import process_complaints, get_task_status, DateRangeRequest as ProcessDateRangeRequest
+from api.category_analytics_api import generate_category_analytics, get_category_analytics_status, DateRangeRequest
+from api.poll_generator_api import generate_poll_prompts, poll_generation_status, DateRangeRequest as PollDateRangeRequest
 import uvicorn
 
 app = FastAPI(title="Complaints Analysis API")

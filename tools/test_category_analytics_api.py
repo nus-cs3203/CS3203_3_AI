@@ -2,7 +2,7 @@ import requests
 from datetime import datetime
 import asyncio
 
-from category_analytics_api import fetch_complaints, generate_category_analytics
+from api.category_analytics_api import fetch_complaints, generate_category_analytics
 
 async def test_generate_category_analytics():
     # Define date range
