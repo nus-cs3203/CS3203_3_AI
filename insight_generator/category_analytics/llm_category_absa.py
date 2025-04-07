@@ -190,7 +190,7 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
 
         for aspect_pair in aspects:
             aspect = aspect_pair[0].strip()
-            headlines = self.newsapi.get_top_headlines(category="sports")
+            headlines = self.newsapi.get_top_headlines(category=aspect)
             if headlines:
                 all_headlines.extend(headlines)
 
