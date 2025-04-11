@@ -4,9 +4,6 @@ import pandas as pd
 from dotenv import load_dotenv
 from insight_generator.base_decorator import InsightDecorator
 import logging
-import requests
-from newsapi import NewsApiClient
-
 
 # Configure logging
 logging.basicConfig(filename='category_absa.log', level=logging.INFO,
@@ -38,12 +35,8 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
         self.api_key = os.getenv("GOOGLE_API_KEY")
         if not self.api_key:
             raise ValueError("GOOGLE_API_KEY is missing. Please set it in your .env file.")
-        self.news_api_key = os.getenv("NEWS_API_KEY")
-        if not self.news_api_key:
-            raise ValueError("NEWS_API_KEY is missing. Please set it in your .env file.")
         genai.configure(api_key=self.api_key)
         self.model = genai.GenerativeModel("gemini-2.0-flash")
-        self.newsapi = NewsApiClient(api_key=self.news_api_key)
         self.text_col = text_col
         self.category_col = category_col
         self.max_tokens = max_tokens
@@ -74,12 +67,12 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
                 absa_data.append({
                     self.category_col: category,
                     "absa_result": absa_result["aspects"],
+                    "keywords": absa_result["keywords"]
                 })
             except Exception as e:
                 logging.error(f"Error processing category '{category}': {e}")
 
         res = pd.DataFrame(absa_data)
-        res["keywords"] = self.enrich_aspects_with_news(res["absa_result"])
         res.dropna(inplace=True)
         res["absa_result"] = res["absa_result"].apply(lambda x: x[:10] if len(x) > 10 else x)
         res["keywords"] = res["keywords"].apply(lambda x: x[:5] if len(x) > 5 else x)
@@ -109,16 +102,19 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
         ```
 
         **Instructions:**
-        - Then, extract exactly 8 key aspects and their sentiments from the discussions in the table.
+        - First, extract exactly 5 keywords that are most relevant to the discussions in the table.
+        - Then, extract exactly 10 key aspects and their sentiments from the discussions in the table.
         - Aspects should be high-level concepts, not specific entities (e.g., "food quality" instead of "pizza").
         - Do not have duplicate aspects.
         - Aspects should have at least 2 words.
-        - There should be exactly 8 aspects.
+        - There should be exactly 10 aspects.
+        - There should be exactly 5 keywords.
+        - Keywords should be single words and important to the text.
         - Do not include any additional information.
         - Focus on extracting key aspects and their sentiments.
         - Skip erroneous or missing categories (or where ABSA failed).
         - This is from Singaporean Reddit threads. Please consider the context.
-        - Consider all columns in the table when generating the aspects.
+        - Consider all columns in the table when generating the aspects and keywords.
 
         **Output Format (strictly follow this format):**
         Keywords 1, Keywords 2, Keywords 3, Keywords 4, Keywords 5
@@ -130,11 +126,16 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
         <Aspect>, positive/neutral/negative
         <Aspect>, positive/neutral/negative
         <Aspect>, positive/neutral/negative
+        <Aspect>, positive/neutral/negative
+        <Aspect>, positive/neutral/negative
 
         Sample Response:
+        Toyoto, Tesla, Electric, Car, Battery
         Car Price, positive
+        Car Performance, positive
         Vehicle Design, neutral
         Battery Life, negative
+        Modern Features, positive
         License Accessibility, neutral
         Car Maintenance, negative
         Safety Features, positive
@@ -146,13 +147,19 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
             result_text = response.text.strip() if response and hasattr(response, "text") else ""
             lines = result_text.splitlines()
             all_results = []
+            keywords = set()
             if lines:
-                for line in lines:
+                keyword_line = lines[0]
+                keyword_list = keyword_line.replace("List of 5 keywords:", "").strip().split(",")
+                for k in keyword_list:
+                    keywords.add(k.strip())
+
+                for line in lines[1:]:
                     if "," in line:
                         aspect_sentiment = line.strip()
                         all_results.append(aspect_sentiment)
 
-            return {"aspects": all_results}
+            return {"aspects": all_results, "keywords": list(keywords)}
         except Exception as e:
             logging.error(f"ABSA failed: {str(e)}")
             return {"aspects": [f"ABSA failed: {str(e)}"], "keywords": []}
@@ -183,74 +190,3 @@ class CategoryABSAWithLLMInsightDecorator(InsightDecorator):
             chunks.append(" ".join(current_chunk))
 
         return chunks
-    
-    def enrich_aspects_with_news(self, aspects):
-        logging.info("Enriching aspects with news headlines.")
-        all_headlines = []
-
-        for aspect_pair in aspects:
-            aspect = aspect_pair[0].strip()
-            headlines = self.newsapi.get_top_headlines(category=aspect)
-            if headlines:
-                all_headlines.extend(headlines)
-
-        if not all_headlines:
-            return []
-
-        return self.extract_trending_keywords_from_news(all_headlines)
-
-    def fetch_news_headlines(self, query):
-        logging.info(f"Fetching headlines for: {query}")
-        url = "https://newsapi.org/v2/top-headlines"
-        params = {
-            "q": query,
-            "language": "en",
-            "pageSize": 3,
-            "apiKey": self.news_api_key
-        }
-
-        try:
-            response = requests.get(url, params=params)
-            articles = response.json().get("articles", [])
-            return_val = [a.get("title", "") + " " + a.get("description", "") for a in articles if a.get("title")]
-            print(return_val)
-            return return_val
-        except Exception as e:
-            logging.error(f"Failed to fetch news for {query}: {e}")
-            return []
-
-    def extract_trending_keywords_from_news(self, headlines):
-        logging.info("Extracting trending keywords.")
-        headlines_text = "\n".join(headlines[:15])
-
-        prompt = f"""
-        You are an expert trend analyst.
-        You will be provided with a list of recent news headlines.
-        Your task is to extract trending keywords from the headlines.
-
-        Below are recent news headlines across various topics:
-        ```
-        {headlines_text}
-        ```
-
-        **Instructions:**
-        - Extract 8 trending keywords from the content above.
-        - Keywords can be single words or phrases but must be self-sufficient and informative. 
-        - Focus on PROPER noun and associated trends.
-        - Do NOT include duplicates.
-        - Do NOT explain anything or provide additional text.
-
-        **Output Format:**
-        keyword1, keyword2, ..., keyword8
-
-        **Example Output:**
-        Tesla stocks, Taylor Swift tickets, Clementi accident, COVID-19
-        """
-        try:
-            response = self.model.generate_content(prompt)
-            result_text = response.text.strip()
-            return [kw.strip() for kw in result_text.split(",") if kw.strip()]
-        except Exception as e:
-            logging.error(f"Keyword extraction failed: {str(e)}")
-            return []
-

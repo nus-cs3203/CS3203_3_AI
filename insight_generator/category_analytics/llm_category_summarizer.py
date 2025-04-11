@@ -122,7 +122,7 @@ class CategorySummarizerDecorator(InsightDecorator):
         - Output must be structured as follows:
 
         Summary:
-        [Brief overview of the discussions]
+        [Brief overview of the discussions - atleast 1 paragraph of 4 lines]
 
         Concerns:
         - [Summarized concern]
@@ -137,13 +137,13 @@ class CategorySummarizerDecorator(InsightDecorator):
         {dataframe_string}
         ```
 
-        Generate a concise yet insightful summary based on the above content.
+        Generate an insightful summary based on the above content.
 
         Sample Output:
 
         Summary:
 
-        The discussions mainly revolve around the impact of the pandemic on the economy and healthcare system.
+        The discussions mainly revolve around the impact of the pandemic on the economy and healthcare system. These worries mainly center on the rising prices of essential goods and the mental health of young adults. The posts reflect a growing concern about job security and the need for better healthcare services. The problem of mental health is also highlighted, with many users sharing their personal experiences and seeking support.
         
         Concerns:
         - Young adults are facing challenges in finding employment.
@@ -155,6 +155,7 @@ class CategorySummarizerDecorator(InsightDecorator):
         - Enhance the healthcare infrastructure to cope with the increasing cases.
         - Provide mental health support services to address the rising concerns.
 
+        MAKE SURE NO CATEGORY IS LEFT OUT! DO NOT RETURN EMPTY INFORMATION!
         """
         
         try:

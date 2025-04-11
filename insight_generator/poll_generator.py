@@ -75,22 +75,29 @@ class PollGenerator():
         [Why this poll is useful + trends from given data that makes this post relevant]
 
         **Rules:**
+        - All output columns are compulsory.
         - Stick strictly to the category and the given data.
         - Generate a single poll question.
         - Keep the prompt relevant to the Singapore context
         - Derive prompts from the insights gathered from given data
         - Reasoning should be based on the trends observed in the data
-        - Reasoning should be atleast 10 words long
+        - Reasoning should be atleast 3 sentences long
         - MCQ options should be descriptive and relevant to the category
         - Each statement should stand on its own (i.e. do not refer specific posts or make it too narrow)
         - Avoid unnecessary explanations.
         - Consider all columns in the table when generating the poll.
+        - Choose MCQ if the poll is based on very specific choices and open-ended if it is more about suggestions or opinions.
 
         Sample Output:
         What is the most popular food in Singapore?
         MCQ
         Chicken Rice; Laksa; Hainanese Curry Rice; Nasi Lemak
         This poll is useful to understand the most popular food choices in Singapore. The given discussions show a trend towards local cuisine, making this post relevant.
+
+        Which dish do you prefer?
+        Open-ended
+        []
+        This poll is useful to gauge personal preferences in food. The discussions indicate a variety of opinions, making this post relevant.
         """
 
         try:
