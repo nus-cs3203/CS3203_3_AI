@@ -83,10 +83,25 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
         if top_sentiments_outputs:
             combined_df = pd.concat(top_sentiments_outputs).reset_index(drop=True)
             insights["explainer_words"] = combined_df.to_dict(orient="records")
+
+            # Create a DataFrame with category, explainer chosen words, and their scores
+            category_explainer_df = combined_df.groupby("category").apply(
+            lambda group: pd.DataFrame({
+                "category": group["category"],
+                "explainer_chosen_words": group.apply(
+                lambda row: [
+                    (row["feature_1"], row["weight_1"]),
+                    (row["feature_2"], row["weight_2"]),
+                    (row["feature_3"], row["weight_3"])
+                ], axis=1
+                )
+            })
+            ).reset_index(drop=True)
         else:
             insights["explainer_words"] = []
+            category_explainer_df = pd.DataFrame(columns=["category", "explainer_chosen_words"])
 
-        return insights
+        return category_explainer_df
 
     def explain_sentiments(self, texts, indices):
         """
