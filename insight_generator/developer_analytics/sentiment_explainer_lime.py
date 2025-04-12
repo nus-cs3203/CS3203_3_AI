@@ -1,25 +1,25 @@
 import pandas as pd
 import numpy as np
-import torch
 from transformers import pipeline
 from lime.lime_text import LimeTextExplainer
 from insight_generator.base_decorator import InsightDecorator
 
 class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
-    def __init__(self, wrapped, sentiment_col="title_with_desc_score",
-                 category_col="category", text_col="description",
-                 top_k=5, log_file="top_adverse_sentiments.txt"):
+    def __init__(self, wrapped, sentiment_col="sentiment", category_col="category", text_col="title_with_description",
+                 top_k=5, log_file="top_adverse_sentiments.txt", output_csv_dir="files/",
+                 use_fast_model=True):
         """
-        Decorator to identify top adverse sentiments (most positive and most negative posts) 
-        per category and explain them using LIME.
+        Identifies top adverse sentiment posts per category and explains them using LIME.
 
         Args:
-        - wrapped: The base insight generator to decorate.
-        - sentiment_col: Column containing sentiment polarity scores.
-        - category_col: Column indicating the topic/category of the posts.
-        - text_col: Column containing the text content of the posts.
-        - top_k: Number of extreme positive and negative samples to extract per category.
-        - log_file: File path to log the insights.
+        - wrapped: Base insight generator.
+        - sentiment_col: Column for sentiment scores.
+        - category_col: Column for category labels.
+        - text_col: Column for post text.
+        - top_k: Number of top positive and negative samples per category.
+        - log_file: File to log explanations.
+        - output_csv_dir: Directory to store category-wise CSVs of explanations.
+        - use_fast_model: Use default fast sentiment model instead of cardiffnlp.
         """
         super().__init__(wrapped)
         self.sentiment_col = sentiment_col
@@ -27,118 +27,126 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
         self.text_col = text_col
         self.top_k = top_k
         self.log_file = log_file
-        
-        # Load sentiment analysis model
-        self.sentiment_model = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment")
+        self.output_csv_dir = output_csv_dir
 
-        # Initialize LIME text explainer
-        self.explainer = LimeTextExplainer(class_names=["negative", "neutral", "positive"])
-    
+        # Load a faster default model or the cardiffnlp one
+        self.sentiment_model = pipeline("sentiment-analysis", model="common_components/singlish_classifier_2", truncation=True, max_length=512)
+
+        # Setup LIME
+        self.explainer = LimeTextExplainer(class_names=["negative", "positive"])
+
     def extract_insights(self, df):
-        """
-        Extracts insights by identifying top adverse sentiment posts per category 
-        and generating explanations for them using LIME.
-
-        Args:
-        - df: DataFrame containing the data to analyze.
-
-        Returns:
-        - A dictionary containing the original insights and the top sentiments with explanations.
-        """
         insights = self._wrapped.extract_insights(df)
-        
+
         if self.category_col not in df.columns or self.sentiment_col not in df.columns:
-            raise ValueError(f"Required columns ('{self.category_col}', '{self.sentiment_col}') not found in df!")
+            raise ValueError(f"Missing '{self.category_col}' or '{self.sentiment_col}' in dataframe.")
 
-        top_sentiments = {}
+        top_sentiments_outputs = []
+        df[self.text_col] = df[self.text_col].fillna("")
 
-        # Open log file for writing insights
         with open(self.log_file, "w", encoding="utf-8") as log_file:
             for category, group in df.groupby(self.category_col):
-                # Get top k positive and negative sentiment posts
-                top_positive = group.nlargest(self.top_k, self.sentiment_col)
-                top_negative = group.nsmallest(self.top_k, self.sentiment_col)
+                if len(group) < 10:
+                    print(f"[INFO] Skipping category '{category}' as it has fewer than 10 posts.")
+                    continue
+
+                top_positive = group.nlargest(1, self.sentiment_col)
+                top_negative = group.nsmallest(1, self.sentiment_col)
 
                 if top_positive.empty and top_negative.empty:
-                    continue  # Skip categories with no data
+                    continue
 
-                # Combine positive and negative posts for explanation
-                top_combined = pd.concat([top_positive, top_negative])
-                explanations = self.explain_sentiments(top_combined[self.text_col].dropna().tolist())
+                combined = pd.concat([top_positive, top_negative])
+                texts = combined[self.text_col].tolist()
+                indices = combined.index.tolist()
 
-                # Store insights for the category
-                top_sentiments[category] = {
-                    "positive": top_positive[[self.text_col, self.sentiment_col]].to_dict(orient="records"),
-                    "negative": top_negative[[self.text_col, self.sentiment_col]].to_dict(orient="records"),
-                    "explanations": explanations
-                }
+                print(f"[INFO] Explaining {len(texts)} texts for category: {category}")
+                explanations_df = self.explain_sentiments(texts, indices)
+                explanations_df["category"] = category
+                top_sentiments_outputs.append(explanations_df)
+                print(top_sentiments_outputs)
 
-                # Log insights to the file
+                # Logging
                 log_file.write(f"\nCategory: {category}\n")
-                log_file.write(f"Top {self.top_k} Positive:\n")
                 for _, row in top_positive.iterrows():
-                    log_file.write(f"- Score: {row[self.sentiment_col]:.4f}, Text: {row[self.text_col][:100]}...\n")
-                
-                log_file.write(f"\nTop {self.top_k} Negative:\n")
+                    log_file.write(f"[+] Score: {row[self.sentiment_col]:.3f}, Text: {row[self.text_col][:100]}...\n")
                 for _, row in top_negative.iterrows():
-                    log_file.write(f"- Score: {row[self.sentiment_col]:.4f}, Text: {row[self.text_col][:100]}...\n")
-                
-                log_file.write("\nExplanations:\n")
-                for text, explanation in explanations.items():
-                    log_file.write(f"- {text[:100]}...: {explanation}\n")
+                    log_file.write(f"[-] Score: {row[self.sentiment_col]:.3f}, Text: {row[self.text_col][:100]}...\n")
 
-        insights["top_sentiments"] = top_sentiments
-        return insights
+                for _, row in explanations_df.iterrows():
+                    log_file.write(f"[LIME] idx {row['index']}: {row['feature_1']}({row['weight_1']:.3f}), "
+                                   f"{row['feature_2']}({row['weight_2']:.3f}), {row['feature_3']}({row['weight_3']:.3f})\n")
 
-    def explain_sentiments(self, texts):
+                # Save to CSV
+                explanations_df.to_csv(f"{self.output_csv_dir}{category}_lime_explanations.csv", index=False)
+
+        if top_sentiments_outputs:
+            combined_df = pd.concat(top_sentiments_outputs).reset_index(drop=True)
+            insights["explainer_words"] = combined_df.to_dict(orient="records")
+
+            # Create a DataFrame with category, explainer chosen words, and their scores
+            category_explainer_df = combined_df.groupby("category").apply(
+            lambda group: pd.DataFrame({
+                "category": group["category"],
+                "explainer_chosen_words": group.apply(
+                lambda row: [
+                    (row["feature_1"], row["weight_1"]),
+                    (row["feature_2"], row["weight_2"]),
+                    (row["feature_3"], row["weight_3"])
+                ], axis=1
+                )
+            })
+            ).reset_index(drop=True)
+        else:
+            insights["explainer_words"] = []
+            category_explainer_df = pd.DataFrame(columns=["category", "explainer_chosen_words"])
+
+        return category_explainer_df
+
+    def explain_sentiments(self, texts, indices):
         """
-        Generates explanations for sentiment classification using LIME.
-
-        Args:
-        - texts: List of text samples to explain.
-
-        Returns:
-        - A dictionary mapping each text to its LIME explanation or an error message.
+        Run LIME on each text to extract top 3 features contributing to sentiment.
+        Returns a DataFrame with explanations.
         """
-        if not texts:
-            return {}
+        explanations = []
 
-        explanations = {}
-
-        def predict_proba(text_samples):
-            """
-            Predicts probability distributions for sentiment classes 
-            to be used by LIME for explanation.
-
-            Args:
-            - text_samples: List of text samples.
-
-            Returns:
-            - A NumPy array of probability distributions for each sample.
-            """
-            outputs = self.sentiment_model(text_samples)
-            proba_list = []
-
-            for output in outputs:
-                label = output["label"]
-                score = output["score"]
-                if label == "LABEL_0":
-                    proba_list.append([score, 0, 0])  # Negative
-                elif label == "LABEL_1":
-                    proba_list.append([0, score, 0])  # Neutral
-                elif label == "LABEL_2":
-                    proba_list.append([0, 0, score])  # Positive
+        def predict_proba(samples):
+            results = self.sentiment_model(samples)
+            probas = []
+            for r in results:
+                if r["label"].lower() == "positive":
+                    probas.append([0, r["score"]])
                 else:
-                    proba_list.append([0.33, 0.33, 0.33])  # Fallback to uniform distribution
+                    probas.append([r["score"], 0])
+            return np.array(probas)
 
-            return np.array(proba_list)
-
-        for text in texts:
+        for i, text in enumerate(texts):
+            idx = indices[i]
             try:
-                # Generate LIME explanation for the text
-                exp = self.explainer.explain_instance(text, predict_proba, num_features=10)
-                explanations[text] = exp.as_list()  # Convert explanation to a readable format
+                print(f"[LIME] Explaining idx={idx}")
+                exp = self.explainer.explain_instance(text, predict_proba, num_features=3, num_samples=500)
+                top_3 = exp.as_list()[:3]
+                explanations.append({
+                    "index": idx,
+                    "text": text,
+                    "feature_1": top_3[0][0],
+                    "weight_1": top_3[0][1],
+                    "feature_2": top_3[1][0],
+                    "weight_2": top_3[1][1],
+                    "feature_3": top_3[2][0],
+                    "weight_3": top_3[2][1],
+                })
             except Exception as e:
-                explanations[text] = f"Error generating explanation: {str(e)}"
+                print(f"[ERROR] LIME explanation failed at idx={idx}: {str(e)}")
+                explanations.append({
+                    "index": idx,
+                    "text": text,
+                    "feature_1": "Error",
+                    "weight_1": str(e),
+                    "feature_2": None,
+                    "weight_2": None,
+                    "feature_3": None,
+                    "weight_3": None,
+                })
 
-        return explanations
+        return pd.DataFrame(explanations)
