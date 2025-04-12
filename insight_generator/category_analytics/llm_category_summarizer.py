@@ -113,6 +113,7 @@ class CategorySummarizerDecorator(InsightDecorator):
         - DO NOT ask for additional input.
         - DO NOT include the user prompt in the response.
         - DO NOT include the Reddit posts in the response.
+        - Summary is supposed to be 4-5 sentences long.
         - This is based on the Singapore context so please ensure the output is relevant to the region.
         - Ensure the output is concise and insightful.
         - Focus on summarizing trends, concerns, and suggestions.
@@ -143,7 +144,7 @@ class CategorySummarizerDecorator(InsightDecorator):
 
         Summary:
 
-        The discussions mainly revolve around the impact of the pandemic on the economy and healthcare system.
+        The discussions mainly revolve around the impact of the pandemic on the economy and healthcare system. Many complain about the rising cost of living and the challenges faced by young adults in finding employment. The healthcare system is overwhelmed due to the rising number of cases. This leads to concerns about mental health issues among the population.
         
         Concerns:
         - Young adults are facing challenges in finding employment.
