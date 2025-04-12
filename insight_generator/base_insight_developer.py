@@ -9,4 +9,7 @@ class BaseInsightDeveloperGenerator(InsightGenerator):
             "sentiment_clusters": post.get("sentiment_clusters", []),
             "sentiment_discrepancies": post.get("sentiment_discrepancies", []),
             "importance_score": post.get("importance_score", 0.0),
+            "explainer_words": post.get("explainer_words", []),
         }
+    
+    
