@@ -48,8 +48,11 @@ class SentimentAnomalyDetectionDecorator(InsightDecorator):
             if anomaly_dates:
                 anomalies[category] = anomaly_dates
 
-        insights["dates_with_shift"] = anomalies
-        return insights
+        anomalies_df = pd.DataFrame([
+            {"category": category, "anomaly_dates": dates}
+            for category, dates in anomalies.items()
+        ])
+        return anomalies_df
 
     def detect_anomalies(self, category):
         """
