@@ -5,7 +5,7 @@ from common_components.data_preprocessor.concrete_general_builder import General
 from common_components.data_preprocessor.director import PreprocessingDirector
 from sentiment_analyser.context import SentimentAnalysisContext
 from sentiment_analyser.polarity.custom import CustomSentimentClassifier
-from sentiment_analyser.polarity.vader import VaderSentimentClassifier
+from sentiment_analyser.polarity.advanced import AdvancedSentimentClassifier
 
 # Load dataset
 df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv").head(100)
@@ -25,7 +25,7 @@ df = builder.get_result()
 # List of classifiers to test
 classifiers = [
     ("Custom", CustomSentimentClassifier()),
-    ("VADER", VaderSentimentClassifier()),
+    ("Advanced", AdvancedSentimentClassifier()),
 ]
 
 # Initialize results dictionaries to store sentiment scores and labels for plotting
@@ -60,35 +60,39 @@ for name, classifier in classifiers:
     all_results_scores[name] = runs_scores
     all_results_labels[name] = runs_labels
 
-# Plot the sentiment scores over 3 runs for each classifier
-plt.figure(figsize=(10, 6))
-
+# Create separate figures for each classifier
 for name, runs in all_results_scores.items():
-    for run_idx, run in enumerate(runs):
-        plt.plot(run, label=f"{name} Run {run_idx+1}")
-
-plt.xlabel('Sample Index')
-plt.ylabel('Sentiment Score')
-plt.title('Sentiment Analysis: Comparison Over 3 Runs (Scores)')
-plt.legend(loc='best')
-plt.tight_layout()
-plt.show()
+    fig, axes = plt.subplots(1, 3, figsize=(18, 6), sharey=True)
+    fig.suptitle(f"{name} Sentiment Score Distribution Across 3 Runs", fontsize=16)
+    
+    for run_idx, (ax, run) in enumerate(zip(axes, runs)):
+        ax.hist(run, bins=20, alpha=0.7, density=True, color='blue')
+        ax.set_title(f"Run {run_idx+1}")
+        ax.set_xlabel('Sentiment Score')
+        ax.set_ylabel('Density')
+    
+    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust layout to fit the title
+    plt.savefig(f"tests/sentiment_analyser/data/{name.lower()}_sentiment_score_distribution_3_runs.png")
+    plt.show()
 
 # Plot the sentiment labels distribution across the runs for each classifier
 plt.figure(figsize=(10, 6))
+fig, axes = plt.subplots(len(classifiers), 1, figsize=(10, 6 * len(classifiers)), sharex=True)
 
-for name, runs in all_results_labels.items():
+for ax, (name, runs) in zip(axes, all_results_labels.items()):
     for run_idx, run in enumerate(runs):
         # Count the occurrences of each label in the run
-        label_counts = {label: run.count(label) for label in ['Positive', 'Neutral', 'Negative']}
+        label_counts = {label: run.count(label) for label in ['positive', 'neutral', 'negative']}
         labels = list(label_counts.keys())
         counts = list(label_counts.values())
         
-        plt.bar(labels, counts, alpha=0.5, label=f"{name} Run {run_idx+1}")
-        
-plt.xlabel('Sentiment Label')
-plt.ylabel('Count')
-plt.title('Sentiment Label Distribution Over 3 Runs')
-plt.legend(loc='best')
+        ax.bar(labels, counts, alpha=0.5, label=f"Run {run_idx+1}")
+    
+    ax.set_title(f"{name} Sentiment Label Distribution Across 3 Runs")
+    ax.set_ylabel('Count')
+    ax.legend(loc='best')
+
+axes[-1].set_xlabel('Sentiment Label')
 plt.tight_layout()
 plt.show()
+plt.savefig("tests/sentiment_analyser/data/sentiment_label_distribution_3_runs.png")

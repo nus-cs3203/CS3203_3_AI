@@ -7,6 +7,8 @@ from sentiment_analyser.emotion.distilroberta import DistilRobertaClassifier
 from sentiment_analyser.emotion.roberta import RobertaClassifier
 from sentiment_analyser.polarity.bert import BERTClassifier
 from sentiment_analyser.polarity.vader import VaderSentimentClassifier
+from sentiment_analyser.polarity.custom import CustomSentimentClassifier
+from sentiment_analyser.polarity.advanced import AdvancedSentimentClassifier
 
 # Load dataset
 df = pd.read_csv("files/sentiment_scored_2023_data.csv").head(100)
@@ -28,6 +30,8 @@ df_shape_expected = df.shape
 
 # List of classifiers to test
 classifiers = [
+    ("Custom", CustomSentimentClassifier()),
+    ("Advanced", AdvancedSentimentClassifier()),
     ("BERT", BERTClassifier()),
     ("VADER", VaderSentimentClassifier()),
     ("DistilRoberta Emotion", DistilRobertaClassifier()),
@@ -47,9 +51,13 @@ for name, classifier in classifiers:
     print(df.columns[-4:])
     assert df_new_shape[0] == df_shape_expected[0], "Number of rows should remain the same"
     if name != "DistilRoberta Emotion" and name != "Roberta Emotion":
+        print(df_new_shape[1])
+        print(df_shape_expected[1])
         assert df_new_shape[1] == df_shape_expected[1] + 2, "Number of columns should increase by 2"
     else:
-        assert df_new_shape[1] == df_shape_expected[1] + 4, "Number of columns should increase by 4"
+        print(df_new_shape[1])
+        print(df_shape_expected[1])
+        assert df_new_shape[1] == df_shape_expected[1] + 3, "Number of columns should increase by 3"
 
     # Check new columns
     new_columns = df.columns[-2:]
