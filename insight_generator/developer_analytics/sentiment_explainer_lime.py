@@ -6,7 +6,7 @@ from insight_generator.base_decorator import InsightDecorator
 
 class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
     def __init__(self, wrapped, sentiment_col="sentiment", category_col="category", text_col="title_with_description",
-                 top_k=5, log_file="top_adverse_sentiments.txt", output_csv_dir="files/",
+                 top_k=5, log_file="top_adverse_sentiments.txt", output_csv_dir="lime_explanations/",
                  use_fast_model=True):
         """
         Identifies top adverse sentiment posts per category and explains them using LIME.
@@ -102,11 +102,20 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
             category_explainer_df = pd.DataFrame(columns=["category", "explainer_chosen_words"])
 
         return category_explainer_df
-
-    def explain_sentiments(self, texts, indices):
+    
+    def explain_sentiments(self, texts, indices, visualize=True, save_html=True):
         """
         Run LIME on each text to extract top 3 features contributing to sentiment.
-        Returns a DataFrame with explanations.
+        Optionally visualizes and/or saves HTML explanations.
+
+        Args:
+            texts (list): List of texts to explain.
+            indices (list): Corresponding indices of texts in the original DataFrame.
+            visualize (bool): If True, shows LIME explanation in a browser.
+            save_html (bool): If True, saves HTML explanation files per instance.
+
+        Returns:
+            DataFrame: LIME explanations with top 3 features.
         """
         explanations = []
 
@@ -125,6 +134,12 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
             try:
                 print(f"[LIME] Explaining idx={idx}")
                 exp = self.explainer.explain_instance(text, predict_proba, num_features=3, num_samples=500)
+
+                if save_html:
+                    html_path = f"{self.output_csv_dir}lime_explanation_{idx}.html"
+                    exp.save_to_file(html_path)
+                    print(f"[LIME] Saved HTML explanation to {html_path}")
+
                 top_3 = exp.as_list()[:3]
                 explanations.append({
                     "index": idx,
@@ -136,6 +151,7 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
                     "feature_3": top_3[2][0],
                     "weight_3": top_3[2][1],
                 })
+
             except Exception as e:
                 print(f"[ERROR] LIME explanation failed at idx={idx}: {str(e)}")
                 explanations.append({
