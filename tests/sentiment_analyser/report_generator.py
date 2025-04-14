@@ -10,13 +10,16 @@ df_bert_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_ll
 df_vader_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_llm_pre_500_vader.txt")
 df_roberta_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_llm_pre_500_roberta.txt")
 df_distilroberta_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_llm_pre_500_distilroberta.txt")
-
+df_custom_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_llm_pre_500_custom.txt")
+df_advanced_results = pd.read_csv("tests/sentiment_analyser/data/2022_2025_merged_llm_pre_500_advanced.txt")
 
 # Prepare data for comparison
 df_bert_results = df_bert_results.rename(columns={"title_with_desc_label": "label", "title_with_desc_score": "score"})
 df_vader_results = df_vader_results.rename(columns={"title_with_desc_label": "label", "title_with_desc_score": "score"})
 df_roberta_results = df_roberta_results.rename(columns={"title_with_desc_emotion": "label", "title_with_desc_score": "score"})
 df_distilroberta_results = df_distilroberta_results.rename(columns={"title_with_desc_emotion": "label", "title_with_desc_score": "score"})
+df_custom_results = df_custom_results.rename(columns={"title_with_desc_label": "label", "title_with_desc_score": "score"})
+df_advanced_results = df_advanced_results.rename(columns={"title_with_desc_label": "label", "title_with_desc_score": "score"})
 df_llm_polarity = df_llm_polarity.rename(columns={"sentiment_score": "score"})
 df_llm_emotion = df_llm_emotion.rename(columns={"confidence_score": "score"})
 df_llm_emotion = df_llm_emotion.rename(columns={"emotion": "label"})
@@ -34,6 +37,8 @@ def calculate_metrics(y_true, y_pred):
 # Calculate metrics for LLM Polarity with BERT and VADER
 metrics_llm_bert = calculate_metrics(df_llm_polarity['label'], df_bert_results['label'])
 metrics_llm_vader = calculate_metrics(df_llm_polarity['label'], df_vader_results['label'])
+metrics_llm_advanced = calculate_metrics(df_llm_polarity['label'], df_advanced_results['label'])
+metrics_llm_custom = calculate_metrics(df_llm_polarity['label'], df_custom_results['label'])
 
 # Define a function to calculate the mean absolute error between scores
 def calculate_score_difference(df1, df2, score_column='score'):
@@ -42,10 +47,14 @@ def calculate_score_difference(df1, df2, score_column='score'):
 # Calculate score differences for LLM Polarity with BERT and VADER
 score_diff_llm_bert = calculate_score_difference(df_llm_polarity, df_bert_results)
 score_diff_llm_vader = calculate_score_difference(df_llm_polarity, df_vader_results)
+score_diff_llm_advanced = calculate_score_difference(df_llm_polarity, df_advanced_results)
+score_diff_llm_custom = calculate_score_difference(df_llm_polarity, df_custom_results)
 
 # Print the score differences
 print("Score difference for LLM Polarity with BERT: {:.4f}".format(score_diff_llm_bert))
 print("Score difference for LLM Polarity with VADER: {:.4f}".format(score_diff_llm_vader))
+print("Score difference for LLM Polarity with Advanced: {:.4f}".format(score_diff_llm_advanced))
+print("Score difference for LLM Polarity with Custom: {:.4f}".format(score_diff_llm_custom))
 
 # Calculate metrics for LLM Emotion with RoBERTa and DistilRoBERTa
 metrics_llm_roberta = calculate_metrics(df_llm_emotion['label'], df_roberta_results['label'])
@@ -54,6 +63,8 @@ metrics_llm_distilroberta = calculate_metrics(df_llm_emotion['label'], df_distil
 # Print the results
 print("LLM Polarity with BERT: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_bert))
 print("LLM Polarity with VADER: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_vader))
+print("LLM Polarity with Advanced: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_advanced))
+print("LLM Polarity with Custom: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_custom))
 print("LLM Emotion with RoBERTa: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_roberta))
 print("LLM Emotion with DistilRoBERTa: Accuracy: {:.2f}, F1: {:.2f}, Recall: {:.2f}, Precision: {:.2f}".format(*metrics_llm_distilroberta))
 
