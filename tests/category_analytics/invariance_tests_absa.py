@@ -5,8 +5,8 @@ from insight_generator.category_analytics.llm_category_absa import CategoryABSAW
 import matplotlib.pyplot as plt
 
 # Load original and modified datasets
-original_df = pd.read_csv("tests/category_analytics/data/raw_data_for_post_train.csv")
-modified_df = pd.read_csv("tests/category_analytics/data/modified_invariance_test.csv")
+original_df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv") 
+modified_df = pd.read_csv("tests/category_analytics/data/perturbed_invariance_test_sentiment.csv")
 
 # Initialize summarizer
 base_generator = BaseInsightGenerator()
@@ -70,4 +70,4 @@ plt.legend()
 
 # Show plot
 plt.tight_layout()
-plt.show()
+plt.savefig("tests/category_analytics/data/semantic_similarity_plot_absa.png")

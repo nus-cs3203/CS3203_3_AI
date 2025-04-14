@@ -5,7 +5,7 @@ from common_components.data_preprocessor.concrete_general_builder import General
 from common_components.data_preprocessor.director import PreprocessingDirector
 from sentiment_analyser.context import SentimentAnalysisContext
 from sentiment_analyser.polarity.custom import CustomSentimentClassifier
-from sentiment_analyser.polarity.vader import VaderSentimentClassifier
+from sentiment_analyser.polarity.advanced import AdvancedSentimentClassifier
 
 # Load dataset
 df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv").head(100)
@@ -25,7 +25,7 @@ df = builder.get_result()
 # List of classifiers to test
 classifiers = [
     ("Custom", CustomSentimentClassifier()),
-    ("VADER", VaderSentimentClassifier()),
+    ("Advanced", AdvancedSentimentClassifier()),
 ]
 
 # Initialize results dictionaries to store sentiment scores for plotting
@@ -60,29 +60,29 @@ for name, classifier in classifiers:
     all_results_scores[name] = sentiment_scores
 
 # --- Trend Analysis: Category-level and Time-level ---
-# Category-level Sentiment Trend
-plt.figure(figsize=(10, 6))
+# Save and show Category-level Sentiment Trend
 for name, category_trend in category_trends.items():
+    plt.figure(figsize=(10, 6))
     category_trend.plot(kind='bar', label=f"{name} Sentiment by Category")
-    
-plt.xlabel('Category')
-plt.ylabel('Average Sentiment Score')
-plt.title('Sentiment Trend by Category')
-plt.legend(loc='best')
-plt.tight_layout()
-plt.show()
+    plt.xlabel('Category')
+    plt.ylabel('Average Sentiment Score')
+    plt.title(f'{name} Sentiment Trend by Category')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig(f"{name}_category_trend.png")  # Save the plot
+    plt.show()
 
-# Time-level Sentiment Trend (assumes 'date' exists in dataset)
-plt.figure(figsize=(10, 6))
+# Save and show Time-level Sentiment Trend (assumes 'date' exists in dataset)
 for name, time_trend in time_trends.items():
+    plt.figure(figsize=(10, 6))
     time_trend.plot(label=f"{name} Sentiment Over Time")
-    
-plt.xlabel('Date')
-plt.ylabel('Average Sentiment Score')
-plt.title('Sentiment Trend Over Time')
-plt.legend(loc='best')
-plt.tight_layout()
-plt.show()
+    plt.xlabel('Date')
+    plt.ylabel('Average Sentiment Score')
+    plt.title(f'{name} Sentiment Trend Over Time')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    plt.savefig(f"{name}_time_trend.png")  # Save the plot
+    plt.show()
 
 # --- Generate Text Report ---
 report = []

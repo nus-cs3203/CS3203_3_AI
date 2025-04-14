@@ -1,0 +1,53 @@
+===== Sentiment Trends by Category =====
+Custom Sentiment Trend by Category:
+category
+Economy          -0.875924
+Education        -0.555299
+Employment       -0.647061
+Environment      -0.854543
+Healthcare       -0.575858
+Housing          -0.977885
+Infrastructure    0.206654
+Legal            -0.611365
+Politics         -0.987888
+Public Health    -0.867563
+Public Safety    -0.788597
+Technology       -0.831463
+Transport        -0.755714
+Name: title_with_desc_score, dtype: float64
+
+Advanced Sentiment Trend by Category:
+category
+Economy          -0.433862
+Education        -0.152589
+Employment       -0.259326
+Environment      -0.413555
+Healthcare       -0.202093
+Housing          -0.475880
+Infrastructure   -0.026106
+Legal            -0.292954
+Politics         -0.393469
+Public Health    -0.360382
+Public Safety    -0.431837
+Technology       -0.137632
+Transport        -0.373901
+Name: title_with_desc_score, dtype: float64
+
+===== Sentiment Trends Over Time =====
+Custom Sentiment Trend Over Time:
+date
+2024-11-29   -0.892042
+2024-11-30   -0.778672
+2024-12-01   -0.689496
+2024-12-02   -0.776418
+2024-12-03   -0.615322
+Name: title_with_desc_score, dtype: float64
+
+Advanced Sentiment Trend Over Time:
+date
+2024-11-29   -0.356707
+2024-11-30   -0.341588
+2024-12-01   -0.371495
+2024-12-02   -0.408552
+2024-12-03   -0.260057
+Name: title_with_desc_score, dtype: float64

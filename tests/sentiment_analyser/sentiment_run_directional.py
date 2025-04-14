@@ -8,9 +8,7 @@ from sentiment_analyser.polarity.advanced import AdvancedSentimentClassifier
 # Load original and modified datasets
 original_df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv")
 
-modified_df = pd.read_csv("tests/sentiment_analyser/data/perturbed_invariance_test_sentiment.csv")
-modified_df.drop(columns=["title", "description"], inplace=True, errors='ignore')
-modified_df.rename(columns={"perturbed_title": "title", "perturbed_description": "description"}, inplace=True)
+modified_df = pd.read_csv("tests/sentiment_analyser/data/directional_sentiment_test_data.csv")
 
 # Define critical and text columns
 CRITICAL_COLUMNS = ["title"]
@@ -53,7 +51,6 @@ for name, classifier in classifiers:
 
     original_copy = context.analyze(original_copy, text_cols=["title_with_desc"])
     modified_copy = context.analyze(modified_copy, text_cols=["title_with_desc"])
-    
     # Get sentiment scores for both datasets
     original_scores = original_copy['title_with_desc_score']
     modified_scores = modified_copy['title_with_desc_score']
@@ -65,6 +62,24 @@ for name, classifier in classifiers:
     # Check if the sentiment scores fall within a reasonable threshold
     score_agreement = (abs(original_scores - modified_scores) <= threshold).mean()
     print(f"Agreement on sentiment scores for {name}: {score_agreement:.2f}")
+    
+    # Calculate and report the overall difference in sentiment scores
+    overall_difference = (original_scores - modified_scores).mean()
+    print(f"Overall difference in sentiment scores for {name}: {overall_difference:.2f}")
+    
+    # Plot the distributions of sentiment scores for original and modified datasets
+    plt.figure(figsize=(10, 6))
+    plt.hist(original_scores, bins=30, alpha=0.5, label='Original Scores', color='blue')
+    plt.hist(modified_scores, bins=30, alpha=0.5, label='Modified Scores', color='orange')
+    plt.xlabel('Sentiment Score')
+    plt.ylabel('Frequency')
+    plt.title(f'Sentiment Score Distribution: {name}')
+    plt.legend(loc='best')
+    plt.tight_layout()
+    
+    # Save the distribution plot to file
+    plt.savefig(f"tests/sentiment_analyser/data/{name}_sentiment_score_distribution_plot_directional.png")
+    plt.close()
 
 # --- Plotting and Report Generation ---
 
@@ -86,7 +101,7 @@ for name, scores in all_results_scores.items():
     plt.tight_layout()
     
     # Save the plot to file
-    plt.savefig(f"tests/sentiment_analyser/data/{name}_sentiment_alignment_plot.png")
+    plt.savefig(f"tests/sentiment_analyser/data/{name}_sentiment_alignment_plot_directional.png")
     plt.close()
 
 # --- Generate Text Report ---
@@ -99,7 +114,7 @@ for name, scores in all_results_scores.items():
     report.append(f"{name} Agreement on Sentiment Scores: {score_agreement:.2f}")
 
 # Save the report to a text file
-with open("tests/sentiment_analyser/data/sentiment_analysis_comparison_report.txt", "w") as file:
+with open("tests/sentiment_analyser/data/sentiment_analysis_comparison_report_directional.txt", "w") as file:
     file.write("\n".join(report))
 
 print("Sentiment analysis comparison report and plots saved.")

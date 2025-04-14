@@ -10,9 +10,9 @@ from insight_generator.category_analytics.sentiment_forecaster import TopicSenti
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load data
-original_df = pd.read_csv("tests/category_analytics/data/raw_invariance_test_forecast.csv")
-modified_df = pd.read_csv("tests/category_analytics/data/modified_invariance_test_forecast.csv")
+# Load data (the datasets needed are in data file of sentiment analyser test set)
+original_df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv") 
+modified_df = pd.read_csv("tests/category_analytics/data/perturbed_invariance_test_sentiment.csv")
 
 # Define tolerance levels
 TOLERANCE = 0.1  # Allowable deviation in forecasted sentiment scores
@@ -64,11 +64,28 @@ results_df = pd.DataFrame(results)
 results_df.to_csv("tests/category_analytics/data/invariance_test_results_forecast.csv", index=False)
 
 logger.info("Invariance test completed. Results saved to invariance_test_results.csv")
+# Simplify and save the plot for comparison as a bar chart
+categories = merged_df["category"]
+forecast_orig = merged_df["forecasted_sentiment_orig"]
+forecast_mod = merged_df["forecasted_sentiment_mod"]
 
-# Show the plot
-plt.xlabel('Category')
-plt.ylabel('Forecasted Sentiment')
-plt.title('Forecasted Sentiment Comparison')
-plt.xticks(rotation=90)
+x = np.arange(len(categories))  # the label locations
+width = 0.35  # the width of the bars
+
+fig, ax = plt.subplots(figsize=(10, 6))
+bars1 = ax.bar(x - width/2, forecast_orig, width, label='Original Forecast')
+bars2 = ax.bar(x + width/2, forecast_mod, width, label='Modified Forecast')
+
+# Add labels, title, and legend
+ax.set_xlabel('Category')
+ax.set_ylabel('Forecasted Sentiment')
+ax.set_title('Forecasted Sentiment Comparison')
+ax.set_xticks(x)
+ax.set_xticklabels(categories, rotation=90)
+ax.legend()
+
 plt.tight_layout()
-plt.show()
+
+# Save the plot to a file
+plt.savefig("tests/category_analytics/data/forecast_comparison_plot.png", dpi=300)
+plt.close()

@@ -6,7 +6,7 @@ from insight_generator.base_decorator import InsightDecorator
 
 class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
     def __init__(self, wrapped, sentiment_col="sentiment", category_col="category", text_col="title_with_description",
-                 top_k=5, log_file="top_adverse_sentiments.txt", output_csv_dir="lime_explanations/",
+                 top_k=5, log_file="top_adverse_sentiments.txt", output_csv_dir="files/",
                  use_fast_model=True):
         """
         Identifies top adverse sentiment posts per category and explains them using LIME.
@@ -39,7 +39,7 @@ class TopAdverseSentimentsDecoratorLIME(InsightDecorator):
         insights = self._wrapped.extract_insights(df)
 
         if self.category_col not in df.columns or self.sentiment_col not in df.columns:
-            raise ValueError(f"Missing '{self.category_col}' or '{self.sentiment_col}' in dataframe.")
+            raise ValueError(f"Missing {self.category_col} or {self.sentiment_col} in dataframe.")
 
         top_sentiments_outputs = []
         df[self.text_col] = df[self.text_col].fillna("")
