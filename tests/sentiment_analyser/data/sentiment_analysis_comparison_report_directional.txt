@@ -1,0 +1,2 @@
+===== Sentiment Score Comparison Report =====
+Advanced Agreement on Sentiment Scores: 0.94
