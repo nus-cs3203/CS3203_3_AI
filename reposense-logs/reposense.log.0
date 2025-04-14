@@ -1,10 +1,10 @@
-Apr 14, 2025 12:10:55 PM reposense.system.LogsManager addFileHandler
+Apr 14, 2025 6:16:16 PM reposense.system.LogsManager addFileHandler
 INFO: Log temp folder has been successfully created
-Apr 14, 2025 12:10:56 PM reposense.parser.CsvParser validateHeader
+Apr 14, 2025 6:16:16 PM reposense.parser.CsvParser validateHeader
 INFO: Parsed header of CSV file, repo-config.csv, and recognized columns: Ignore Standalone Config,  Repository's Location,  Branch,  File formats,  Ignore Glob List,  Ignore Authors List,  Ignore Commits List
-Apr 14, 2025 12:10:56 PM reposense.parser.CsvParser validateHeader
+Apr 14, 2025 6:16:17 PM reposense.parser.CsvParser validateHeader
 INFO: Parsed header of CSV file, author-config.csv, and recognized columns: Author's Emails,  Repository's Location,  Author's GitHub ID,  Branch,  Author's Display Name,  Ignore Glob List,  Author's Git Author Name
-Apr 14, 2025 12:10:56 PM reposense.git.GitConfig getGlobalGitLfsConfig
+Apr 14, 2025 6:16:17 PM reposense.git.GitConfig getGlobalGitLfsConfig
 WARNING: Could not get global git lfs config
 java.lang.RuntimeException: reposense.system.CommandRunnerProcessException: Error returned from command git config --global --list on path . :
 fatal: unable to read config file '/home/runner/.gitconfig': No such file or directory
@@ -20,15 +20,15 @@ fatal: unable to read config file '/home/runner/.gitconfig': No such file or dir
 	at reposense.system.CommandRunner.runCommand(CommandRunner.java:21)
 	... 3 more
 
-Apr 14, 2025 12:10:56 PM reposense.report.RepoCloner spawnCloneProcess
+Apr 14, 2025 6:16:17 PM reposense.report.RepoCloner spawnCloneProcess
 INFO: Cloning in parallel from https://github.com/nus-cs3203/CS3203_3_AI.git...
-Apr 14, 2025 12:10:56 PM reposense.report.RepoCloner waitForCloneProcess
+Apr 14, 2025 6:16:17 PM reposense.report.RepoCloner waitForCloneProcess
 INFO: Waiting for cloning of https://github.com/nus-cs3203/CS3203_3_AI.git to complete...
-Apr 14, 2025 12:10:58 PM reposense.report.RepoCloner waitForCloneProcess
+Apr 14, 2025 6:16:19 PM reposense.report.RepoCloner waitForCloneProcess
 INFO: Cloning of https://github.com/nus-cs3203/CS3203_3_AI.git completed!
-Apr 14, 2025 12:10:58 PM reposense.report.ReportGenerator analyzeRepos
+Apr 14, 2025 6:16:19 PM reposense.report.ReportGenerator analyzeRepos
 INFO: [1/1] Analyzing https://github.com/nus-cs3203/CS3203_3_AI.git (main)...
-Apr 14, 2025 12:10:58 PM reposense.git.GitClone cloneFromBareAndUpdateBranch
+Apr 14, 2025 6:16:19 PM reposense.git.GitClone cloneFromBareAndUpdateBranch
 SEVERE: Exception met while cloning or checking out nus-cs3203/CS3203_3_AI[main].Analysis terminated.
 java.lang.RuntimeException: reposense.system.CommandRunnerProcessException: Error returned from command git clone 'repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI_bare' --branch main 'repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI' on path . :
 Cloning into 'repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI'...
@@ -36,7 +36,7 @@ done.
 Downloading common_components/singlish_classifier_2/model.safetensors (499 MB)
 Error downloading object: common_components/singlish_classifier_2/model.safetensors (2ff6cbf): Smudge error: Error downloading common_components/singlish_classifier_2/model.safetensors (2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea): error transferring "2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea": [0] remote missing object 2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea
 
-Errors logged to '/home/runner/work/CS3203_3_AI/CS3203_3_AI/repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI/.git/lfs/logs/20250414T121058.735295988.log'.
+Errors logged to '/home/runner/work/CS3203_3_AI/CS3203_3_AI/repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI/.git/lfs/logs/20250414T181619.576829928.log'.
 Use `git lfs logs last` to view the log.
 error: external filter 'git-lfs filter-process' failed
 fatal: common_components/singlish_classifier_2/model.safetensors: smudge filter lfs failed
@@ -60,7 +60,7 @@ done.
 Downloading common_components/singlish_classifier_2/model.safetensors (499 MB)
 Error downloading object: common_components/singlish_classifier_2/model.safetensors (2ff6cbf): Smudge error: Error downloading common_components/singlish_classifier_2/model.safetensors (2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea): error transferring "2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea": [0] remote missing object 2ff6cbf7e7c5843fa81e54445ad6c5d4dbbeef9d948701b0373a892d178bb1ea
 
-Errors logged to '/home/runner/work/CS3203_3_AI/CS3203_3_AI/repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI/.git/lfs/logs/20250414T121058.735295988.log'.
+Errors logged to '/home/runner/work/CS3203_3_AI/CS3203_3_AI/repos/nus-cs3203_CS3203_3_AI/CS3203_3_AI/.git/lfs/logs/20250414T181619.576829928.log'.
 Use `git lfs logs last` to view the log.
 error: external filter 'git-lfs filter-process' failed
 fatal: common_components/singlish_classifier_2/model.safetensors: smudge filter lfs failed
@@ -73,7 +73,7 @@ and retry with 'git restore --source=HEAD :/'
 	at reposense.system.CommandRunner.runCommand(CommandRunner.java:21)
 	... 8 more
 
-Apr 14, 2025 12:10:58 PM reposense.report.ReportGenerator generateReposReport
+Apr 14, 2025 6:16:19 PM reposense.report.ReportGenerator generateReposReport
 INFO: The report is generated at /home/runner/work/CS3203_3_AI/CS3203_3_AI/reposense-report
-Apr 14, 2025 12:10:58 PM reposense.RepoSense main
-INFO: Elapsed processing time: 2.91 second(s)
+Apr 14, 2025 6:16:19 PM reposense.RepoSense main
+INFO: Elapsed processing time: 2.99 second(s)
