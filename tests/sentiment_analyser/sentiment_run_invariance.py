@@ -3,12 +3,14 @@ import matplotlib.pyplot as plt
 from common_components.data_preprocessor.concrete_general_builder import GeneralPreprocessorBuilder
 from common_components.data_preprocessor.director import PreprocessingDirector
 from sentiment_analyser.context import SentimentAnalysisContext
-from sentiment_analyser.polarity.custom import CustomSentimentClassifier
-from sentiment_analyser.polarity.vader import VaderSentimentClassifier
+from sentiment_analyser.polarity.advanced import AdvancedSentimentClassifier
 
 # Load original and modified datasets
 original_df = pd.read_csv("tests/sentiment_analyser/data/raw_invariance_test_sentiment.csv")
-modified_df = pd.read_csv("tests/sentiment_analyser/data/modified_invariance_test_sentiment.csv")
+
+modified_df = pd.read_csv("tests/sentiment_analyser/data/perturbed_invariance_test_sentiment.csv")
+modified_df.drop(columns=["title", "description"], inplace=True, errors='ignore')
+modified_df.rename(columns={"perturbed_title": "title", "perturbed_description": "description"}, inplace=True)
 
 # Define critical and text columns
 CRITICAL_COLUMNS = ["title"]
@@ -27,8 +29,7 @@ modified_df = preprocess_data(modified_df)
 
 # List of classifiers to test
 classifiers = [
-    ("Custom", CustomSentimentClassifier()),
-    ("VADER", VaderSentimentClassifier()),
+    ("Advanced", AdvancedSentimentClassifier()),
 ]
 
 # Initialize results dictionaries to store sentiment scores
@@ -67,24 +68,25 @@ for name, classifier in classifiers:
 
 # --- Plotting and Report Generation ---
 
-# Plot sentiment scores comparison and save the plots
+# Plot percentage alignment of sentiment scores and save the plots
 for name, scores in all_results_scores.items():
     plt.figure(figsize=(10, 6))
     
-    # Plot original sentiment scores
-    plt.plot(scores["original"], label=f"{name} Original Sentiment", alpha=0.7)
+    # Calculate percentage alignment per post
+    alignment = (abs(scores["original"] - scores["modified"]) <= threshold) * 100
     
-    # Plot modified sentiment scores
-    plt.plot(scores["modified"], label=f"{name} Modified Sentiment", alpha=0.7)
+    # Plot percentage alignment
+    plt.bar(range(len(alignment)), alignment, alpha=0.7, label=f"{name} Alignment (%)")
     
     plt.xlabel('Sample Index')
-    plt.ylabel('Sentiment Score')
-    plt.title(f'Sentiment Analysis Comparison: {name}')
+    plt.ylabel('Percentage Alignment')
+    plt.title(f'Sentiment Score Alignment: {name}')
+    plt.ylim(0, 100)
     plt.legend(loc='best')
     plt.tight_layout()
     
     # Save the plot to file
-    plt.savefig(f"tests/sentiment_analyser/data/{name}_sentiment_comparison_plot.png")
+    plt.savefig(f"tests/sentiment_analyser/data/{name}_sentiment_alignment_plot.png")
     plt.close()
 
 # --- Generate Text Report ---
